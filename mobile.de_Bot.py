@@ -35,29 +35,21 @@ if len(carLink) == 0:
 else:
     print(len(carLink), "ads to process\n--------------------")
 
-# get data
-carTitle = []
-carPrice = []
-carReg   = []
-carMiles = []
-for i in range(len(carLink)):
-        tmp = getCarData(carLink[i])
-        carTitle.append(tmp[0])
-        carPrice.append(tmp[1])
-        carReg.append(tmp[2])
-        carMiles.append(tmp[3])
-        if i == 0:
-            print(i + 1, "ad processed\n")
-        else:
-            print(i + 1, "ads processed\n")
-
-# writing to csv file
-print("Writing to csv")
+# get data and write to csv
 with io.open('cars.csv', 'w', encoding="utf-8", newline='') as file:
     writer = csv.writer(file)
     writer.writerow(["Ad Link", "Reg. Year", "Title", "Price", "Mileage"])
     for i in range(len(carLink)):
-        writer.writerow([carLink[i] ,carReg[i], carTitle[i], carPrice[i], carMiles[i]])
+        tmp = getCarData(carLink[i])
+        carTitle = tmp[0]
+        carPrice = tmp[1]
+        carReg = tmp[2]
+        carMiles = tmp[3]
+        writer.writerow([carLink[i] ,carReg, carTitle, carPrice, carMiles])
+        if i == 0:
+            print(i + 1, "ad processed\n")
+        else:
+            print(i + 1, "ads processed\n")
 file.close()
 
 print("=== END ===")
