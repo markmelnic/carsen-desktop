@@ -2,6 +2,9 @@
 from bs4_module import *
 from selenium_module import *
 
+import io
+import csv
+
 # ================== initialization ==================
 carMake = input("Car Manufacturer: ")
 carModel = input("Car Model: ")
@@ -47,5 +50,14 @@ for i in range(len(carLink)):
             print(i + 1, "ad processed\n")
         else:
             print(i + 1, "ads processed\n")
+
+# writing to csv file
+print("Writing to csv")
+with io.open('cars.csv', 'w', encoding="utf-8", newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Ad Link", "Reg. Year", "Title", "Price", "Mileage"])
+    for i in range(len(carLink)):
+        writer.writerow([carLink[i] ,carReg[i], carTitle[i], carPrice[i], carMiles[i]])
+file.close()
 
 print("=== END ===")
