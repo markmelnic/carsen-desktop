@@ -21,9 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="bf4Requests.py" />
+    <Compile Include="bs4_module.py" />
     <Compile Include="mobile.de_Bot.py" />
-    <Compile Include="seleniumInter.py" />
+    <Compile Include="selenium_module.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="drivers\chromedriver80.exe" />
