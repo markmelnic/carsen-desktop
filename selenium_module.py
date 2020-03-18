@@ -120,4 +120,4 @@ def nextPage(dv, currentURL, currentPage):
         for i in range(len(currentURL) - i - tempLink[0] - len(str(currentPage + 2))):
             nextLink += currentURL[i + tempLink[0] + len(str(currentPage + 2))]
 
-    dv.get(nextLink)
+    return nextLink

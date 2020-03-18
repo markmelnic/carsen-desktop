@@ -12,7 +12,7 @@ def getNr(currentURL):
 
     pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
     if len(pagesnr) == 0:
-        return 0
+        return 1
     else:
         converted_pagesnr = int(pagesnr[(len(pagesnr) - 1)].get_text())
     return converted_pagesnr
@@ -95,8 +95,8 @@ def getCarData(carLinkCurrentPage):
     else:
         print(carReg)
     if carMiles == 1414:
-        print("Either not specified or 0 km\n")
+        print("Either not specified or 0 km")
     else:
-        print(carMiles, "km\n")
+        print(carMiles, "km")
 
     return carTitle, carPrice, carReg, carMiles
