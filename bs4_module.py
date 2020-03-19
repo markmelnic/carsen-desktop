@@ -57,6 +57,8 @@ def getCarData(carLinkCurrentPage):
         carMiles = soup.find(id = "rbt-mileage-v").get_text()
     except:
         carMiles = 1414
+    # power
+    carPower = soup.find(id = "rbt-power-v").get_text()
 
     # ================== format necessary data
     # car price first
@@ -84,6 +86,12 @@ def getCarData(carLinkCurrentPage):
         carMiles = carMiles[ : -3]
         carMiles = carMiles.replace('.', '')
         carMiles = int(carMiles)
+
+    # power
+    carPower = carPower.split("(")[1]
+    carPower = carPower[ : -4]
+    carMiles = int(carMiles)
+
     '''
     # ================== neat print all values
     print(carTitle)
@@ -100,4 +108,4 @@ def getCarData(carLinkCurrentPage):
         print(carMiles, "km")
     '''
 
-    return carTitle, carPrice, carReg, carMiles
+    return carTitle, carPrice, carReg, carMiles, carPower
