@@ -84,7 +84,7 @@ def getCarData(carLinkCurrentPage):
         carMiles = carMiles[ : -3]
         carMiles = carMiles.replace('.', '')
         carMiles = int(carMiles)
-
+    '''
     # ================== neat print all values
     print(carTitle)
     print(carPrice, "€")
@@ -98,5 +98,6 @@ def getCarData(carLinkCurrentPage):
         print("Either not specified or 0 km")
     else:
         print(carMiles, "km")
+    '''
 
     return carTitle, carPrice, carReg, carMiles
