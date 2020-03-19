@@ -67,6 +67,7 @@ def main():
     with io.open('cars.csv', 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow(["Ad Link", "Reg. Year", "Title", "Price", "Mileage", "Power (HP)"])
+        # start threading for getting data
         threads = []
         for i in range(len(carLink)):
             threadNumber = "Thread " + str(i)
