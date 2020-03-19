@@ -39,30 +39,38 @@ def startSearcher(dv):
 def firstSearch(dv, carMake, carModel):
     WebDriverWait(dv, 20).until(EC.visibility_of_all_elements_located)
     # ================== accept cookies
-    time.sleep(2)
+    time.sleep(3)
     try:
         cookiesAccept = dv.find_element_by_id("gdpr-consent-accept-button")
+        cookiesAccept.click()
     except:
-        cookiesAccept = dv.find_element_by_css_selector(".consent-btn.orange")
-    else:
-        None
-    cookiesAccept.click()
+        try:
+            cookiesAccept = dv.find_element_by_css_selector(".consent-btn.orange")
+            cookiesAccept.click()
+        except:
+            None
 
     # ================== selectors
     # manufacturer selector
-    time.sleep(0.1)
+    time.sleep(3)
     makeSelector = dv.find_element_by_id("selectMake1-ds")
     for i in range(len(carMake)):
         makeSelector.send_keys(carMake[i])
-    time.sleep(0.1)
+    time.sleep(0.2)
+    makeSelector.send_keys(Keys.ENTER)
+    #retry
+    makeSelector = dv.find_element_by_id("selectMake1-ds")
+    for i in range(len(carMake)):
+        makeSelector.send_keys(carMake[i])
+    time.sleep(0.2)
     makeSelector.send_keys(Keys.ENTER)
 
     # model selector
-    time.sleep(0.1)
+    time.sleep(0.5)
     modelSelector = dv.find_element_by_id("selectModel1-ds")
     for i in range(len(carModel)):
         modelSelector.send_keys(carModel[i])
-    time.sleep(0.1)
+    time.sleep(0.2)
     modelSelector.send_keys(Keys.ENTER)
 
     # price range selector
