@@ -28,9 +28,9 @@ def main():
     currentURL = curURL(dv)
     converted_pagesnr = getNr(currentURL)
     if converted_pagesnr == 1:
-        print(converted_pagesnr, "page to be scanned")
+        print(converted_pagesnr, "page to process")
     else:
-        print(converted_pagesnr, "pages to be scanned")
+        print(converted_pagesnr, "pages to process")
 
     # get links
     carLink  = []
@@ -63,10 +63,16 @@ def main():
     except:
         None
     '''
+    carMake = carMake.replace(" ", "-")
+    carModel = carModel.replace(" ", "-")
+    if carModel == "":
+        fileName = carMake + ".csv"
+    else:
+        fileName = carMake + "_" + carModel + ".csv"
 
-    with io.open('cars.csv', 'w', encoding="utf-8", newline='') as csvFile:
+    with io.open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
-        csvWriter.writerow(["Ad Link", "Reg. Year", "Title", "Price", "Mileage", "Power (HP)"])
+        csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price", "Mileage", "Power (HP)"])
         # start threading for getting data
         threads = []
         for i in range(len(carLink)):
@@ -74,7 +80,7 @@ def main():
             thread = threading.Thread(target = getData, args = (threadNumber, carLink[i], csvWriter))
             threads.append(thread)
             thread.start()
-            if len(threads) == 32:
+            if len(threads) == 24:
                 for thread in threads:
                     thread.join()
                 threads = []
