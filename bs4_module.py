@@ -6,20 +6,27 @@ import time
 
 # ================== get number of pages ==================
 def getNr(currentURL):
+    time.sleep(1)
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
-    if len(pagesnr) == 0:
-        return 1
-    else:
-        converted_pagesnr = int(pagesnr[(len(pagesnr) - 1)].get_text())
+    for i in range(5):
+        pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
+        if len(pagesnr) == 0:
+            converted_pagesnr = 1
+        elif int(pagesnr[(len(pagesnr) - 1)].get_text()) == (0 or -1):
+            converted_pagesnr = 1
+        else:
+            converted_pagesnr = int(pagesnr[(len(pagesnr) - 1)].get_text())
+
     return converted_pagesnr
 
 
 # ================== get car links ==================
 def getCarLinks(currentURL):
+    time.sleep(0.5)
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -58,7 +65,10 @@ def getCarData(carLinkCurrentPage):
     except:
         carMiles = 1414
     # power
-    carPower = soup.find(id = "rbt-power-v").get_text()
+    try:
+        carPower = soup.find(id = "rbt-power-v").get_text()
+    except:
+        carPower = 0
 
     # ================== format necessary data
     # car price first
@@ -88,9 +98,12 @@ def getCarData(carLinkCurrentPage):
         carMiles = int(carMiles)
 
     # power
-    carPower = carPower.split("(")[1]
-    carPower = carPower[ : -4]
-    carMiles = int(carMiles)
+    if carPower == 0:
+        pass
+    else:
+        carPower = carPower.split("(")[1]
+        carPower = carPower[ : -4]
+        carMiles = int(carMiles)
 
     '''
     # ================== neat print all values
@@ -108,4 +121,4 @@ def getCarData(carLinkCurrentPage):
         print(carMiles, "km")
     '''
 
-    return carTitle, carPrice, carReg, carMiles, carPower
+    return carTitle, carReg, carPrice, carMiles, carPower

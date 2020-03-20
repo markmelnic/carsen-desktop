@@ -51,22 +51,31 @@ def firstSearch(dv, carMake, carModel):
             None
 
     # ================== selectors
-    # manufacturer selector
-    time.sleep(3)
+    # select any
+    time.sleep(1)
+    any = "any"
     makeSelector = dv.find_element_by_id("selectMake1-ds")
-    for i in range(len(carMake)):
-        makeSelector.send_keys(carMake[i])
+    for i in range(len(any)):
+        makeSelector.send_keys(any[i])
     time.sleep(0.2)
     makeSelector.send_keys(Keys.ENTER)
-    #retry
+    # manufacturer selector
+    time.sleep(0.5)
     makeSelector = dv.find_element_by_id("selectMake1-ds")
     for i in range(len(carMake)):
         makeSelector.send_keys(carMake[i])
     time.sleep(0.2)
     makeSelector.send_keys(Keys.ENTER)
 
+    '''
+    # select any
+    makeSelector = dv.find_element_by_id("selectModel1-ds")
+    for i in range(len(any)):
+        makeSelector.send_keys(any[i])
+    time.sleep(0.2)
+    '''
     # model selector
-    time.sleep(0.5)
+    time.sleep(0.7)
     modelSelector = dv.find_element_by_id("selectModel1-ds")
     for i in range(len(carModel)):
         modelSelector.send_keys(carModel[i])
@@ -97,6 +106,7 @@ def firstSearch(dv, carMake, carModel):
 # ================== see current URL
 def curURL(dv):
     WebDriverWait(dv, 20).until(EC.visibility_of_all_elements_located)
+    time.sleep(1)
     currentURL = dv.current_url
     return currentURL
 
