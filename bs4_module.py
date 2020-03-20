@@ -6,13 +6,12 @@ import time
 
 # ================== get number of pages ==================
 def getNr(currentURL):
-    time.sleep(1)
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
 
-    pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
     for i in range(5):
+        time.sleep(0.8)
         pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
         if len(pagesnr) == 0:
             converted_pagesnr = 1
@@ -26,7 +25,7 @@ def getNr(currentURL):
 
 # ================== get car links ==================
 def getCarLinks(currentURL):
-    time.sleep(0.5)
+    time.sleep(1)
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -49,16 +48,25 @@ def getCarData(carLinkCurrentPage):
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # title
-    carTitle = soup.find(id = "rbt-ad-title").get_text()
+    try:
+        carTitle = soup.find(id = "rbt-ad-title").get_text()
+    except:
+        carTitle = "No Title"
 
     # price
-    carPrice = soup.find(class_ = "h3 rbt-prime-price").get_text()
+    try:
+        carPrice = soup.find(class_ = "h3 rbt-prime-price").get_text()
+    except:
+        carPrice = '0'
 
     # registration
     try:
         carReg = soup.find(id = "rbt-firstRegistration-v").get_text()
     except:
-        carReg = soup.find(id = "rbt-category-v").get_text()
+        try:
+            carReg = soup.find(id = "rbt-category-v").get_text()
+        except:
+            carReg = 0
     # mileage
     try:
         carMiles = soup.find(id = "rbt-mileage-v").get_text()

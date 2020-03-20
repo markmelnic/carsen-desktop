@@ -1,8 +1,4 @@
 
-# sys
-import sys
-sys.path.insert(1, './modules')
-
 #from main import *
 from bs4_module import *
 from selenium_module import *
@@ -21,6 +17,15 @@ def getData(threadNumber, carLink, csvWriter):
     print(threadNumber, "executed in", time.time() - time_started)
         
 
+def getCarLinksTemp(threadNumber, currentURL, linksFile):
+    time_started = time.time()
+    print(threadNumber, "started at", time_started)
+    carLinks = getCarLinks(currentURL)
+    for item in carLinks:
+        linksFile.write("%s\n" % item)
+    print(threadNumber, "executed in", time.time() - time_started)
+
+
 def main():
     # ================== initialization ==================
     carMake = input("Car Manufacturer: ")
@@ -37,19 +42,29 @@ def main():
         print(converted_pagesnr, "pages to process")
 
     # get links
-    carLink  = []
-    for currentPage in range(converted_pagesnr):
-        if currentPage == 0:
-            currentURL = curURL(dv)
-            killd(dv)
-        carLinksCurrentPage = getCarLinks(currentURL)
-        for i in range(len(carLinksCurrentPage)):
-            carLink.append(carLinksCurrentPage[i])
-        currentURL = nextPage(dv, currentURL, currentPage)
-        if currentPage == 0:
-            print(currentPage + 1, "page processed")
-        else:
-            print(currentPage + 1, "pages processed")
+    with open("links.txt", mode="w") as linksFile:
+        threads = []
+        for currentPage in range(converted_pagesnr):
+            if currentPage == 0:
+                currentURL = curURL(dv)
+                killd(dv)
+            threadNumber = "Thread " + str(currentPage)
+            thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
+            threads.append(thread)
+            thread.start()
+            currentURL = nextPage(dv, currentURL, currentPage)
+
+        # wait for all threads to finish execution
+        for thread in threads:
+            thread.join()
+        print("All threads are finished")
+        linksFile.close()
+
+    # get links to variable
+    with open("links.txt", mode="r") as linksFile:
+        carLink = linksFile.readlines()
+        linksFile.close()
+    os.remove("links.txt")
 
     if len(carLink) == 0:
         print("No ads to process\n--------------------")
@@ -67,6 +82,7 @@ def main():
     except:
         None
     '''
+    # output file name
     carMake = carMake.replace(" ", "-")
     carModel = carModel.replace(" ", "-")
     if carModel == "":
@@ -88,6 +104,8 @@ def main():
                 for thread in threads:
                     thread.join()
                 threads = []
+
+        # wait for all threads to finish execution
         for thread in threads:
             thread.join()
         print("All threads are finished")
