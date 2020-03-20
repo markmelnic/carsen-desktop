@@ -1,4 +1,8 @@
 
+# sys
+import sys
+sys.path.insert(1, './modules')
+
 #from main import *
 from bs4_module import *
 from selenium_module import *

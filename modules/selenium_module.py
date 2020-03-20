@@ -22,7 +22,7 @@ def boot():
     chrome_options.add_experimental_option("prefs",prefs)
 
     # driver itself
-    dv = webdriver.Chrome(chrome_options = chrome_options, executable_path = r"C:\Users\markh\source\repos\mobile.de-Bot\drivers\chromedriver80.exe")
+    dv = webdriver.Chrome(chrome_options = chrome_options, executable_path = r"./drivers/chromedriver80.exe")
     return dv
 
 
