@@ -1,21 +1,24 @@
 
-import requests
-from bs4 import BeautifulSoup
 import time
+import requests
+#from proxy_module import *
+from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 
 # ================== get number of pages ==================
-def getNr(currentURL):
+def getNr(dv, currentURL):
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
+    WebDriverWait(dv, 20).until(EC.visibility_of_all_elements_located)
 
     for i in range(5):
         time.sleep(0.8)
         pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
         if len(pagesnr) == 0:
-            converted_pagesnr = 1
-        elif int(pagesnr[(len(pagesnr) - 1)].get_text()) == (0 or -1):
             converted_pagesnr = 1
         else:
             converted_pagesnr = int(pagesnr[(len(pagesnr) - 1)].get_text())
@@ -25,7 +28,6 @@ def getNr(currentURL):
 
 # ================== get car links ==================
 def getCarLinks(currentURL):
-    time.sleep(1)
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
