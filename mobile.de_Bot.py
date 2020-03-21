@@ -35,7 +35,10 @@ def main():
     firstSearch(dv, carMake, carModel)
 
     currentURL = curURL(dv)
-    converted_pagesnr = getNr(currentURL)
+    converted_pagesnr = getNr(dv, currentURL)
+    if converted_pagesnr == 1:
+        for i in range(2):
+            converted_pagesnr = getNr(dv, currentURL)
     if converted_pagesnr == 1:
         print(converted_pagesnr, "page to process")
     else:
@@ -52,6 +55,10 @@ def main():
             thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
             threads.append(thread)
             thread.start()
+            if len(threads) == 4:
+                for thread in threads:
+                    thread.join()
+                threads = []
             currentURL = nextPage(dv, currentURL, currentPage)
 
         # wait for all threads to finish execution
