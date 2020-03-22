@@ -1,7 +1,6 @@
 
 import time
 import requests
-#from proxy_module import *
 from bs4 import BeautifulSoup
 
 
