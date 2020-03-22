@@ -26,23 +26,71 @@ def getCarLinksTemp(threadNumber, currentURL, linksFile):
     print(threadNumber, "executed in", time.time() - time_started)
 
 
-def main():
-    # ================== initialization ==================
+# to be implemented
+def loader():
+    print("WIP")
+
+
+def inputFunct():
+    # inputs
+    print("The Car Manufacturer input is mandatory, \nelse press ENTER to skip a field.\n")
     carMake = input("Car Manufacturer: ")
     carModel = input("Car Model: ")
+
+    print("\nPrice range:")
+    fromPrice = input("from: ")
+    toPrice = input("to: ")
+
+    print("\nRegistration years range:")
+    fromReg = input("from: ")
+    toReg = input("to: ")
+
+    print("\nMileage range:")
+    fromMiles = input("from: ")
+    toMiles = input("to: ")
+
+    print("\nEngine power range:")
+    fromPower = input("from: ")
+    toPower = input("to: ")
+
+    return carMake, carModel, fromPrice, toPrice, fromReg, toReg, fromMiles, toMiles, fromPower, toPower
+
+def main():
+    # ================== initialization ==================
+    # inputs
+    input = inputFunct()
+
+    # program start
     dv = boot()
     startSearcher(dv)
-    firstSearch(dv, carMake, carModel)
+    firstSearch(dv, input)
 
     currentURL = curURL(dv)
-    converted_pagesnr = getNr(dv, currentURL)
+    getNumber = getNr(currentURL)
+    try:
+        converted_pagesnr = getNumber[0]
+        adsCheck = getNumber[1]
+    except:
+        converted_pagesnr = getNumber
+        adsCheck = 21
+
+    if (converted_pagesnr == 1) and (adsCheck > 20):
+        print("Possible error, trying again...")
+        # retry
+        dv = boot()
+        startSearcher(dv)
+        firstSearch(dv, input)
+        currentURL = curURL(dv)
+        getNumber = getNr(currentURL)
+        try:
+            converted_pagesnr = getNumber[0]
+            adsCheck = getNumber[1]
+        except:
+            None
     if converted_pagesnr == 1:
-        for i in range(2):
-            converted_pagesnr = getNr(dv, currentURL)
-    if converted_pagesnr == 1:
-        print(converted_pagesnr, "page to process")
+        print("\n", converted_pagesnr, "page to process")
     else:
-        print(converted_pagesnr, "pages to process")
+        print("\n", converted_pagesnr, "pages to process")
 
     # get links
     with open("links.txt", mode="w") as linksFile:
@@ -68,7 +116,10 @@ def main():
         linksFile.close()
 
     # get links to variable
+    carLink = []
     with open("links.txt", mode="r") as linksFile:
+        #for line in linksFile:
+        #    carLink.append(line)
         carLink = linksFile.readlines()
         linksFile.close()
     os.remove("links.txt")
@@ -90,6 +141,8 @@ def main():
         None
     '''
     # output file name
+    carMake = input[0]
+    carModel = input[1]
     carMake = carMake.replace(" ", "-")
     carModel = carModel.replace(" ", "-")
     if carModel == "":

@@ -37,7 +37,7 @@ def startSearcher(dv):
 
 
 # ================== website processes ===================
-def firstSearch(dv, carMake, carModel):
+def firstSearch(dv, input):
     WebDriverWait(dv, 20).until(EC.visibility_of_all_elements_located)
     # ================== accept cookies
     time.sleep(3)
@@ -63,8 +63,8 @@ def firstSearch(dv, carMake, carModel):
     # manufacturer selector
     time.sleep(0.5)
     makeSelector = dv.find_element_by_id("selectMake1-ds")
-    for i in range(len(carMake)):
-        makeSelector.send_keys(carMake[i])
+    for i in range(len(input[0])):
+        makeSelector.send_keys(input[0][i])
     time.sleep(0.2)
     makeSelector.send_keys(Keys.ENTER)
 
@@ -78,22 +78,46 @@ def firstSearch(dv, carMake, carModel):
     # model selector
     time.sleep(0.7)
     modelSelector = dv.find_element_by_id("selectModel1-ds")
-    for i in range(len(carModel)):
-        modelSelector.send_keys(carModel[i])
+    for i in range(len(input[1])):
+        modelSelector.send_keys(input[1][i])
     time.sleep(0.2)
     modelSelector.send_keys(Keys.ENTER)
 
     # price range selector
-    # WIP
+    modelSelector = dv.find_element_by_id("minPrice")
+    for i in range(len(input[2])):
+        modelSelector.send_keys(input[2][i])
+
+    modelSelector = dv.find_element_by_id("maxPrice")
+    for i in range(len(input[3])):
+        modelSelector.send_keys(input[3][i])
 
     # registration years range selector
-    # WIP
+    modelSelector = dv.find_element_by_id("minFirstRegistrationDate")
+    for i in range(len(input[4])):
+        modelSelector.send_keys(input[4][i])
 
-    # kilometer range selector
-    # WIP
+    modelSelector = dv.find_element_by_id("maxFirstRegistrationDate")
+    for i in range(len(input[5])):
+        modelSelector.send_keys(input[5][i])
+
+    # mileage range selector
+    modelSelector = dv.find_element_by_id("minMileage")
+    for i in range(len(input[6])):
+        modelSelector.send_keys(input[6][i])
+
+    modelSelector = dv.find_element_by_id("maxMileage")
+    for i in range(len(input[7])):
+        modelSelector.send_keys(input[7][i])
 
     # power range selector
-    # WIP
+    modelSelector = dv.find_element_by_id("minPowerAsArray")
+    for i in range(len(input[8])):
+        modelSelector.send_keys(input[8][i])
+
+    modelSelector = dv.find_element_by_id("maxPowerAsArray")
+    for i in range(len(input[9])):
+        modelSelector.send_keys(input[9][i])
 
     # cubic capacity selector (in cm^3)
     # WIP
