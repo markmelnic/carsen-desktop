@@ -108,9 +108,11 @@ def getCarData(carLinkCurrentPage):
     if 'Neufahrzeug' in carReg:
         carReg = 2020
     elif 'Vorführfahrzeug' in carReg:
-        carReg = 4444
+        carReg = 4
+        #carReg = 'Demo Car'
     elif 'Jahreswagen' in carReg:
-        carReg = 3333
+        carReg = 3
+        #carReg = 'Employee Car'
         #Jahreswagen - employee car
     else:
         carReg = carReg[3 : ]
@@ -121,11 +123,13 @@ def getCarData(carLinkCurrentPage):
         carMiles = carMiles[ : -3]
         carMiles = carMiles.replace('.', '')
         carMiles = int(carMiles)
+    '''
+    else:
+        carMiles = 'Either not specified or 0'
+    '''
 
     # power
-    if carPower == 0:
-        pass
-    else:
+    if carPower != 0:
         carPower = carPower.split("(")[1]
         carPower = carPower[ : -4]
         carMiles = int(carMiles)
@@ -141,9 +145,33 @@ def getCarData(carLinkCurrentPage):
     else:
         print(carReg)
     if carMiles == 1414:
-        print("Either not specified or 0 km")
+        print("Either not specified or 0")
     else:
         print(carMiles, "km")
     '''
 
     return carTitle, carReg, carPrice, carMiles, carPower
+
+
+# get car price for checker
+def getCarPriceChecker(link):
+    headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
+    page = requests.get(link, headers = headers)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    # price
+    try:
+        carPrice = soup.find(class_ = "h3 rbt-prime-price").get_text()
+    except:
+        carPrice = '0'
+
+    # ================== format data
+    # car price first
+    carPrice = carPrice.replace('.', '')
+    if 'Brutto' in carPrice:
+        carPrice = carPrice[ : -11]
+    else:
+        carPrice = carPrice[ : -2]
+    carPrice = int(carPrice)
+
+    return carPrice
