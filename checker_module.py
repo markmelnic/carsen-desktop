@@ -7,6 +7,7 @@ import csv
 # existing searches checker
 def checker():
     print("\nChecker initiated")
+    changes = []
     # check for files to be checked
     with open("csvFilesIndex.txt", mode="r") as cFi:
         files = cFi.readlines()
@@ -34,29 +35,32 @@ def checker():
                 else:
                     print(i + 1, "ads checked")
 
-                try:
-                    newPrice = getCarPriceChecker(link)
-                    if(data[i + 1][3]) == newPrice:
+                newPrice = getCarPriceChecker(link)
+                if(data[i + 1][3]) == newPrice:
+                    continue
+                else:
+                    changedPrice = int(data[i + 1][3]) - newPrice
+                    changedPrice = -changedPrice
+                    '''
+                    try:
+                        data[i + 1].pop(6)
+                    except:
+                        None
+                    '''
+                    if changedPrice == 0:
                         continue
                     else:
-                        changedPrice = int(data[i + 1][3]) - newPrice
-                        changedPrice = -changedPrice
-                        '''
-                        try:
-                            data[i + 1].pop(6)
-                        except:
-                            None
-                        '''
-                        if changedPrice == 0:
-                            continue
-                        else:
-                            data[i + 1].append(changedPrice)
-                except:
-                    data.pop([i + 1])
-                    continue
+                        data[i + 1].append(changedPrice)
+                        changes.append(file)
+                        changes.append(i + 1)
+                        changes.append(changedPrice)
         
             csvWriter.writerows(data)
             csvFile.close()
         print(file, " checked\n")
+
+    print("Changes found:")
+    for i in range(int(len(changes) / 3)):
+        print("In file -", changes[i+(i*2)], "- at line ", changes[i+1+(i*2)], " by ", changes[i+2+(i*2)])
 
     print("Checker executed successfully")
