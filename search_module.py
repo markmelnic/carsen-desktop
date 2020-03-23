@@ -10,6 +10,7 @@ import threading
 
 
 def search():
+    print("\n\n\n/====================================\\")
     print("\nSearcher initiated")
     # ================== initialization ==================
     # inputs
@@ -133,6 +134,8 @@ def search():
             thread.join()
         print("All threads are finished")
         csvFile.close()
+    print("Search executed successfully")
+    print("\====================================/\n\n")
 
 
 # initial input function
