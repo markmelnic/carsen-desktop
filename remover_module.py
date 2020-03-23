@@ -4,7 +4,8 @@ import os
 
 # existing searches checker
 def remover():
-    print("\nRemover initiated")
+    print("\n\n\n/====================================\\")
+    print("Remover initiated")
     # open file to read lines
     with open("csvFilesIndex.txt", mode="r") as cFi:
         lines = cFi.readlines()
@@ -12,23 +13,34 @@ def remover():
 
     if len(lines) != 0:
         print("Currently active files:")
+        i = 1
         for line in lines:
-            print(line.strip("\n"))
+            print(str(i) + ".", line.strip("\n"))
+            i += 1
 
         print("\nWhich search would you like to remove?")
-        fileName = input("File Name (without .csv extension): ")
-        fileName = fileName + ".csv"
-
-        # rewrite file without removed filename
-        with open("csvFilesIndex.txt", "w") as cFi:
-            for line in lines:
-                if line.strip("\n") != fileName:
-                    cFi.write(line)
+        i = input("File number as appears in the list above: ")
         try:
-            os.remove(fileName)
-            print("File removed successfully")
+            i = int(i) - 1
+            fileName = lines[i]
+
+            # rewrite file without removed filename
+            with open("csvFilesIndex.txt", "w") as cFi:
+                for line in lines:
+                    if line != fileName:
+                        cFi.write(line)
+                    else:
+                        fileName = line.strip("\n")
+
+            try:
+                print(fileName)
+                os.remove(fileName)
+                print("File removed successfully")
+            except:
+                print("File inexistent")
         except:
-            print("File inexistent")
+            print("Execution canceled")
 
     else:
         print("No files to remove")
+    print("\====================================/\n\n")
