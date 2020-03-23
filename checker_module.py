@@ -1,5 +1,6 @@
 
 from bs4_module import getCarPriceChecker
+from backup_module import *
 
 import os
 import csv
@@ -11,7 +12,12 @@ import threading
 def checker():
     print("\n\n\n/====================================\\")
     print("Checker initiated")
+    cwd = os.getcwd()
 
+    print("Backing up")
+    backup()
+
+    os.chdir('./csv files')
     # check for files to be checked
     with open("csvFilesIndex.txt", mode="r") as cFi:
         files = cFi.readlines()
@@ -55,10 +61,14 @@ def checker():
         changesFile.close()
     os.remove("changesTemp.csv")
   
-    print("Changes found:")
-    for i in range(len(changes)):
-        print("In file -", changes[i][0], "- at line ", changes[i][1], " by ", changes[i][2])
+    if len(changes) == 0:
+        print("No changes found")
+    else:
+        print("Changes found:")
+        for i in range(len(changes)):
+            print("In file -", changes[i][0], "- at line ", changes[i][1], " by ", changes[i][2])
     
+    os.chdir(cwd)
     print("Checker executed successfully")
     print("\====================================/\n\n")
 

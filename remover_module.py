@@ -6,6 +6,9 @@ import os
 def remover():
     print("\n\n\n/====================================\\")
     print("Remover initiated")
+    cwd = os.getcwd()
+    os.chdir('./csv files')
+
     # open file to read lines
     with open("csvFilesIndex.txt", mode="r") as cFi:
         lines = cFi.readlines()
@@ -43,4 +46,6 @@ def remover():
 
     else:
         print("No files to remove")
+
+    os.chdir(cwd)
     print("\====================================/\n\n")

@@ -12,6 +12,9 @@ import threading
 def search():
     print("\n\n\n/====================================\\")
     print("\nSearcher initiated")
+    cwd = os.getcwd()
+    os.chdir('./csv files')
+
     # ================== initialization ==================
     # inputs
     input = inputFunct()
@@ -134,6 +137,8 @@ def search():
             thread.join()
         print("All threads are finished")
         csvFile.close()
+
+    os.chdir(cwd)
     print("Search executed successfully")
     print("\====================================/\n\n")
 

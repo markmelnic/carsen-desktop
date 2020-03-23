@@ -1,7 +1,9 @@
 
+import time
 import keyboard
 import msvcrt
 
+from backup_module import *
 from search_module import *
 from checker_module import *
 from remover_module import *
@@ -19,6 +21,7 @@ if __name__ == '__main__':
         print("|Press F1 to initiate a new search   |")
         print("|      F2 to check existing searches |")
         print("|      F3 to remove a search         |")
+        print("|      F4 to backup (recommended)    |")
         print("|      X to exit                     |")
         print("\====================================/", end = '')
         #print("     4 for stopping the program")
@@ -35,6 +38,10 @@ if __name__ == '__main__':
             # remover
             elif keyboard.is_pressed('F3'):
                 remover()
+                break
+            # remover
+            elif keyboard.is_pressed('F4'):
+                backup()
                 break
             # exit
             elif keyboard.is_pressed('x'):
