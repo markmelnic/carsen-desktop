@@ -129,35 +129,46 @@ def filesThread(threadNumber, file, changesWriter):
             # get new price and compare to existing one
             try:
                 newPrice = getCarPriceChecker(link)
-                if(data[i + 1][3]) == newPrice:
+                firstPrice = int(data[i + 1][3])
+                if(firstPrice) == newPrice:
                     continue
                 else:
-                    changedPrice = int(data[i + 1][3]) - newPrice
+                    changedPrice = firstPrice - newPrice
                     changedPrice = -changedPrice
 
                     # skip if price hasn't changed, else append the change
                     if not changedPrice == 0:
-                        dt = data[i + 1][-1]
-                        if not int(changedPrice) == int(dt):
-                            data[i + 1].append(changedPrice)
-                            changesWriter.writerow([file , i + 1, changedPrice])
+                        try:
+                            if not int(changedPrice) == int(data[i + 1][6]):
+                                if not firstPrice == newPrice:
+                                    data[i + 1].append(changedPrice)
+                                    changesWriter.writerow([file , i + 1, changedPrice])
+                        except:
+                            if not firstPrice == newPrice:
+                                data[i + 1].append(changedPrice)
+                                changesWriter.writerow([file , i + 1, changedPrice])
             except:
                 try:
                     for temp in range(2):
                         time.sleep(2)
                         newPrice = getCarPriceChecker(link)
-                        if(data[i + 1][3]) == newPrice:
+                        if(firstPrice) == newPrice:
                             continue
                         else:
-                            changedPrice = int(data[i + 1][3]) - newPrice
+                            changedPrice = firstPrice - newPrice
                             changedPrice = -changedPrice
 
                             # skip if price hasn't changed, else append the change
                             if not changedPrice == 0:
-                                dt = data[i + 1][-1]
-                                if not int(changedPrice) == int(dt):
-                                    data[i + 1].append(changedPrice)
-                                    changesWriter.writerow([file , i + 1, changedPrice])
+                                try:
+                                    if not int(changedPrice) == int(data[i + 1][6]):
+                                        if not firstPrice == newPrice:
+                                            data[i + 1].append(changedPrice)
+                                            changesWriter.writerow([file , i + 1, changedPrice])
+                                except:
+                                    if not firstPrice == newPrice:
+                                        data[i + 1].append(changedPrice)
+                                        changesWriter.writerow([file , i + 1, changedPrice])
                 except:
                     print("*ad removed*")
                     data.pop(i + 1)
