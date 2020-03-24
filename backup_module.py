@@ -9,7 +9,7 @@ def backup():
     #print("\n\n\n/====================================\\")
     print("\nBackup initiated")
     time.sleep(2)
-    cwd = os.getcwd()
+    maindir = os.getcwd()
     os.chdir('./csv files')
 
     # check for files to be backed up
@@ -19,7 +19,7 @@ def backup():
     print(len(files), "files found")
 
     # change working directory and get the new one
-    os.chdir(cwd)
+    os.chdir(maindir)
     os.chdir('./backup')
     date = datetime.datetime.now()
     date = str(date)
@@ -31,7 +31,7 @@ def backup():
         print("\====================================/\n\n")
         return
     else:
-        os.chdir(cwd)
+        os.chdir(maindir)
         os.chdir('./csv files')
         path = "../backup/" + date
         backup = shutil.copy("csvFilesIndex.txt", path)
@@ -39,7 +39,7 @@ def backup():
             file = file.strip("\n")
             backup = shutil.copy(file, path)
 
-    os.chdir(cwd)
+    os.chdir(maindir)
     time.sleep(2)
     print("Backed up successfully\n")
     #print("\====================================/\n\n")

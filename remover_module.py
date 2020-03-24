@@ -6,7 +6,7 @@ import os
 def remover():
     print("\n\n\n/====================================\\")
     print("Remover initiated")
-    cwd = os.getcwd()
+    maindir = os.getcwd()
     os.chdir('./csv files')
 
     # open file to read lines
@@ -47,5 +47,5 @@ def remover():
     else:
         print("No files to remove")
 
-    os.chdir(cwd)
+    os.chdir(maindir)
     print("\====================================/\n\n")
