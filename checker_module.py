@@ -9,22 +9,34 @@ import threading
 
 
 # existing searches checker
-def checker():
+def checker(maindir):
     print("\n\n\n/====================================\\")
     print("Checker initiated")
-    maindir = os.getcwd()
+    os.chdir(maindir)
+    os.chdir('./csv files')
 
     print("Backing up")
-    backup()
+    date = backup(maindir)
 
     os.chdir('./csv files')
     # check for files to be checked
-    with open("csvFilesIndex.txt", mode="r") as cFi:
-        files = cFi.readlines()
-        cFi.close()
-    print(len(files), "files found")
+    try:
+        with open("csvFilesIndex.txt", mode="r") as cFi:
+            files = cFi.readlines()
+            cFi.close()
+
+        if len(files) == 1:
+            print(len(files), "file found")
+        else:
+            print(len(files), "files found")
+    except:
+        os.chdir(maindir)
+        print("No files to found")
+        print("\====================================/\n\n")
+        return
 
     if len(files) == 0:
+        os.chdir(maindir)
         print("Nothing to check")
         print("\====================================/\n\n")
         return
@@ -61,11 +73,11 @@ def checker():
         changesFile.close()
     os.remove("changesTemp.csv")
   
+    ind = 0
     if len(changes) == 0:
         print("No changes found")
     else:
         print("Changes found:")
-        ind = 0
         for i in range(len(changes)):
             try:
                 if (int(changes[i][0]) == 0) and (int(changes[i][1]) == 0) and (int(changes[i][2]) == 0):
@@ -79,6 +91,10 @@ def checker():
         print(ind, "ads removed")
     
     os.chdir(maindir)
+    os.chdir('./backup')
+    shutil.rmtree(date)
+    os.chdir(maindir)
+
     print("Checker executed successfully")
     print("\====================================/\n\n")
 
@@ -127,19 +143,21 @@ def filesThread(threadNumber, file, changesWriter):
                             changesWriter.writerow([file , i + 1, changedPrice])
             except:
                 try:
-                    newPrice = getCarPriceChecker(link)
-                    if(data[i + 1][3]) == newPrice:
-                        continue
-                    else:
-                        changedPrice = int(data[i + 1][3]) - newPrice
-                        changedPrice = -changedPrice
+                    for temp in range(2):
+                        time.sleep(2)
+                        newPrice = getCarPriceChecker(link)
+                        if(data[i + 1][3]) == newPrice:
+                            continue
+                        else:
+                            changedPrice = int(data[i + 1][3]) - newPrice
+                            changedPrice = -changedPrice
 
-                        # skip if price hasn't changed, else append the change
-                        if not changedPrice == 0:
-                            dt = data[i + 1][-1]
-                            if not int(changedPrice) == int(dt):
-                                data[i + 1].append(changedPrice)
-                                changesWriter.writerow([file , i + 1, changedPrice])
+                            # skip if price hasn't changed, else append the change
+                            if not changedPrice == 0:
+                                dt = data[i + 1][-1]
+                                if not int(changedPrice) == int(dt):
+                                    data[i + 1].append(changedPrice)
+                                    changesWriter.writerow([file , i + 1, changedPrice])
                 except:
                     print("*ad removed*")
                     data.pop(i + 1)

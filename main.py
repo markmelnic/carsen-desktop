@@ -11,6 +11,7 @@ from remover_module import *
 
 # main function
 if __name__ == '__main__':
+    maindir = os.getcwd()
     x = 0
     while True:
         if x == 1:
@@ -29,19 +30,19 @@ if __name__ == '__main__':
             msvcrt.getch()
             # searcher
             if keyboard.is_pressed('F1'):
-                search()
+                search(maindir)
                 break
             # checker
             elif keyboard.is_pressed('F2'):
-                checker()
+                checker(maindir)
                 break
             # remover
             elif keyboard.is_pressed('F3'):
-                remover()
+                remover(maindir)
                 break
             # remover
             elif keyboard.is_pressed('F4'):
-                backup()
+                backup(maindir)
                 break
             # exit
             elif keyboard.is_pressed('x'):

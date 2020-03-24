@@ -9,10 +9,10 @@ import time
 import threading
 
 
-def search():
+def search(maindir):
     print("\n\n\n/====================================\\")
     print("\nSearcher initiated")
-    maindir = os.getcwd()
+    os.chdir(maindir)
     os.chdir('./csv files')
 
     # ================== initialization ==================

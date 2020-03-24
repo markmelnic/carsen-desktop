@@ -5,41 +5,53 @@ import shutil
 import datetime
 
 
-def backup():
+def backup(maindir):
     #print("\n\n\n/====================================\\")
     print("\nBackup initiated")
     time.sleep(2)
-    maindir = os.getcwd()
+    os.chdir(maindir)
     os.chdir('./csv files')
 
     # check for files to be backed up
-    with open("csvFilesIndex.txt", mode="r") as cFi:
-        files = cFi.readlines()
-        cFi.close()
-    print(len(files), "files found")
+    try:
+        with open("csvFilesIndex.txt", mode="r") as cFi:
+            files = cFi.readlines()
+            cFi.close()
 
-    # change working directory and get the new one
-    os.chdir(maindir)
-    os.chdir('./backup')
-    date = datetime.datetime.now()
-    date = str(date)
-    date = date.replace(':', '.')
-    os.mkdir(str(date))
+        if len(files) == 1:
+            print(len(files), "file found")
+        else:
+            print(len(files), "files found")
 
-    if len(files) == 0:
-        print("Nothing to backup")
-        print("\====================================/\n\n")
-        return
-    else:
+        # change working directory and get the new one
         os.chdir(maindir)
-        os.chdir('./csv files')
-        path = "../backup/" + date
-        backup = shutil.copy("csvFilesIndex.txt", path)
-        for file in files:
-            file = file.strip("\n")
-            backup = shutil.copy(file, path)
+        os.chdir('./backup')
+        date = datetime.datetime.now()
+        date = str(date)
+        date = date.replace(':', '.')
+        os.mkdir(str(date))
 
+        if len(files) == 0:
+            os.chdir(maindir)
+            print("Nothing to backup\n")
+            #print("\====================================/\n\n")
+            return
+        else:
+            os.chdir(maindir)
+            os.chdir('./csv files')
+            path = "../backup/" + date
+            backup = shutil.copy("csvFilesIndex.txt", path)
+            for file in files:
+                file = file.strip("\n")
+                backup = shutil.copy(file, path)
+
+    except:
+        print("Nothing to backup\n")
+        os.chdir(maindir)
+        return
+    
     os.chdir(maindir)
     time.sleep(2)
     print("Backed up successfully\n")
+    return date
     #print("\====================================/\n\n")

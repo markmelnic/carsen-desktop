@@ -3,16 +3,22 @@ import os
 
 
 # existing searches checker
-def remover():
+def remover(maindir):
     print("\n\n\n/====================================\\")
     print("Remover initiated")
-    maindir = os.getcwd()
+    os.chdir(maindir)
     os.chdir('./csv files')
 
     # open file to read lines
-    with open("csvFilesIndex.txt", mode="r") as cFi:
-        lines = cFi.readlines()
-        cFi.close()
+    try:
+        with open("csvFilesIndex.txt", mode="r") as cFi:
+            lines = cFi.readlines()
+            cFi.close()
+    except:
+        print("No files to remove")
+        os.chdir(maindir)
+        print("\====================================/\n\n")
+        return
 
     if len(lines) != 0:
         print("Currently active files:")
