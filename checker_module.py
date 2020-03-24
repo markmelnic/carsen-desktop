@@ -12,7 +12,7 @@ import threading
 def checker():
     print("\n\n\n/====================================\\")
     print("Checker initiated")
-    cwd = os.getcwd()
+    maindir = os.getcwd()
 
     print("Backing up")
     backup()
@@ -65,10 +65,20 @@ def checker():
         print("No changes found")
     else:
         print("Changes found:")
+        ind = 0
         for i in range(len(changes)):
-            print("In file -", changes[i][0], "- at line ", changes[i][1], " by ", changes[i][2])
+            try:
+                if (int(changes[i][0]) == 0) and (int(changes[i][1]) == 0) and (int(changes[i][2]) == 0):
+                    ind += 1
+                else:
+                    print("In file -", changes[i][0], "- at line ", changes[i][1], " by ", changes[i][2])
+            except:
+                print("In file -", changes[i][0], "- at line ", changes[i][1], " by ", changes[i][2])
+
+    if not ind == 0:
+        print(ind, "ads removed")
     
-    os.chdir(cwd)
+    os.chdir(maindir)
     print("Checker executed successfully")
     print("\====================================/\n\n")
 
@@ -101,21 +111,40 @@ def filesThread(threadNumber, file, changesWriter):
                 print(file, "-", i + 1, "ads checked")
 
             # get new price and compare to existing one
-            newPrice = getCarPriceChecker(link)
-            if(data[i + 1][3]) == newPrice:
-                continue
-            else:
-                changedPrice = int(data[i + 1][3]) - newPrice
-                changedPrice = -changedPrice
-
-                # skip if price hasn't changed, else append the change
-                if changedPrice == 0:
+            try:
+                newPrice = getCarPriceChecker(link)
+                if(data[i + 1][3]) == newPrice:
                     continue
                 else:
-                    dt = data[i + 1][-1]
-                    if not int(changedPrice) == int(dt):
-                        data[i + 1].append(changedPrice)
-                        changesWriter.writerow([file , i + 1, changedPrice])
+                    changedPrice = int(data[i + 1][3]) - newPrice
+                    changedPrice = -changedPrice
+
+                    # skip if price hasn't changed, else append the change
+                    if not changedPrice == 0:
+                        dt = data[i + 1][-1]
+                        if not int(changedPrice) == int(dt):
+                            data[i + 1].append(changedPrice)
+                            changesWriter.writerow([file , i + 1, changedPrice])
+            except:
+                try:
+                    newPrice = getCarPriceChecker(link)
+                    if(data[i + 1][3]) == newPrice:
+                        continue
+                    else:
+                        changedPrice = int(data[i + 1][3]) - newPrice
+                        changedPrice = -changedPrice
+
+                        # skip if price hasn't changed, else append the change
+                        if not changedPrice == 0:
+                            dt = data[i + 1][-1]
+                            if not int(changedPrice) == int(dt):
+                                data[i + 1].append(changedPrice)
+                                changesWriter.writerow([file , i + 1, changedPrice])
+                except:
+                    print("*ad removed*")
+                    data.pop(i + 1)
+                    i -= 1
+                    changesWriter.writerow([0 , 0, 0])
 
         # write data back to file
         csvWriter.writerows(data)
