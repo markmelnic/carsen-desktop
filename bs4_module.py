@@ -18,6 +18,8 @@ def getNr(currentURL):
         # checker
         checker = soup.find(class_ = "h2 u-text-orange rbt-result-list-headline").get_text()
         checker = checker.split(" ")[0]
+        checker = checker.replace('.', '')
+        checker = checker.replace(' ', '')
         checker = int(checker)
         # pages number
         pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")

@@ -17,12 +17,12 @@ def search(maindir):
 
     # ================== initialization ==================
     # inputs
-    input = inputFunct()
+    firstinput = inputFunct()
 
     # program start
     dv = boot()
     startSearcher(dv)
-    firstSearch(dv, input)
+    firstSearch(dv, firstinput)
 
     currentURL = curURL(dv)
     getNumber = getNr(currentURL)
@@ -38,7 +38,7 @@ def search(maindir):
         # retry
         dv = boot()
         startSearcher(dv)
-        firstSearch(dv, input)
+        firstSearch(dv, firstinput)
         currentURL = curURL(dv)
         getNumber = getNr(currentURL)
         try:
@@ -53,8 +53,8 @@ def search(maindir):
         print("\n", converted_pagesnr, "pages to process")
 
     # create file name
-    carMake = input[0]
-    carModel = input[1]
+    carMake = firstinput[0]
+    carModel = firstinput[1]
     carMake = carMake.replace(" ", "-")
     carModel = carModel.replace(" ", "-")
     if carModel == "":
@@ -95,7 +95,6 @@ def search(maindir):
         carLink = linksFile.readlines()
         linksFile.close()
     os.remove(linksFileName)
-    #os.remove("links.txt")
 
     if len(carLink) == 0:
         print("No ads to process\n--------------------")
@@ -104,6 +103,25 @@ def search(maindir):
     else:
         print(len(carLink), "ads to process\n--------------------")
 
+    # search parameters file
+    os.chdir('./search parameters')
+
+    if carModel == "":
+        paramsFileName = "params_" + carMake + ".txt"
+    else:
+        paramsFileName = "params_" + carMake + "_" + carModel + ".txt"
+
+    with open(paramsFileName, mode="w") as paramsFile:
+        paramsFile.write("%s\n" % firstinput[0])
+        paramsFile.write("%s\n" % firstinput[1])
+        paramsFile.write(firstinput[2] + "-" + firstinput[3] + "\n")
+        paramsFile.write(firstinput[4] + "-" + firstinput[5] + "\n")
+        paramsFile.write(firstinput[6] + "-" + firstinput[7] + "\n")
+        paramsFile.write(firstinput[8] + "-" + firstinput[9] + "\n")
+        paramsFile.close()
+
+    os.chdir(maindir)
+    os.chdir('./csv files')
     # output file name
     if carModel == "":
         fileName = carMake + ".csv"
@@ -189,3 +207,88 @@ def getData(threadNumber, carLink, csvWriter):
     data = getCarData(carLink)
     csvWriter.writerow([carLink , data[0], data[1], data[2], data[3], data[4]])
     print(threadNumber, "executed in", time.time() - time_started)
+
+
+'''
+# links for checker module
+def search(maindir):
+    print("\n\n\n/====================================\\")
+    print("\nSearcher initiated")
+    os.chdir(maindir)
+    os.chdir('./csv files')
+
+    # ================== initialization ==================
+    # inputs
+    firstinput = inputFunct()
+
+    # program start
+    dv = boot()
+    startSearcher(dv)
+    firstSearch(dv, firstinput)
+
+    currentURL = curURL(dv)
+    getNumber = getNr(currentURL)
+    try:
+        converted_pagesnr = getNumber[0]
+        adsCheck = getNumber[1]
+    except:
+        converted_pagesnr = getNumber
+        adsCheck = 21
+
+    if (converted_pagesnr == 1) and (adsCheck > 20):
+        print("Possible error, trying again...")
+        # retry
+        dv = boot()
+        startSearcher(dv)
+        firstSearch(dv, firstinput)
+        currentURL = curURL(dv)
+        getNumber = getNr(currentURL)
+        try:
+            converted_pagesnr = getNumber[0]
+            adsCheck = getNumber[1]
+        except:
+            None
+
+    if converted_pagesnr == 1:
+        print("\n", converted_pagesnr, "page to process")
+    else:
+        print("\n", converted_pagesnr, "pages to process")
+
+    # create file name
+    carMake = firstinput[0]
+    carModel = firstinput[1]
+    carMake = carMake.replace(" ", "-")
+    carModel = carModel.replace(" ", "-")
+    if carModel == "":
+        linksFileName = carMake + ".txt"
+    else:
+        linksFileName = carMake + "_" + carModel + ".txt"
+
+    # get links
+    with open(linksFileName, mode="w") as linksFile:
+        threads = []
+        for currentPage in range(converted_pagesnr):
+            if currentPage == 0:
+                currentURL = curURL(dv)
+                killd(dv)
+            threadNumber = "Thread " + str(currentPage)
+            thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
+            threads.append(thread)
+            thread.start()
+
+            # limit parallel threads number
+            if len(threads) == 4:
+                for thread in threads:
+                    thread.join()
+                threads = []
+            currentURL = nextPage(dv, currentURL, currentPage)
+
+        # wait for all threads to finish execution
+        for thread in threads:
+            thread.join()
+        print("All threads are finished")
+        linksFile.close()
+
+    # get links to variable
+    carLink = []
+'''
