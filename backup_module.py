@@ -33,6 +33,9 @@ def backup(maindir):
 
         if len(files) == 0:
             os.chdir(maindir)
+            os.chdir('./backup')
+            shutil.rmtree(date)
+            os.chdir(maindir)
             print("Nothing to backup\n")
             #print("\====================================/\n\n")
             return
@@ -43,7 +46,10 @@ def backup(maindir):
             backup = shutil.copy("csvFilesIndex.txt", path)
             for file in files:
                 file = file.strip("\n")
-                backup = shutil.copy(file, path)
+                try:
+                    backup = shutil.copy(file, path)
+                except:
+                    print("File not found")
 
     except:
         print("Nothing to backup\n")

@@ -5,6 +5,7 @@ from backup_module import *
 import os
 import csv
 import time
+import shutil
 import threading
 
 
@@ -104,79 +105,88 @@ def filesThread(threadNumber, file, changesWriter):
     time_started = time.time()
     print(threadNumber, "started at", time_started)
 
-    # read file contents
-    with open(file, mode="r", newline='') as csvFile:
-        csvReader = csv.reader(csvFile)
-        data = list(csvReader)
-        csvFile.close()
+    try:
+        # read file contents
+        with open(file, mode="r", newline='') as csvFile:
+            csvReader = csv.reader(csvFile)
+            data = list(csvReader)
+            csvFile.close()
 
-    # process every link
-    with open(file, mode="w", newline='') as csvFile:
-        csvWriter = csv.writer(csvFile)
+        # get all links
         links = []
         for i in range(len(data) - 1):
-            links.append(data[i + 1][0])
-
-        # check every link
-        i = -1
-        for link in links:
-            i += 1
-            if i == 0:
-                print(file, "-", i + 1, "ad checked")
+            if not data[i + 1][0] in links:
+                links.append(data[i + 1][0])
             else:
-                print(file, "-", i + 1, "ads checked")
+                print("Duplicate not included")
 
-            # get new price and compare to existing one
-            try:
-                newPrice = getCarPriceChecker(link)
-                firstPrice = int(data[i + 1][3])
-                if(firstPrice) == newPrice:
-                    continue
+        '''
+        #remove duplicate links
+        print("Trying to remove duplicates")
+        links_temp = links
+        links = [] 
+        for link in links_temp: 
+            if not link in links: 
+                links.append(link)
+            else:
+                print("Duplicate removed")
+        '''
+
+        # process every link
+        with open(file, mode="w", newline='') as csvFile:
+            csvWriter = csv.writer(csvFile)
+
+            # check every link
+            i = -1
+            for link in links:
+                i += 1
+                if i == 0:
+                    print(file, "-", i + 1, "ad checked")
                 else:
-                    changedPrice = firstPrice - newPrice
-                    changedPrice = -changedPrice
+                    print(file, "-", i + 1, "ads checked")
 
-                    # skip if price hasn't changed, else append the change
-                    if not changedPrice == 0:
-                        try:
-                            if not int(changedPrice) == int(data[i + 1][6]):
+                # get new price and compare to existing one
+                try:
+                    newPrice = getCarPriceChecker(link)
+                    firstPrice = int(data[i + 1][3])
+                    if(firstPrice) == newPrice:
+                        continue
+                    else:
+                        changedPrice = firstPrice - newPrice
+                        changedPrice = -changedPrice
+
+                        # skip if price hasn't changed, else append the change
+                        if not changedPrice == 0:
+                            if not changedPrice == int(data[i + 1][-1]):
                                 if not firstPrice == newPrice:
                                     data[i + 1].append(changedPrice)
                                     changesWriter.writerow([file , i + 1, changedPrice])
-                        except:
-                            if not firstPrice == newPrice:
-                                data[i + 1].append(changedPrice)
-                                changesWriter.writerow([file , i + 1, changedPrice])
-            except:
-                try:
-                    for temp in range(2):
-                        time.sleep(2)
-                        newPrice = getCarPriceChecker(link)
-                        if(firstPrice) == newPrice:
-                            continue
-                        else:
-                            changedPrice = firstPrice - newPrice
-                            changedPrice = -changedPrice
+                except:
+                    try:
+                        for temp in range(2):
+                            time.sleep(2)
+                            newPrice = getCarPriceChecker(link)
+                            if(firstPrice) == newPrice:
+                                continue
+                            else:
+                                changedPrice = firstPrice - newPrice
+                                changedPrice = -changedPrice
 
-                            # skip if price hasn't changed, else append the change
-                            if not changedPrice == 0:
-                                try:
-                                    if not int(changedPrice) == int(data[i + 1][6]):
-                                        if not firstPrice == newPrice:
-                                            data[i + 1].append(changedPrice)
-                                            changesWriter.writerow([file , i + 1, changedPrice])
-                                except:
+                                # skip if price hasn't changed, else append the change
+                                if not changedPrice == 0:
                                     if not firstPrice == newPrice:
                                         data[i + 1].append(changedPrice)
                                         changesWriter.writerow([file , i + 1, changedPrice])
-                except:
-                    print("*ad removed*")
-                    data.pop(i + 1)
-                    i -= 1
-                    changesWriter.writerow([0 , 0, 0])
+                    except:
+                        print("*ad removed*")
+                        data.pop(i + 1)
+                        i -= 1
+                        changesWriter.writerow([0 , 0, 0])
 
-        # write data back to file
-        csvWriter.writerows(data)
-        csvFile.close()
-    print(file, " checked\n")
-    print(threadNumber, "executed in", time.time() - time_started)
+            # write data back to file
+            csvWriter.writerows(data)
+            csvFile.close()
+        print(file, " checked\n")
+        print(threadNumber, "executed in", time.time() - time_started)
+    except:
+        print(file, " checked\n")
