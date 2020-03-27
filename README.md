@@ -26,7 +26,7 @@ Not all come standart with python, so if you are using the 1st installation meth
 ## Running the program (and it's features)
 In the terminal you will be presented with this little menu
 
-![Imgur](https://imgur.com/vTT6Xd0)
+![Imgur](https://i.imgur.com/PzQZO8Rm.png)
 
 #### Searching
 Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
