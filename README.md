@@ -20,4 +20,4 @@ Main Folder
 
 ## Running the program
 In the console you will be presented with this menu
-![Image of Terminal](https://imgur.com/PzQZO8R)
+![Imgur](https://i.imgur.com/PzQZO8R.png)
