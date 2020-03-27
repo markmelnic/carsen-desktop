@@ -8,10 +8,10 @@ Built in python 3.8. Essential packages used:
  * threading
  * csv
 
-Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method 2.
+Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method number 2.
 
 ## Installation
-#### 1st method
+#### First method
 1. clone all github files into a folder
 2. inside that, create more folders to follow the structure:
 
@@ -19,7 +19,7 @@ Not all come standart with python, so if you are using the 1st installation meth
     
 3. Run the program from main.py
 
-#### 2nd method
+#### Second method
 1. Get the installer here https://www.dropbox.com/s/x3qm4zkv3mb1pd1/Mobile.de%20Bot%20v.Alpha.0.7.5.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
