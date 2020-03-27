@@ -15,6 +15,7 @@ Not all come standart with python, so if you are using the 1st installation meth
 #### 1st method
 1. clone all github files into a folder
 2. inside that, create more folders to follow the structure:
+
 Main Folder
  |
  +-- backup
@@ -22,6 +23,7 @@ Main Folder
  +-- csv files
     |  
     +-- search parameters
+    
 3. Run the program from main.py
 
 #### 2nd method
