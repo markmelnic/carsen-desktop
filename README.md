@@ -17,11 +17,17 @@ Not all come standart with python, so if you are using the 1st installation meth
 2. inside that, create more folders to follow the structure:
 
 Main Folder
+
  |
+ 
  +-- backup
+ 
  |    
+ 
  +-- csv files
+ 
     |  
+    
     +-- search parameters
     
 3. Run the program from main.py
