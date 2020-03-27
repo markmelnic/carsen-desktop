@@ -18,11 +18,11 @@ Not all come standart with python, so if you are using the 1st installation meth
 
 Main Folder
  |
- +-- backup
+ |-- backup
  |    
- +-- csv files
+ |-- csv files
     |  
-    +-- search parameters
+    |-- search parameters
     
 3. Run the program from main.py
 
