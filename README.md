@@ -2,7 +2,7 @@
 A terminal based python bot for scraping and tracking mobile.de. Get all data for a specific car make and model directly into a spreadsheet, where you can analyze it. Run the checker to see whether the price has changed since the first search.
 
 ## Some technical aspects\
-Build in python 3.8;. Essential packages used:
+Built in python 3.8. Essential packages used:
  * selenium
  * bs4
  * threading
