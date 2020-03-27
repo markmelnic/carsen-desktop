@@ -3,8 +3,8 @@ A terminal based python bot for scraping and tracking mobile.de. Get all data fo
 
 ## Installation
 ### 1st method
-1. clone all github files to a folder
-2. inside that folder, add more folders to follow the structure:
+1. clone all github files into a folder
+2. inside that, create more folders to follow the structure:
 Main Folder
  |
  +-- backup
@@ -19,8 +19,8 @@ Main Folder
 2. Install the app and run "Mobile.de Bot.exe" 
 
 ## Running the program (and it's features)
-In the console you will be presented with this menu
-![Imgur](https://i.imgur.com/PzQZO8Rl.png)
+In the terminal you will be presented with this little menu
+![Imgur](https://i.imgur.com/PzQZO8Rm.png)
 
 ### Searching
 Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
