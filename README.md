@@ -53,4 +53,5 @@ Press F3 to run and insert the number corresponding to the file you'd like to re
 #### Backup
 Pretty self explanatory, backs up all .csv files to a directory with your current timestamp in the backup folder. The checking function does it by default in case something goes wrong, but you still may want to use it from stability concerns.
 
-## Thank you for taking a look at my work! Throw an eye on my website https://markmelnic.com/ to find some of my other projects, or for no reason really :D. Cheers!
+
+## Thank you for taking a look at my work! Throw an eye on my website https://markmelnic.com/ to find some of my other projects, or for no reason really :D Cheers!
