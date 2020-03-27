@@ -20,7 +20,7 @@ Main Folder
 
 ## Running the program (and it's features)
 In the console you will be presented with this menu
-![Imgur](https://i.imgur.com/PzQZO8Rt.png)
+![Imgur](https://i.imgur.com/PzQZO8Rm.png)
 
 ### Searching
 Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
@@ -28,15 +28,15 @@ Now that searching is done, find the outpit file in the "csv files" directory.
 
 ### Check
 To check whether there are any changes to the se3arches indexed previously, press F2. Once the checker has been executed, the searches can be found in the .csv files themselves, or will be presented as following in the terminal window
-![Imgur](https://i.imgur.com/ieHLcp8t.png)
+![Imgur](https://i.imgur.com/ieHLcp8m.png)
 If any of the ads have disappeared from the site you will see a "X ads removed" line at the end of the changes list.
 
 ### Remove
 Recommended to be used instead of just deleting the corresponding .csv file.
 Press F3 to run and input the number corresponding to the file you'd like to remove. This will also diable checking this file for price updates.
-![Imgur](https://i.imgur.com/jEVXJqSt.png)
+![Imgur](https://i.imgur.com/jEVXJqSm.png)
 
 ### Backup
 Pretty self explanatory, backs up all .csv files to a directory with current timestamp in the backup folder. The checking function does it by default in case something goes wrong, but you still may want to use it for stability concerns.
 
-## Thanks you for taking a look at my work! Throw a look over my website https://markmelnic.com/ to find some of my other projects, or for no reason really :D. Cheers!
+## Thanks you for taking a look at my work! Throw an eye on my website https://markmelnic.com/ to find some of my other projects, or for no reason really :D. Cheers!
