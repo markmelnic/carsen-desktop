@@ -15,10 +15,7 @@ Not all come standart with python, so if you are using the 1st installation meth
 1. clone all github files into a folder
 2. inside that, create more folders to follow the structure:
 
-- main Folder
-  - backup
-  - csv files
-    - search parameters
+![Imgur](https://i.imgur.com/CZhcE5p.png)
     
 3. Run the program from main.py
 
