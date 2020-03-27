@@ -20,7 +20,7 @@ Main Folder
 
 ## Running the program (and it's features)
 In the console you will be presented with this menu
-![Imgur](https://i.imgur.com/PzQZO8Rm.png)
+![Imgur](https://i.imgur.com/PzQZO8Rl.png)
 
 ### Searching
 Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
