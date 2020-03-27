@@ -30,6 +30,7 @@ Main Folder
 
 ## Running the program (and it's features)
 In the terminal you will be presented with this little menu
+
 ![Imgur](https://i.imgur.com/PzQZO8Rm.png)
 
 #### Searching
@@ -38,12 +39,15 @@ Now that your search has been indexed and executed, find the output file in the 
 
 #### Check
 To see if there are any changes to indexed searches, press F2. Once the checker has been executed, the changes can be found in the .csv files themselves, or will be presented in the terminal window as following
+
 ![Imgur](https://i.imgur.com/ieHLcp8m.png)
+
 If any of the indexed ads have disappeared from the site you will see a "X ads removed" line at the end of the changes list.
 
 #### Remove
 Recommended to be used instead of just deleting the corresponding .csv file.
 Press F3 to run and insert the number corresponding to the file you'd like to remove. This will also diable checking this file for price updates.
+
 ![Imgur](https://i.imgur.com/jEVXJqSm.png)
 
 #### Backup
