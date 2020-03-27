@@ -8,6 +8,7 @@ A terminal based python bot for scraping and tracking mobile.de. Get all data fo
  * bs4
  * threading
  * csv
+
 Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method 2.
 
 ## Installation
