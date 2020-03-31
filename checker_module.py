@@ -55,13 +55,8 @@ def checker(maindir):
                 threads.append(thread)
                 thread.start()
                 i += 1
-                # limit parallel threads number
-                '''
-                if len(threads) == 10:
-                    for thread in threads:
-                        thread.join()
-                    threads = []
-                '''
+
+            # wait for all threads to finish
             for thread in threads:
                 thread.join()
             print("All threads are finished")
@@ -91,6 +86,7 @@ def checker(maindir):
     if not ind == 0:
         print(ind, "ads removed")
     
+    # remove backup folder if execution was successful
     os.chdir(maindir)
     os.chdir('./backup')
     shutil.rmtree(date)

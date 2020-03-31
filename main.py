@@ -1,7 +1,7 @@
 
 import time
-import keyboard
 import msvcrt
+import keyboard
 
 from backup_module import *
 from search_module import *
