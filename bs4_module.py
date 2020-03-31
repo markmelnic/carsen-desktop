@@ -9,10 +9,7 @@ def getNr(currentURL):
     headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
-    '''
-    for i in range(5):
-        time.sleep(0.8)
-    '''
+
     time.sleep(2)
     try:
         # checker
@@ -124,32 +121,12 @@ def getCarData(carLinkCurrentPage):
         carMiles = carMiles[ : -3]
         carMiles = carMiles.replace('.', '')
         carMiles = int(carMiles)
-    '''
-    else:
-        carMiles = 'Either not specified or 0'
-    '''
 
     # power
     if carPower != 0:
         carPower = carPower.split("(")[1]
         carPower = carPower[ : -4]
         carMiles = int(carMiles)
-
-    '''
-    # ================== neat print all values
-    print(carTitle)
-    print(carPrice, "€")
-    if carReg == 4444:
-        print("Demo Car")
-    elif carReg == 3333:
-        print("Employee Car")
-    else:
-        print(carReg)
-    if carMiles == 1414:
-        print("Either not specified or 0")
-    else:
-        print(carMiles, "km")
-    '''
 
     return carTitle, carReg, carPrice, carMiles, carPower
 

@@ -68,13 +68,6 @@ def firstSearch(dv, input):
     time.sleep(0.2)
     makeSelector.send_keys(Keys.ENTER)
 
-    '''
-    # select any
-    makeSelector = dv.find_element_by_id("selectModel1-ds")
-    for i in range(len(any)):
-        makeSelector.send_keys(any[i])
-    time.sleep(0.2)
-    '''
     # model selector
     time.sleep(0.7)
     modelSelector = dv.find_element_by_id("selectModel1-ds")
