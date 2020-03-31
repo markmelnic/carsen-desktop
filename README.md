@@ -1,30 +1,25 @@
 # Mobile.de Bot
 A terminal based python bot for scraping and tracking mobile.de. Get all data for a specific car make and model directly into a spreadsheet, where you can analyze it. Run the checker to see whether the price has changed since the first search.
 
-## Some technical aspects
-* build in python 3.8
-* essential packages used:
+## Some technical aspects\
+Built in python 3.8. Essential packages used:
  * selenium
  * bs4
  * threading
  * csv
 
-Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method 2.
+Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method number 2.
 
 ## Installation
-#### 1st method
+#### First method
 1. clone all github files into a folder
 2. inside that, create more folders to follow the structure:
-Main Folder
- |
- +-- backup
- |    
- +-- csv files
-    |  
-    +-- search parameters
+
+![Imgur](https://i.imgur.com/vTT6Xd0m.png)
+    
 3. Run the program from main.py
 
-#### 2nd method
+#### Second method
 1. Get the installer here https://www.dropbox.com/s/x3qm4zkv3mb1pd1/Mobile.de%20Bot%20v.Alpha.0.7.5.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
