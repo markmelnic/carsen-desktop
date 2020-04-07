@@ -1,7 +1,7 @@
 # Mobile.de Bot
 A terminal based python bot for scraping and tracking mobile.de. Get all data for a specific car make and model directly into a spreadsheet, where you can analyze it. Run the checker to see whether the price has changed since the first search.
 
-## Some technical aspects\
+## Some technical aspects
 Built in python 3.8. Essential packages used:
  * selenium
  * bs4
@@ -31,6 +31,8 @@ In the terminal you will be presented with this little menu
 #### Searching
 Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
 Now that your search has been indexed and executed, find the output file in the "csv files" directory.
+
+Alpha 0.8 update: Now every ad is being assigned a "how good of a deal is this" score. Most accurate with cars of the same or ± 1 registration year. In Excel (presumably) sort all cells by the score tab from highest to lowest, and find the best deals at the top. I have tested this feature mostly with Lexus vehicles with registration years from 2016 to 2020 and it works like a charm.
 
 #### Check
 To see if there are any changes to indexed searches, press F2. Once the checker has been executed, the changes can be found in the .csv files themselves, or will be presented in the terminal window as following
