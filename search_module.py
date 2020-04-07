@@ -135,7 +135,7 @@ def search(maindir):
 
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
-        csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Price change since first search"])
+        csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score", "Price change since first search"])
         # start threading for getting data
         threads = []
         for i in range(len(carLink)):
@@ -155,6 +155,9 @@ def search(maindir):
             thread.join()
         print("All threads are finished")
         csvFile.close()
+
+    print("Giving scores to vehicles")
+    score(fileName)
 
     os.chdir(maindir)
     print("Search executed successfully")
@@ -207,3 +210,72 @@ def getData(threadNumber, carLink, csvWriter):
     data = getCarData(carLink)
     csvWriter.writerow([carLink , data[0], data[1], data[2], data[3], data[4]])
     print(threadNumber, "executed in", time.time() - time_started)
+
+# give scores
+def score(fileName):
+    # read file contents
+    with open(fileName, mode="r", newline='') as csvFile:
+        csvReader = csv.reader(csvFile)
+        data = list(csvReader)
+        data.pop(0)
+        csvFile.close()
+
+    # calculating price score
+    allPrices = []
+    for dat in data:
+        allPrices.append(int(dat[3]))
+
+    minPrice = min(allPrices)
+    maxPrice = max(allPrices)
+    priceScore = []
+    for price in allPrices:
+        priceScore.append(1 - ((price - minPrice) / (maxPrice - minPrice)))
+
+    # calculating mileage and reg year score
+    # mileage
+    allMiles = []
+    for dat in data:
+        allMiles.append(int(dat[4]))
+    minMiles = min(allMiles)
+    maxMiles = max(allMiles)
+
+    # reg
+    allReg = []
+    for dat in data:
+        allReg.append(int(dat[2]))
+
+    minReg = min(allReg)
+    maxReg = max(allReg)
+    '''
+    regScore = []
+    for i in range(len(allReg)):
+        regScore.append( - ((allReg[i] - minReg) - (maxReg - minReg)) / 4)
+    '''
+
+    # score itself
+    milScore = []
+    tScore = []
+    for i in range(len(allMiles)):
+        tScore.append((allMiles[i]/13500) - (2020 - allReg[i]))
+
+    tmax = max(tScore)
+    tmin = min(tScore)
+    for sc in tScore:
+        if sc < 0:
+            milScore.append(1 - sc)
+        else:
+            milScore.append(1 - ((sc - tmin) / (tmax - tmin)))
+    # final score
+    fScore = []
+    for i in range(len(priceScore)):
+        fScore.append(priceScore[i] + milScore[i]) # + regScore[i])
+
+    
+    with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
+        csvWriter = csv.writer(csvFile)
+        csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score", "Price change since first search"])
+        j = 0
+        for dat in data:
+            csvWriter.writerow([dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], fScore[j]])
+            j += 1
+        csvFile.close()
