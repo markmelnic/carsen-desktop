@@ -32,6 +32,8 @@ In the terminal you will be presented with this little menu
 Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
 Now that your search has been indexed and executed, find the output file in the "csv files" directory.
 
+Alpha 0.8 update: Now every ad is being assigned a "how good of a deal is this" score. Most accurate with cars of the same or ± 1 registration year. In Excel (presumably) sort all cells by the score tab from highest to lowest, and find the best deals at the top. I have tested this feature mostly with Lexus vehicles with registration years from 2016 to 2020 and it works like a charm.
+
 #### Check
 To see if there are any changes to indexed searches, press F2. Once the checker has been executed, the changes can be found in the .csv files themselves, or will be presented in the terminal window as following
 
