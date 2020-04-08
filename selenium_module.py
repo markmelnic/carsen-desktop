@@ -18,14 +18,17 @@ GENERIC_URL = 'https://suchen.mobile.de/fahrzeuge/search.html?vc=Car&dam=0&lang=
 # ================== driver boot procedure
 def boot():
     # manage notifications
-    chrome_options = Options() 
+    opts = Options() 
     prefs = {"profile.default_content_setting_values.notifications" : 2}
-    chrome_options.add_experimental_option("prefs",prefs)
-    chrome_options.add_experimental_option( "prefs", {'profile.default_content_settings.images': 2})
-    #chrome_options.add_argument("--headless")  
+    opts.add_experimental_option("prefs", prefs)
+    opts.add_experimental_option( "prefs", {'profile.default_content_settings.images': 2})
+    #opts.add_argument("--window-size=1920,1080")
+    #opts.add_argument("--start-maximized")
+    #opts.set_headless(headless=True)
+
 
     # driver itself
-    dv = webdriver.Chrome(chrome_options = chrome_options, executable_path = r"../drivers/chromedriver80.exe")
+    dv = webdriver.Chrome(chrome_options = opts, executable_path = r"../drivers/chromedriver81.exe")
     return dv
 
 
