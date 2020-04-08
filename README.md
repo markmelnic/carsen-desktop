@@ -3,24 +3,19 @@ A terminal based python bot for scraping and tracking mobile.de. Get all data fo
 
 ## Some technical aspects
 Built in python 3.8. Essential packages used:
- * selenium
  * bs4
+ * selenium
  * threading
- * csv
 
 Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method number 2.
 
 ## Installation
 #### First method
-1. clone all github files into a folder
-2. inside that, create more folders to follow the structure:
-
-![Imgur](https://i.imgur.com/vTT6Xd0m.png)
-    
-3. Run the program from main.py
+1. clone all github files into a folder  
+2. Run the program from main.py
 
 #### Second method
-1. Get the installer here https://www.dropbox.com/s/x3qm4zkv3mb1pd1/Mobile.de%20Bot%20v.Alpha.0.7.5.exe?dl=0
+1. Get the installer here, version Alpha 0.7.5 https://www.dropbox.com/s/x3qm4zkv3mb1pd1/Mobile.de%20Bot%20v.Alpha.0.7.5.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
 ## Running the program (and it's features)
