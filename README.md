@@ -18,7 +18,7 @@ Not all come standart with python, so if you are using the 1st installation meth
 1. Get the installer here, version Alpha 0.7.5 https://www.dropbox.com/s/x3qm4zkv3mb1pd1/Mobile.de%20Bot%20v.Alpha.0.7.5.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
-## Running the program (and it's features)
+## Running the program (before version Alpha 0.8.4)
 In the terminal you will be presented with this little menu
 
 ![Imgur](https://i.imgur.com/PzQZO8Rm.png)
