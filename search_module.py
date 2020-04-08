@@ -222,44 +222,43 @@ def score(fileName):
         data.pop(0)
         csvFile.close()
 
-    # calculating price score
+    # getting data
+    allReg = []
     allPrices = []
+    allMiles = []
     for dat in data:
+        allReg.append(int(dat[2]))
         allPrices.append(int(dat[3]))
+        allMiles.append(int(dat[4]))
 
+    # calculating price score
     minPrice = min(allPrices)
     maxPrice = max(allPrices)
+
     priceScore = []
     for price in allPrices:
         priceScore.append(1 - ((price - minPrice) / (maxPrice - minPrice)))
 
     # reg score
-    allReg = []
-    for dat in data:
-        allReg.append(int(dat[2]))
-
     minReg = min(allReg)
     maxReg = max(allReg)
     
     regScore = []
-    for i in range(len(allReg)):
-        regScore.append(((allReg[i] - minReg) / (maxReg - minReg)) / 4)
+    for reg in allReg:
+        regScore.append(((reg - minReg) / (maxReg - minReg)) / 4)
 
     # mileage score
-    allMiles = []
-    for dat in data:
-        allMiles.append(int(dat[4]))
     minMiles = min(allMiles)
     maxMiles = max(allMiles)
 
     milScore = []
-    tScore = []
-    for i in range(len(allMiles)):
-        tScore.append((allMiles[i]/13500) - (2020 - allReg[i]))
+    milTempScore = []
+    for mil in allMiles:
+        milTempScore.append((mil / 13500) - (2020 - allReg[i]))
 
-    tmax = max(tScore)
-    tmin = min(tScore)
-    for sc in tScore:
+    tmax = max(milTempScore)
+    tmin = min(milTempScore)
+    for sc in milTempScore:
         if sc < 0:
             milScore.append(1 - sc)
         else:
@@ -267,15 +266,13 @@ def score(fileName):
 
     # final score
     fScore = []
-    for i in range(len(priceScore)):
-        fScore.append(priceScore[i] + milScore[i] + regScore[i])
+    for pricesc, mileagesc, regsc in zip(priceScore, milScore, regScore):
+        fScore.append(pricesc + mileagesc + regsc)
 
     
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score", "Price change since first search"])
-        j = 0
-        for dat in data:
-            csvWriter.writerow([dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], fScore[j]])
-            j += 1
+        for dat, score in zip(data, fScore):
+            csvWriter.writerow([dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], score])
         csvFile.close()

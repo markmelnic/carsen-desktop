@@ -1,4 +1,5 @@
 
+import os
 import time
 import msvcrt
 import keyboard
@@ -8,10 +9,21 @@ from search_module import *
 from checker_module import *
 from remover_module import *
 
+# create folders
+def folderStruct(maindir):
+    os.mkdir("backup")
+    os.mkdir("csv files")
+    os.chdir('./csv files')
+    os.mkdir("search parameters")
+    os.chdir(maindir)
 
 # main function
 if __name__ == '__main__':
     maindir = os.getcwd()
+    try:
+        folderStruct(maindir)
+    except:
+        None
     x = 0
     while True:
         if x == 1:

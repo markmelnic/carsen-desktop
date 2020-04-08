@@ -10,20 +10,16 @@ def backup(maindir):
     print("\nBackup initiated")
     time.sleep(2)
     os.chdir(maindir)
-    os.chdir('./csv files')
 
     # check for files to be backed up
+    files = []
+    with os.scandir("./csv files") as entries:
+        for entry in entries:
+            if entry.is_file():
+                files.append(entry.name)
+
+    # change working directory and get the new one
     try:
-        with open("csvFilesIndex.txt", mode="r") as cFi:
-            files = cFi.readlines()
-            cFi.close()
-
-        if len(files) == 1:
-            print(len(files), "file found")
-        else:
-            print(len(files), "files found")
-
-        # change working directory and get the new one
         os.chdir(maindir)
         os.chdir('./backup')
         date = datetime.datetime.now()
@@ -43,19 +39,16 @@ def backup(maindir):
             os.chdir(maindir)
             os.chdir('./csv files')
             path = "../backup/" + date
-            backup = shutil.copy("csvFilesIndex.txt", path)
             for file in files:
                 file = file.strip("\n")
                 try:
                     backup = shutil.copy(file, path)
                 except:
                     print("File not found")
-
     except:
         print("Nothing to backup\n")
         os.chdir(maindir)
         return
-    
     os.chdir(maindir)
     time.sleep(2)
     print("Backed up successfully\n")
