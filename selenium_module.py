@@ -1,8 +1,8 @@
 
 from selenium import webdriver
-import selenium.webdriver.chrome.options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -18,9 +18,11 @@ GENERIC_URL = 'https://suchen.mobile.de/fahrzeuge/search.html?vc=Car&dam=0&lang=
 # ================== driver boot procedure
 def boot():
     # manage notifications
-    chrome_options = webdriver.ChromeOptions()
+    chrome_options = Options() 
     prefs = {"profile.default_content_setting_values.notifications" : 2}
     chrome_options.add_experimental_option("prefs",prefs)
+    chrome_options.add_experimental_option( "prefs", {'profile.default_content_settings.images': 2})
+    #chrome_options.add_argument("--headless")  
 
     # driver itself
     dv = webdriver.Chrome(chrome_options = chrome_options, executable_path = r"../drivers/chromedriver80.exe")

@@ -14,28 +14,25 @@ def checker(maindir):
     print("\n\n\n/====================================\\")
     print("Checker initiated")
     os.chdir(maindir)
-    os.chdir('./csv files')
 
     print("Backing up")
     date = backup(maindir)
 
-    os.chdir('./csv files')
     # check for files to be checked
+    files = []
+    os.chdir(maindir)
     try:
-        with open("csvFilesIndex.txt", mode="r") as cFi:
-            files = cFi.readlines()
-            cFi.close()
-
-        if len(files) == 1:
-            print(len(files), "file found")
-        else:
-            print(len(files), "files found")
+        with os.scandir("./csv files") as entries:
+            for entry in entries:
+                if entry.is_file():
+                    files.append(entry.name)
     except:
         os.chdir(maindir)
-        print("No files to found")
+        print("No files found")
         print("\====================================/\n\n")
         return
 
+    os.chdir("./csv files")
     if len(files) == 0:
         os.chdir(maindir)
         print("Nothing to check")

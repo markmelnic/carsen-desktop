@@ -97,7 +97,9 @@ def search(maindir):
     os.remove(linksFileName)
 
     if len(carLink) == 0:
-        print("No ads to process\n--------------------")
+        print("No ads to process")
+        print("\====================================/\n\n")
+        return
     elif len(carLink) == 1:
         print(len(carLink), "ad to process\n--------------------")
     else:
@@ -127,11 +129,6 @@ def search(maindir):
         fileName = carMake + ".csv"
     else:
         fileName = carMake + "_" + carModel + ".csv"
-    
-    # add filename to files index
-    with open("csvFilesIndex.txt", mode="a+") as cFi:
-        cFi.write("%s\n" % fileName)
-        cFi.close()
 
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
@@ -237,7 +234,7 @@ def score(fileName):
 
     priceScore = []
     for price in allPrices:
-        priceScore.append(1 - ((price - minPrice) / (maxPrice - minPrice)))
+        priceScore.append((1 - ((price - minPrice) / (maxPrice - minPrice))) / 1.5)
 
     # reg score
     minReg = min(allReg)
@@ -253,8 +250,8 @@ def score(fileName):
 
     milScore = []
     milTempScore = []
-    for mil in allMiles:
-        milTempScore.append((mil / 13500) - (2020 - allReg[i]))
+    for mil, reg in zip(allMiles, allReg):
+        milTempScore.append((mil / 13500) - (2020 - reg))
 
     tmax = max(milTempScore)
     tmin = min(milTempScore)
