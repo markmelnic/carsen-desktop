@@ -158,6 +158,8 @@ def search(maindir):
 
     print("Giving scores to vehicles")
     score(fileName)
+    #except:
+    #   print("Can not calculate score, possible error")
 
     os.chdir(maindir)
     print("Search executed successfully")
@@ -231,28 +233,25 @@ def score(fileName):
     for price in allPrices:
         priceScore.append(1 - ((price - minPrice) / (maxPrice - minPrice)))
 
-    # calculating mileage and reg year score
-    # mileage
-    allMiles = []
-    for dat in data:
-        allMiles.append(int(dat[4]))
-    minMiles = min(allMiles)
-    maxMiles = max(allMiles)
-
-    # reg
+    # reg score
     allReg = []
     for dat in data:
         allReg.append(int(dat[2]))
 
     minReg = min(allReg)
     maxReg = max(allReg)
-    '''
+    
     regScore = []
     for i in range(len(allReg)):
-        regScore.append( - ((allReg[i] - minReg) - (maxReg - minReg)) / 4)
-    '''
+        regScore.append(((allReg[i] - minReg) / (maxReg - minReg)) / 4)
 
-    # score itself
+    # mileage score
+    allMiles = []
+    for dat in data:
+        allMiles.append(int(dat[4]))
+    minMiles = min(allMiles)
+    maxMiles = max(allMiles)
+
     milScore = []
     tScore = []
     for i in range(len(allMiles)):
@@ -265,10 +264,11 @@ def score(fileName):
             milScore.append(1 - sc)
         else:
             milScore.append(1 - ((sc - tmin) / (tmax - tmin)))
+
     # final score
     fScore = []
     for i in range(len(priceScore)):
-        fScore.append(priceScore[i] + milScore[i]) # + regScore[i])
+        fScore.append(priceScore[i] + milScore[i] + regScore[i])
 
     
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
