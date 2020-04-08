@@ -9,7 +9,7 @@ import time
 import threading
 
 
-def search(maindir):
+def search(maindir, srcInput):
     print("\n\n\n/====================================\\")
     print("\nSearcher initiated")
     os.chdir(maindir)
@@ -17,7 +17,8 @@ def search(maindir):
 
     # ================== initialization ==================
     # inputs
-    firstinput = inputFunct()
+    #firstinput = inputFunct()
+    firstinput = srcInput
 
     # program start
     dv = boot()
