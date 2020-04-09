@@ -107,6 +107,8 @@ def search(maindir, srcInput):
         print(len(carLink), "ads to process\n--------------------")
 
     # search parameters file
+    os.chdir(maindir)
+    os.chdir('./csv files')
     os.chdir('./search parameters')
 
     if carModel == "":
@@ -164,6 +166,7 @@ def search(maindir, srcInput):
     os.chdir(maindir)
     print("Search executed successfully")
     print("\====================================/\n\n")
+    return fileName
 
 
 # initial input function
@@ -237,7 +240,7 @@ def score(fileName):
 
     priceScore = []
     for price in allPrices:
-        priceScore.append((1 - ((price - minPrice) / (maxPrice - minPrice))) / 1.5)
+        priceScore.append((1 - ((price - minPrice) / (maxPrice - minPrice))) / 1.1)
 
     # reg score
     minReg = min(allReg)

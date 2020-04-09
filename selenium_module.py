@@ -8,11 +8,13 @@ from selenium.webdriver.support import expected_conditions as EC
 
 import random
 import time
+import os
 
 
 #GENERIC_URL = 'https://www.mobile.de/'
 GENERIC_URL = 'https://suchen.mobile.de/fahrzeuge/search.html?vc=Car&dam=0&lang=en'
 
+maindir = os.getcwd()
 
 # ================== driver procedures ===================
 # ================== driver boot procedure
@@ -22,13 +24,21 @@ def boot():
     prefs = {"profile.default_content_setting_values.notifications" : 2}
     opts.add_experimental_option("prefs", prefs)
     opts.add_experimental_option( "prefs", {'profile.default_content_settings.images': 2})
-    #opts.add_argument("--window-size=1920,1080")
-    #opts.add_argument("--start-maximized")
+    opts.add_argument("--window-size=1920,1080")
+    opts.add_argument("--start-minimized")
     #opts.set_headless(headless=True)
+    opts.add_argument("--disable-gpu")
 
-
+    os.chdir(maindir)
     # driver itself
-    dv = webdriver.Chrome(chrome_options = opts, executable_path = r"../drivers/chromedriver81.exe")
+    with open('./resources/settings.txt', mode='r') as st:
+        settings = st.readlines()
+        if int(settings[7]) == 81:
+            dv = webdriver.Chrome(chrome_options = opts, executable_path = r"./resources/drivers/chromedriver81.exe")
+        elif int(settings[7]) == 80:
+            dv = webdriver.Chrome(chrome_options = opts, executable_path = r"./resources/drivers/chromedriver80.exe")
+        st.close()
+
     return dv
 
 
