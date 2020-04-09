@@ -41,6 +41,10 @@ class Interface(Tk):
 
         # search
         class Search:
+            def threadder(thread):
+                thread.join()
+                Remover.filesList()
+
             def retrieve_inputs():
                 srcInput = []
                 srcInput.append(Search.makeField.get())
@@ -54,8 +58,12 @@ class Interface(Tk):
                 srcInput.append(Search.fieldpowerTxtFrom.get())
                 srcInput.append(Search.fieldpowerTxtTo.get())
 
+                threads = []
                 srchThread = th.Thread(target=search, args = (maindir, srcInput))
                 srchThread.start()
+                threads.append(srchThread)
+                threadsThread = th.Thread(target=Search.threadder, args = (threads[0],))
+                threadsThread.start()
 
             # search button
             srcButton = Button(self, text="Search",command=retrieve_inputs)
@@ -82,7 +90,7 @@ class Interface(Tk):
 
 
             # price
-            priceTxt = Label(text="price range (EURO):")
+            priceTxt = Label(text="Price range (EURO):")
             priceTxt.grid(row=3,column=0,padx=(10, 5),pady=(10, 10))
             # from
             priceTxtFrom = Label(text="From")
@@ -142,8 +150,12 @@ class Interface(Tk):
 
         # check
         class Check:
-            def chck():
+            def chckThread():
                 checker(maindir)
+
+            def chck():
+                chckerThread = th.Thread(target=Check.chckThread)
+                chckerThread.start()
 
             # check button
             chckText = Label(text="Check existing files for changes")
@@ -155,9 +167,28 @@ class Interface(Tk):
             chckButton.grid(row=1,column=2,padx=(10, 10),pady=(5, 0))
 
         # remove
-        class Remove:
+        class Remover:
             def rm():
-                remover(maindir)
+                items_to_remove = tuple(Remover.tree.selection())
+                print(items_to_remove)
+                remover(maindir, items_to_remove)
+                for item in items_to_remove:
+                    Remover.tree.delete(item)
+
+            def filesList():
+                os.chdir(maindir)
+                files = []
+                with os.scandir("./csv files") as entries:
+                    for entry in entries:
+                        if entry.is_file():
+                            files.append(entry.name)
+
+                tree = Treeview(show="tree")
+                tree.grid(row=2,column=4, columnspan=2,rowspan=len(files)+6)
+
+                for i in range(len(files)):
+                    tree.insert('', 'end', files[i], text=files[i])
+                return tree
 
             # remove button
             removeText = Label(text="Stop tracking a search")
@@ -168,10 +199,20 @@ class Interface(Tk):
             removeButton = Button(self, text="Remove", command=rm)
             removeButton.grid(row=1,column=4,padx=(10, 10),pady=(5, 0))
 
+            tree = filesList()
+
         # backup
         class Backup:
-            def bck():
+            def backupthread():
                 backup(maindir)
+                backupSuccessfulText = Label(text="Backup Successful",background ="light green",font=("Helvetica", 16))
+                backupSuccessfulText.grid(row=2,column=6,padx=(10, 10),pady=(10, 10))
+                time.sleep(10)
+                backupSuccessfulText.grid_remove()
+
+            def bck():
+                bckupThread = th.Thread(target=Backup.backupthread)
+                bckupThread.start()
 
             # backup button
             backupText = Label(text="Backup existing searches")

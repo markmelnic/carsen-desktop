@@ -148,8 +148,8 @@ def filesThread(threadNumber, file, changesWriter):
                         # skip if price hasn't changed, else append the change
                         if not changedPrice == 0:
                             try:
-                                if not changedPrice == data[i + 1][-1]:
-                                    data[i + 1].append(changedPrice)
+                                if not changedPrice == int(data[i + 1][7]):
+                                    data[i + 1][7] == changedPrice
                                     changesWriter.writerow([file , i + 1, changedPrice])
                             except:
                                 data[i + 1].append(changedPrice)
@@ -165,8 +165,8 @@ def filesThread(threadNumber, file, changesWriter):
                                 # skip if price hasn't changed, else append the change
                                 if not changedPrice == 0:
                                     try:
-                                        if not changedPrice == int(data[i + 1][-1]):
-                                            data[i + 1].append(changedPrice)
+                                        if not changedPrice == int(data[i + 1][7]):
+                                            data[i + 1][7] == changedPrice
                                             changesWriter.writerow([file , i + 1, changedPrice])
                                     except:
                                         data[i + 1].append(changedPrice)
