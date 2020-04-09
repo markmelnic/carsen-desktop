@@ -146,6 +146,9 @@ def search(maindir, srcInput):
             if len(threads) == 24:
                 for thread in threads:
                     thread.join()
+                    if len(threads) < 23:
+                        threads.pop(thread)
+                        break
                 threads = []
 
         # wait for all threads to finish execution
@@ -158,7 +161,6 @@ def search(maindir, srcInput):
     score(fileName)
     #except:
     #   print("Can not calculate score, possible error")
-
     os.chdir(maindir)
     print("Search executed successfully")
     print("\====================================/\n\n")

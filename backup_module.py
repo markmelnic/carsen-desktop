@@ -8,7 +8,6 @@ import datetime
 def backup(maindir):
     #print("\n\n\n/====================================\\")
     print("\nBackup initiated")
-    time.sleep(2)
     os.chdir(maindir)
 
     # check for files to be backed up
@@ -50,7 +49,6 @@ def backup(maindir):
         os.chdir(maindir)
         return
     os.chdir(maindir)
-    time.sleep(2)
     print("Backed up successfully\n")
     return date
     #print("\====================================/\n\n")
