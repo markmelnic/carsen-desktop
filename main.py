@@ -1,8 +1,9 @@
 
 # configure whether the console window will display
+import pywintypes
 import win32gui
 import win32con
-with open('settings.txt', mode='r') as st:
+with open('./resources/settings.txt', mode='r') as st:
     settings = st.readlines()
     window_show = int(settings[1])
     st.close()
@@ -11,6 +12,7 @@ with open('settings.txt', mode='r') as st:
         win32gui.ShowWindow(tpth, win32con.SW_HIDE)
 
 import os
+import sys
 import time
 import msvcrt
 import keyboard
@@ -41,3 +43,5 @@ if __name__ == '__main__':
 
     root = Interface()
     mainloop()
+
+    sys.exit(0)

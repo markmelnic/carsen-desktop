@@ -15,7 +15,7 @@ global maindir
 maindir = os.getcwd()
 
 # read settings
-with open('settings.txt', mode='r') as st:
+with open('./resources/settings.txt', mode='r') as st:
     settings = st.readlines()
     window_show = int(settings[1])
     st.close()
@@ -26,7 +26,7 @@ class Interface(Tk):
     def __init__(self):
         super().__init__()
         self.title("Mobile.de Bot")
-        self.iconbitmap('icon.ico')
+        self.iconbitmap('./resources/icon.ico')
 
         # change settings
         self.geometry(win_size)
@@ -34,16 +34,25 @@ class Interface(Tk):
             self.resizable(False, False)
 
         # progress bar
+        '''
         class progressBar:
             progressbar = Progressbar(orient=HORIZONTAL, length=200, mode='determinate')
             progressbar.place(x=0, y=700, width=1280)
             progressbar.start()
+        '''
 
         # search
         class Search:
             def threadder(thread):
                 thread.join()
-                Remover.filesList()
+                #Remover.tree.insert('', 'end', files[i], text=files[i])
+                tree = Remover.tree
+                Remover.filesList(tree)
+                searchSuccessfulText = Label(text="Search Successful",background ="light green",font=("Helvetica", 16))
+                searchSuccessfulText.grid(row=16,column=0,columnspan=2,padx=(10, 10),pady=(10, 10))
+                time.sleep(10)
+                searchSuccessfulText.grid_remove()
+
 
             def retrieve_inputs():
                 srcInput = []
@@ -61,6 +70,7 @@ class Interface(Tk):
                 threads = []
                 srchThread = th.Thread(target=search, args = (maindir, srcInput))
                 srchThread.start()
+
                 threads.append(srchThread)
                 threadsThread = th.Thread(target=Search.threadder, args = (threads[0],))
                 threadsThread.start()
@@ -175,7 +185,18 @@ class Interface(Tk):
                 for item in items_to_remove:
                     Remover.tree.delete(item)
 
-            def filesList():
+            def filesList(tree):
+                try:
+                    os.chdir(maindir)
+                    files = []
+                    with os.scandir("./csv files") as entries:
+                        for entry in entries:
+                            if entry.is_file():
+                                files.append(entry.name)
+                    for item in items_in_tree:
+                        Remover.tree.delete(item)
+                except:
+                    None
                 os.chdir(maindir)
                 files = []
                 with os.scandir("./csv files") as entries:
@@ -183,12 +204,15 @@ class Interface(Tk):
                         if entry.is_file():
                             files.append(entry.name)
 
-                tree = Treeview(show="tree")
-                tree.grid(row=2,column=4, columnspan=2,rowspan=len(files)+6)
-
                 for i in range(len(files)):
-                    tree.insert('', 'end', files[i], text=files[i])
+                    try:
+                        tree.insert('', 'end', files[i], text=files[i])
+                    except:
+                        None
                 return tree
+
+            tree = Treeview(show="tree")
+            tree.grid(row=2,column=4, columnspan=2,rowspan=10)
 
             # remove button
             removeText = Label(text="Stop tracking a search")
@@ -199,7 +223,7 @@ class Interface(Tk):
             removeButton = Button(self, text="Remove", command=rm)
             removeButton.grid(row=1,column=4,padx=(10, 10),pady=(5, 0))
 
-            tree = filesList()
+            tree = filesList(tree)
 
         # backup
         class Backup:
