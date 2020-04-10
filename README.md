@@ -51,7 +51,7 @@ Press F3 to run and insert the number corresponding to the file you'd like to re
 Pretty self explanatory, backs up all .csv files to a directory with your current timestamp in the backup folder. The checking function does it by default in case something goes wrong, but you still may want to use it from stability concerns.
 
 ## Running the program (gui, after version Alpha 0.8.4)
-A GUI has been added, so no more need to work with the terminal. I would include a screenshot but since the GUI is constantly changing, well, you get the idea. The functions remain the same as described above, and do the same stuff. Actually, changed my mind, it's ugly but at least it works. Here you go
+GUI implementation, so no more need to work with the terminal. I would include a screenshot but since the GUI is constantly changing (and it's ugly as hell), well, you get the idea. The functionality remains the same as described above. Actually, changed my mind, it's ugly but at least it works. Here you go
 
 ![Imgur](https://i.imgur.com/yOauWZI.png)
 
