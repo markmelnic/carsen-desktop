@@ -53,6 +53,6 @@ Pretty self explanatory, backs up all .csv files to a directory with your curren
 ## Running the program (gui, after version Alpha 0.8.4)
 A GUI has been added, so no more need to work with the terminal. I would include a screenshot but since the GUI is constantly changing, well, you get the idea. The functions remain the same as described above, and do the same stuff. Actually, changed my mind, it's ugly but at least it works. Here you go
 
-![Imgur](https://imgur.com/yOauWZI)
+![Imgur](https://i.imgur.com/yOauWZI.png)
 
 ## Thank you for taking a look at my work! Throw an eye on my website https://markmelnic.com/ to find some of my other projects, or for no reason really :D Cheers!
