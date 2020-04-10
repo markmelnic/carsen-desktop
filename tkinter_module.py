@@ -14,19 +14,19 @@ import tkinter.font as font
 global maindir
 maindir = os.getcwd()
 
-# read settings
-with open('./resources/settings.txt', mode='r') as st:
-    settings = st.readlines()
-    window_show = int(settings[1])
-    st.close()
-    win_size = str(settings[3].strip("\n"))
-    win_resizeability = str(settings[5])
-
 class Interface(Tk):
     def __init__(self):
         super().__init__()
         self.title("Mobile.de Bot")
         self.iconbitmap('./resources/icon.ico')
+
+        # read settings
+        with open('./resources/settings.txt', mode='r') as st:
+            settings = st.readlines()
+            window_show = int(settings[1])
+            st.close()
+            win_size = str(settings[3].strip("\n"))
+            win_resizeability = str(settings[5])
 
         # change settings
         self.geometry(win_size)
@@ -41,17 +41,28 @@ class Interface(Tk):
             progressbar.start()
         '''
 
+        # feedback text
+        class Feedback:
+            def working():
+                global workingText
+                workingText = Label(text="Working, please wait...",background ="yellow",font=("Helvetica", 16))
+                workingText.grid(row=16,column=0,columnspan=2,padx=(10, 10),pady=(10, 10))
+
+            def successful():
+                workingText.grid_remove()
+                global successfulText
+                successfulText = Label(text="Search Successful",background ="light green",font=("Helvetica", 16))
+                successfulText.grid(row=16,column=0,columnspan=2,padx=(10, 10),pady=(10, 10))
+                time.sleep(10)
+                successfulText.grid_remove()
+
         # search
         class Search:
-            def threadder(thread):
+            def threadder(searchWorkingText, thread):
                 thread.join()
-                #Remover.tree.insert('', 'end', files[i], text=files[i])
                 tree = Remover.tree
                 Remover.filesList(tree)
-                searchSuccessfulText = Label(text="Search Successful",background ="light green",font=("Helvetica", 16))
-                searchSuccessfulText.grid(row=16,column=0,columnspan=2,padx=(10, 10),pady=(10, 10))
-                time.sleep(10)
-                searchSuccessfulText.grid_remove()
+                Feedback.successful()
 
 
             def retrieve_inputs():
@@ -71,8 +82,10 @@ class Interface(Tk):
                 srchThread = th.Thread(target=search, args = (maindir, srcInput))
                 srchThread.start()
 
+                Feedback.working()
+
                 threads.append(srchThread)
-                threadsThread = th.Thread(target=Search.threadder, args = (threads[0],))
+                threadsThread = th.Thread(target=Search.threadder, args = (searchWorkingText, threads[0],))
                 threadsThread.start()
 
             # search button

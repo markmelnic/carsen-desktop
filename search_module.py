@@ -106,6 +106,7 @@ def search(maindir, srcInput):
     else:
         print(len(carLink), "ads to process\n--------------------")
 
+    '''
     # search parameters file
     os.chdir(maindir)
     os.chdir('./csv files')
@@ -124,14 +125,13 @@ def search(maindir, srcInput):
         paramsFile.write(firstinput[6] + "-" + firstinput[7] + "\n")
         paramsFile.write(firstinput[8] + "-" + firstinput[9] + "\n")
         paramsFile.close()
+    '''
 
     os.chdir(maindir)
     os.chdir('./csv files')
+
     # output file name
-    if carModel == "":
-        fileName = carMake + ".csv"
-    else:
-        fileName = carMake + "_" + carModel + ".csv"
+    fileName = carMake + "_" + carModel + "_" + firstinput[2] + "-" + firstinput[3] + "_" + firstinput[4] + "-" + firstinput[5] + "_" + firstinput[6] + "-" + firstinput[7] + "_" + firstinput[8] + "-" + firstinput[9] + ".csv"
 
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
@@ -169,7 +169,7 @@ def search(maindir, srcInput):
     return fileName
 
 
-# initial input function
+# initial input function (console)
 def inputFunct():
     # inputs
     print("\nThe Car Manufacturer input is mandatory,")
