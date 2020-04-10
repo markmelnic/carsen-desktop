@@ -29,7 +29,7 @@ def folderStruct(maindir):
     os.mkdir("backup")
     os.mkdir("csv files")
     os.chdir('./csv files')
-    os.mkdir("search parameters")
+    #os.mkdir("search parameters")
     os.chdir(maindir)
 
 # main function

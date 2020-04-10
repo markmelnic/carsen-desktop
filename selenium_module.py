@@ -25,7 +25,6 @@ def boot():
     opts.add_experimental_option("prefs", prefs)
     opts.add_experimental_option( "prefs", {'profile.default_content_settings.images': 2})
     opts.add_argument("--window-size=1920,1080")
-    opts.add_argument("--start-minimized")
     #opts.set_headless(headless=True)
     opts.add_argument("--disable-gpu")
 
