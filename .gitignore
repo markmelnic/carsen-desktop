@@ -338,24 +338,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/cars.csv
-/mobile.de-Bot.sln
-/mobile.de-Bot.pyproj
-/.vs
-/__pycache__
-/csv files/search parameters/params_lexus_lc-500h.txt
-/csv files/lexus_lc-500h.csv
 /icon.ico
-/csv files/lexus_gs.csv
-/csv files/lexus_gs - Copy.csv
-/csv files/csvFilesIndex.txt
-/csv files/search parameters/params_lexus_lc-500.txt
-/csv files/search parameters/params_lexus_gs.txt
-/Mobile.de Bot.exe
-/Mobile.de Bot.spec
 /dist
 /build/Mobile.de Bot
-/csv files/search parameters
 /csv files
+/backup
 /resources
 /.txt

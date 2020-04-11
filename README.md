@@ -15,13 +15,12 @@ Not all come standart with python, so if you are using the 1st installation meth
 2. Run the program from main.py
 
 #### Second method
-1. Get the installer here, version Alpha 0.7.5 
-https://www.dropbox.com/s/x3qm4zkv3mb1pd1/Mobile.de%20Bot%20v.Alpha.0.7.5.exe?dl=0
-version Alpha 0.8.6 
-https://www.dropbox.com/s/mrapcch6apmq3pq/Mobile.de%20Bot%20v.Alpha.0.8.6.exe?dl=0
+1. Get the installer here,
+version Alpha 0.5.4 
+https://www.dropbox.com/s/zfcn4vbiewbaky8/Mobile.de%20Bot%20v.Alpha.0.5.4.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
-## Running the program (console, before version Alpha 0.8.4)
+## Running the program (console, before version Alpha 0.5)
 In the terminal you will be presented with this little menu
 
 ![Imgur](https://i.imgur.com/PzQZO8Rm.png)
@@ -50,7 +49,7 @@ Press F3 to run and insert the number corresponding to the file you'd like to re
 #### Backup
 Pretty self explanatory, backs up all .csv files to a directory with your current timestamp in the backup folder. The checking function does it by default in case something goes wrong, but you still may want to use it from stability concerns.
 
-## Running the program (gui, after version Alpha 0.8.4)
+## Running the program (gui, after version Alpha 0.5)
 GUI implementation, so no more need to work with the terminal. I would include a screenshot but since the GUI is constantly changing (and it's ugly as hell), well, you get the idea. The functionality remains the same as described above. Actually, changed my mind, it's ugly but at least it works. Here you go
 
 ![Imgur](https://i.imgur.com/yOauWZI.png)

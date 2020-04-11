@@ -58,7 +58,7 @@ class Interface(Tk):
 
         # search
         class Search:
-            def threadder(searchWorkingText, thread):
+            def threadder(workingText, thread):
                 thread.join()
                 tree = Remover.tree
                 Remover.filesList(tree)
@@ -85,7 +85,7 @@ class Interface(Tk):
                 Feedback.working()
 
                 threads.append(srchThread)
-                threadsThread = th.Thread(target=Search.threadder, args = (searchWorkingText, threads[0],))
+                threadsThread = th.Thread(target=Search.threadder, args = (workingText, threads[0],))
                 threadsThread.start()
 
             # search button
