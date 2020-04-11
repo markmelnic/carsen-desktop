@@ -345,3 +345,4 @@ healthchecksdb
 /backup
 /resources
 /.txt
+.vscode/settings.json

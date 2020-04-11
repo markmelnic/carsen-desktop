@@ -49,9 +49,18 @@ class Interface(Tk):
                 workingText.grid(row=16,column=0,columnspan=2,padx=(10, 10),pady=(10, 10))
 
             def successful():
-                workingText.grid_remove()
+                try:
+                    workingText.grid_remove()
+                except:
+                    None
+                    
                 global successfulText
-                successfulText = Label(text="Search Successful",background ="light green",font=("Helvetica", 16))
+                try:
+                    successfulText.grid_remove()
+                except:
+                    None
+                    
+                successfulText = Label(text="Execution Successful",background ="light green",font=("Helvetica", 16))
                 successfulText.grid(row=16,column=0,columnspan=2,padx=(10, 10),pady=(10, 10))
                 time.sleep(10)
                 successfulText.grid_remove()
@@ -173,29 +182,44 @@ class Interface(Tk):
 
         # check
         class Check:
-            def chckThread():
-                checker(maindir)
+            def chckThread(workingText, thread):
+                thread.join()
+                Feedback.successful()
 
             def chck():
-                chckerThread = th.Thread(target=Check.chckThread)
+                chckerThread = th.Thread(target=checker, args=(maindir,))
                 chckerThread.start()
+                
+                Feedback.working()
+                
+                threads = []
+                threads.append(chckerThread)
+                threadsThread = th.Thread(target=Check.chckThread, args = (workingText, threads[0],))
+                threadsThread.start()
 
             # check button
             chckText = Label(text="Check existing files for changes")
-            chckText.grid(row=0,column=2,columnspan=2,padx=(10, 10),pady=(10, 10))
+            chckText.grid(row=2,column=2,columnspan=2,padx=(10, 10),pady=(10, 10))
             chckText['font'] = font.Font(family='Helvetica')
             chckText['font'] = font.Font(size=15)
 
             chckButton = Button(self, text="Check", command=chck)
-            chckButton.grid(row=1,column=2,padx=(10, 10),pady=(5, 0))
+            chckButton.grid(row=3,column=2,columnspan=2,padx=(10, 10),pady=(5, 0))
 
         # remove
         class Remover:
+            def removeThread(items_to_remove):
+                remover(maindir, items_to_remove)
+                Feedback.successful()
+                
             def rm():
                 items_to_remove = tuple(Remover.tree.selection())
-                print(items_to_remove)
-                remover(maindir, items_to_remove)
+                print(items_to_remove, " - items to remove")
+                
+                chckerThread = th.Thread(target=Remover.removeThread, args = (items_to_remove,))
+                chckerThread.start()
                 for item in items_to_remove:
+                    print("2")
                     Remover.tree.delete(item)
 
             def filesList(tree):
@@ -219,22 +243,47 @@ class Interface(Tk):
 
                 for i in range(len(files)):
                     try:
-                        tree.insert('', 'end', files[i], text=files[i])
+                        filename = str(files[i])
+                        params = filename.split('_')
+                        params = [p.replace('-', ' - ') for p in params]
+                        params = [p.replace('.csv', '') for p in params]
+                        params[1] = params[1].replace(' - ', ' ')
+                        tree.insert('', 'end', files[i], text=params[0], values=(params[1],params[2],params[3],params[4],params[5]))
                     except:
                         None
                 return tree
 
-            tree = Treeview(show="tree")
+            removeDesc = Label(text="The dash (-) in columns price - power represents the search parameters\nby wich the ads have been indexed. They follow the format: from - to\n Exaple for mileage: from 20000 - to 60000")
+            removeDesc.grid(row=1,column=4, columnspan=2)
+            removeDesc['font'] = font.Font(family='Helvetica')
+            removeDesc['font'] = font.Font(size=13)
+            
+            tree = Treeview()
+            tree["columns"]=("model","price","reg","mileage","power")
+            tree.column("#0", width=100, minwidth=10)
+            tree.column("#1", width=100, minwidth=10)
+            tree.column("#2", width=100, minwidth=10)
+            tree.column("#3", width=100, minwidth=10)
+            tree.column("#4", width=100, minwidth=10)
+            tree.column("#5", width=100, minwidth=10)
+            
+            tree.heading("#0",text="Make",anchor=W)
+            tree.heading("#1", text="Model",anchor=W)
+            tree.heading("#2", text="Price",anchor=W)
+            tree.heading("#3", text="Registration",anchor=W)
+            tree.heading("#4", text="Mileage",anchor=W)
+            tree.heading("#5", text="Power",anchor=W)
+            
             tree.grid(row=2,column=4, columnspan=2,rowspan=10)
 
             # remove button
             removeText = Label(text="Stop tracking a search")
-            removeText.grid(row=0,column=4,columnspan=2,padx=(10, 10),pady=(10, 10))
+            removeText.grid(row=0,column=4,padx=(10, 10))
             removeText['font'] = font.Font(family='Helvetica')
             removeText['font'] = font.Font(size=15)
 
             removeButton = Button(self, text="Remove", command=rm)
-            removeButton.grid(row=1,column=4,padx=(10, 10),pady=(5, 0))
+            removeButton.grid(row=0,column=5,padx=(10, 10))
 
             tree = filesList(tree)
 
@@ -242,10 +291,7 @@ class Interface(Tk):
         class Backup:
             def backupthread():
                 backup(maindir)
-                backupSuccessfulText = Label(text="Backup Successful",background ="light green",font=("Helvetica", 16))
-                backupSuccessfulText.grid(row=2,column=6,padx=(10, 10),pady=(10, 10))
-                time.sleep(10)
-                backupSuccessfulText.grid_remove()
+                Feedback.successful()
 
             def bck():
                 bckupThread = th.Thread(target=Backup.backupthread)
@@ -253,9 +299,9 @@ class Interface(Tk):
 
             # backup button
             backupText = Label(text="Backup existing searches")
-            backupText.grid(row=0,column=6,columnspan=2,padx=(10, 10),pady=(10, 10))
+            backupText.grid(row=0,column=2,columnspan=2,padx=(10, 10),pady=(10, 10))
             backupText['font'] = font.Font(family='Helvetica')
             backupText['font'] = font.Font(size=15)
 
             backupButton = Button(self, text="Backup", command=bck)
-            backupButton.grid(row=1,column=6,padx=(10, 10),pady=(5, 0))
+            backupButton.grid(row=1,column=2,columnspan=2,padx=(10, 10),pady=(5, 0))

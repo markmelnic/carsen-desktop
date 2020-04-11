@@ -10,11 +10,15 @@ def remover(maindir, items_to_remove):
     os.chdir(maindir)
     os.chdir("./csv files")
 
-    for file in items_to_remove:
-        fileName = file
-        print(fileName)
-        os.remove(fileName)
-        print("File removed successfully")
+    try:
+        for file in items_to_remove:
+            print(file, "is being removed")
+            fileName = file
+            print(fileName)
+            os.remove(fileName)
+            print("File removed successfully")
+    except:
+        print("Error, probably no file provided")
 
     os.chdir(maindir)
     print("\====================================/\n\n")
