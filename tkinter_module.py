@@ -253,7 +253,7 @@ class Interface(Tk):
                         None
                 return tree
 
-            removeDesc = Label(text="The dash (-) in columns price - power represents the search parameters\nby wich the ads have been indexed. They follow the format: from - to\n Exaple for mileage: from 20000 - to 60000")
+            removeDesc = Label(text="The dash (-) in columns price - power represents the search parameters\nby wich the ads have been indexed. They follow the format: from - to\n Exaple for registration: from 2012 - to 2018")
             removeDesc.grid(row=1,column=4, columnspan=2)
             removeDesc['font'] = font.Font(family='Helvetica')
             removeDesc['font'] = font.Font(size=13)
