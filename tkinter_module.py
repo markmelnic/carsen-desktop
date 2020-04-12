@@ -28,18 +28,10 @@ class Interface(Tk):
             win_size = str(settings[3].strip("\n"))
             win_resizeability = str(settings[5])
 
-        # change settings
-        self.geometry(win_size)
-        if win_resizeability == 0:
-            self.resizable(False, False)
-
-        # progress bar
-        '''
-        class progressBar:
-            progressbar = Progressbar(orient=HORIZONTAL, length=200, mode='determinate')
-            progressbar.place(x=0, y=700, width=1280)
-            progressbar.start()
-        '''
+            # change settings
+            self.geometry(win_size)
+            if win_resizeability == 0:
+                self.resizable(0, 0)
 
         # feedback text
         class Feedback:
@@ -184,6 +176,7 @@ class Interface(Tk):
         class Check:
             def chckThread(workingText, thread):
                 thread.join()
+                Check.printTable()
                 Feedback.successful()
 
             def chck():
@@ -196,6 +189,24 @@ class Interface(Tk):
                 threads.append(chckerThread)
                 threadsThread = th.Thread(target=Check.chckThread, args = (workingText, threads[0],))
                 threadsThread.start()
+                
+            def printTable():
+                os.chdir(maindir)
+                os.chdir("./csv files")
+                with open("changesTemp.csv", mode="r", newline='') as changesFile:
+                    changesReader = csv.reader(changesFile)
+                    changes = list(changesReader)
+                    changesFile.close()
+                print(changes)
+                for i in range(len(changes)):
+                    col = "column"+str(i)
+                    if int(changes[i][2]) > 0:
+                        pr = "+" + str(changes[i][2])
+                    else:
+                        pr = changes[i][2]
+                    ch_tree.insert('', 'end', col, text=changes[i][0], values=(int(changes[i][1]) + 1, pr))
+                os.remove("changesTemp.csv")
+                os.chdir(maindir)
 
             # check button
             chckText = Label(text="Check existing files for changes")
@@ -205,6 +216,20 @@ class Interface(Tk):
 
             chckButton = Button(self, text="Check", command=chck)
             chckButton.grid(row=3,column=2,columnspan=2,padx=(10, 10),pady=(5, 0))
+            
+            global ch_tree
+            # tree
+            ch_tree = Treeview()
+            ch_tree["columns"]=("line","change")
+            ch_tree.column("#0", width=200, minwidth=10)
+            ch_tree.column("#1", width=100, minwidth=10)
+            ch_tree.column("#2", width=100, minwidth=10)
+            
+            ch_tree.heading("#0",text="File",anchor=W)
+            ch_tree.heading("#1", text="Line",anchor=W)
+            ch_tree.heading("#2", text="Change",anchor=W)
+            
+            ch_tree.grid(row=4,column=2, columnspan=2,rowspan=10)
 
         # remove
         class Remover:

@@ -3,6 +3,7 @@
 import pywintypes
 import win32gui
 import win32con
+
 with open('./resources/settings.txt', mode='r') as st:
     settings = st.readlines()
     window_show = int(settings[1])
@@ -21,12 +22,7 @@ import keyboard
 sys.path.insert(0, './mobile_de/')
 
 # import modules
-from backup_module import *
-from search_module import *
 from tkinter_module import *
-from checker_module import *
-from remover_module import *
-
 
 # create folders
 def folderStruct(maindir):

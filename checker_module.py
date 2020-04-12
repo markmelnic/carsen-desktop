@@ -1,5 +1,6 @@
 
 from bs4_module import getCarPriceChecker
+from search_module import score
 from backup_module import *
 
 import os
@@ -64,8 +65,8 @@ def checker(maindir):
         changesReader = csv.reader(changesFile)
         changes = list(changesReader)
         changesFile.close()
-    os.remove("changesTemp.csv")
-  
+    # os.remove("changesTemp.csv")
+
     ind = 0
     if len(changes) == 0:
         print("No changes found")
@@ -143,17 +144,12 @@ def filesThread(threadNumber, file, changesWriter):
                     newPrice = getCarPriceChecker(link)
                     firstPrice = int(data[i + 1][3])
                     if not firstPrice == newPrice:
+                        data[i+1][3] = newPrice
                         changedPrice = firstPrice - newPrice
                         changedPrice = -changedPrice
                         # skip if price hasn't changed, else append the change
                         if not changedPrice == 0:
-                            try:
-                                if not changedPrice == int(data[i + 1][7]):
-                                    data[i + 1][7] == changedPrice
-                                    changesWriter.writerow([file , i + 1, changedPrice])
-                            except:
-                                data[i + 1].append(changedPrice)
-                                changesWriter.writerow([file , i + 1, changedPrice])
+                            changesWriter.writerow([file , i + 1, changedPrice])
                 except:
                     try:
                         for temp in range(2):
@@ -164,13 +160,7 @@ def filesThread(threadNumber, file, changesWriter):
                                 changedPrice = -changedPrice
                                 # skip if price hasn't changed, else append the change
                                 if not changedPrice == 0:
-                                    try:
-                                        if not changedPrice == int(data[i + 1][7]):
-                                            data[i + 1][7] == changedPrice
-                                            changesWriter.writerow([file , i + 1, changedPrice])
-                                    except:
-                                        data[i + 1].append(changedPrice)
-                                        changesWriter.writerow([file , i + 1, changedPrice])
+                                    changesWriter.writerow([file , i + 1, changedPrice])
                     except:
                         print("*ad removed*")
                         data.pop(i + 1)
@@ -180,6 +170,7 @@ def filesThread(threadNumber, file, changesWriter):
             # write data back to file
             csvWriter.writerows(data)
             csvFile.close()
+            score(file)
         print(file, " checked\n")
         print(threadNumber, "executed in", time.time() - time_started)
     except:
