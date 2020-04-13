@@ -18,9 +18,6 @@ import time
 import msvcrt
 import keyboard
 
-# append packages location
-sys.path.insert(0, './mobile_de/')
-
 # import modules
 from tkinter_module import *
 

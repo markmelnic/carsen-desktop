@@ -1,7 +1,113 @@
 
+import os
+import json
 import time
 import requests
 from bs4 import BeautifulSoup
+
+
+# ================== generate search url ===================
+def firstURL(maindir, curdir, input):
+    make = input[0]
+    make = make.lower()
+    model = input[1]
+    minprice = input[2]
+    maxprice = input[3]
+    minreg = input[4]
+    maxreg = input[5]
+    minmileage = input[6]
+    maxmileage = input[7]
+    
+    os.chdir(maindir)
+    os.chdir("./resources")
+    with open("makes.json", 'r', encoding="utf-8", newline='') as mjson:
+        data = mjson.read()
+        makes_dict = (json.loads(data))
+        makes_dict = makes_dict['makes']
+        mjson.close()
+    
+    for i in range(len(makes_dict)):
+        dictindex = makes_dict[i]['n']
+        if dictindex.lower() == make:
+            findindex = i
+            make = makes_dict[i]['i']
+            print(make)
+            break
+    
+    # make
+    if make != '' or 0:
+        makeurl = "&makeModelVariant1.makeId=" + str(make)
+    else:
+        makeurl = ''
+    # model
+    if model != '' or 0:
+        modelurl = "&makeModelVariant1.modelDescription=" + str(model)
+    else:
+        modelurl = ''
+    # price
+    if minprice == '' or 0:
+        minpriceurl = ''
+    else:
+        minpriceurl = "&minPrice=" + str(minprice)
+    if maxprice == '' or 0:
+        maxpriceurl = ''
+    else:
+        maxpriceurl = "&maxPrice=" + str(maxprice)
+    # reg
+    if minreg == '' or 0:
+        minregurl = ''
+    else:
+        minregurl = "&minFirstRegistrationDate=" + str(minreg)
+    if maxreg == '' or 0:
+        maxregurl = ''
+    else:
+        maxregurl = "&maxFirstRegistrationDate=" + str(maxreg)
+    # mileage
+    if minmileage == '' or 0:
+        minmileageurl = ''
+    else:
+        minmileageurl = "&minMileage=" + str(minmileage)
+    if maxmileage == '' or 0:
+        maxmileageurl = ''
+    else:
+        maxmileageurl = "&maxMileage=" + str(maxmileage)
+    
+    urlInit = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&pageNumber=1"
+    
+    finalurl = urlInit + makeurl + modelurl + minpriceurl + maxpriceurl + minregurl + maxregurl + maxmileageurl + minmileageurl
+    print(finalurl)
+    os.chdir(curdir)
+    return finalurl
+
+
+# ================== navigate to next page
+def nextPage(currentURL, currentPage):
+    tempLink = []
+    
+    if currentPage + 1 == 1:
+        nextLink = currentURL
+        nextLink += "&pageNumber=2"
+    else:
+        i = 0
+        while i < len(currentURL):
+            i = currentURL.find("pageNumber=", i)
+            if i == -1:
+                break
+            tempLink.append(i + len("pageNumber="))
+            i += len("pageNumber=")
+            i = currentURL.find("&", i)
+            tempLink.append(i)
+
+        nextLink = ''
+        for i in range(tempLink[0]):
+            nextLink += currentURL[i]
+
+        nextLink += str(currentPage + 2)
+
+        for i in range(len(currentURL) - i - tempLink[0] - len(str(currentPage + 2))):
+            nextLink += currentURL[i + tempLink[0] + len(str(currentPage + 2))]
+
+    return nextLink
 
 
 # ================== get number of pages ==================

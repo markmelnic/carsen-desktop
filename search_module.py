@@ -1,6 +1,5 @@
 
-from bs4_module import *
-from selenium_module import *
+from mobile_de_module import *
 
 import os
 import io
@@ -8,24 +7,19 @@ import csv
 import time
 import threading
 
-
+# initiate search
 def search(maindir, srcInput):
     print("\n\n\n/====================================\\")
     print("\nSearcher initiated")
     os.chdir(maindir)
     os.chdir('./csv files')
-
+    csvdir = os.getcwd()
+    
     # ================== initialization ==================
     # inputs
-    #firstinput = inputFunct()
     firstinput = srcInput
 
-    # program start
-    dv = boot()
-    startSearcher(dv)
-    firstSearch(dv, firstinput)
-
-    currentURL = curURL(dv)
+    currentURL = firstURL(maindir, csvdir, firstinput)
     getNumber = getNr(currentURL)
     try:
         converted_pagesnr = getNumber[0]
@@ -37,10 +31,12 @@ def search(maindir, srcInput):
     if (converted_pagesnr == 1) and (adsCheck > 20):
         print("Possible error, trying again...")
         # retry
+        '''
         dv = boot()
         startSearcher(dv)
         firstSearch(dv, firstinput)
-        currentURL = curURL(dv)
+        '''
+        currentURL = firstURL(maindir, csvdir, firstinput)
         getNumber = getNr(currentURL)
         try:
             converted_pagesnr = getNumber[0]
@@ -67,9 +63,6 @@ def search(maindir, srcInput):
     with open(linksFileName, mode="w") as linksFile:
         threads = []
         for currentPage in range(converted_pagesnr):
-            if currentPage == 0:
-                currentURL = curURL(dv)
-                killd(dv)
             threadNumber = "Thread " + str(currentPage)
             thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
             threads.append(thread)
@@ -80,7 +73,9 @@ def search(maindir, srcInput):
                 for thread in threads:
                     thread.join()
                 threads = []
-            currentURL = nextPage(dv, currentURL, currentPage)
+            
+            #currentURL = nextPage(dv, currentURL, currentPage)
+            currentURL = nextPage(currentURL, currentPage)
 
         # wait for all threads to finish execution
         for thread in threads:
@@ -105,27 +100,6 @@ def search(maindir, srcInput):
         print(len(carLink), "ad to process\n--------------------")
     else:
         print(len(carLink), "ads to process\n--------------------")
-
-    '''
-    # search parameters file
-    os.chdir(maindir)
-    os.chdir('./csv files')
-    os.chdir('./search parameters')
-
-    if carModel == "":
-        paramsFileName = "params_" + carMake + ".txt"
-    else:
-        paramsFileName = "params_" + carMake + "_" + carModel + ".txt"
-
-    with open(paramsFileName, mode="w") as paramsFile:
-        paramsFile.write("%s\n" % firstinput[0])
-        paramsFile.write("%s\n" % firstinput[1])
-        paramsFile.write(firstinput[2] + "-" + firstinput[3] + "\n")
-        paramsFile.write(firstinput[4] + "-" + firstinput[5] + "\n")
-        paramsFile.write(firstinput[6] + "-" + firstinput[7] + "\n")
-        paramsFile.write(firstinput[8] + "-" + firstinput[9] + "\n")
-        paramsFile.close()
-    '''
 
     os.chdir(maindir)
     os.chdir('./csv files')
@@ -216,6 +190,7 @@ def getData(threadNumber, carLink, csvWriter):
     csvWriter.writerow([carLink , data[0], data[1], data[2], data[3], data[4]])
     print(threadNumber, "executed in", time.time() - time_started)
 
+
 # give scores
 def score(fileName):
     # read file contents
@@ -240,7 +215,7 @@ def score(fileName):
 
     priceScore = []
     for price in allPrices:
-        priceScore.append((1 - ((price - minPrice) / (maxPrice - minPrice))) / 1.1)
+        priceScore.append(1 - ((price - minPrice) / (maxPrice - minPrice)))
 
     # reg score
     minReg = min(allReg)
@@ -248,7 +223,7 @@ def score(fileName):
     
     regScore = []
     for reg in allReg:
-        regScore.append(((reg - minReg) / (maxReg - minReg)) / 4)
+        regScore.append(1 - (reg - minReg) / (maxReg - minReg))
 
     # mileage score
     minMiles = min(allMiles)
@@ -256,9 +231,10 @@ def score(fileName):
 
     milScore = []
     milTempScore = []
-    for mil, reg in zip(allMiles, allReg):
-        milTempScore.append((mil / 13500) - (2020 - reg))
+    for mil in allMiles:
+        milScore.append(1 - (mil - minMiles) / (maxMiles - minMiles))
 
+    '''
     tmax = max(milTempScore)
     tmin = min(milTempScore)
     for sc in milTempScore:
@@ -266,6 +242,7 @@ def score(fileName):
             milScore.append(1 - sc)
         else:
             milScore.append(1 - ((sc - tmin) / (tmax - tmin)))
+    '''
 
     # final score
     fScore = []
@@ -275,7 +252,7 @@ def score(fileName):
     
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
-        csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score", "Price change since first search"])
+        csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score"])
         for dat, score in zip(data, fScore):
             csvWriter.writerow([dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], score])
         csvFile.close()

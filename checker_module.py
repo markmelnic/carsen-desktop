@@ -1,5 +1,5 @@
 
-from bs4_module import getCarPriceChecker
+from mobile_de_module import getCarPriceChecker
 from search_module import score
 from backup_module import *
 
@@ -113,18 +113,6 @@ def filesThread(threadNumber, file, changesWriter):
                 links.append(data[i + 1][0])
             else:
                 print("Duplicate not included")
-
-        '''
-        #remove duplicate links
-        print("Trying to remove duplicates")
-        links_temp = links
-        links = [] 
-        for link in links_temp: 
-            if not link in links: 
-                links.append(link)
-            else:
-                print("Duplicate removed")
-        '''
 
         # process every link
         with open(file, mode="w", newline='') as csvFile:
