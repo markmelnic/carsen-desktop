@@ -31,11 +31,6 @@ def search(maindir, srcInput):
     if (converted_pagesnr == 1) and (adsCheck > 20):
         print("Possible error, trying again...")
         # retry
-        '''
-        dv = boot()
-        startSearcher(dv)
-        firstSearch(dv, firstinput)
-        '''
         currentURL = firstURL(maindir, csvdir, firstinput)
         getNumber = getNr(currentURL)
         try:
@@ -62,7 +57,7 @@ def search(maindir, srcInput):
     # get links
     with open(linksFileName, mode="w") as linksFile:
         threads = []
-        for currentPage in range(converted_pagesnr):
+        for currentPage in range(1, converted_pagesnr + 1):
             threadNumber = "Thread " + str(currentPage)
             thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
             threads.append(thread)
@@ -74,7 +69,6 @@ def search(maindir, srcInput):
                     thread.join()
                 threads = []
             
-            #currentURL = nextPage(dv, currentURL, currentPage)
             currentURL = nextPage(currentURL, currentPage)
 
         # wait for all threads to finish execution

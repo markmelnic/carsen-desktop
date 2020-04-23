@@ -7,9 +7,8 @@ from remover_module import *
 import os
 import threading as th
 from tkinter import *
-from tkinter.ttk import *
-import tkinter.font as font
-
+import tkinter.ttk as ttk
+import tkinter.font as tkfont
 
 global maindir
 maindir = os.getcwd()
@@ -23,16 +22,90 @@ class Interface(Tk):
         # read settings
         with open('./resources/settings.txt', mode='r') as st:
             settings = st.readlines()
-            window_show = int(settings[1])
             st.close()
-            win_size = str(settings[3].strip("\n"))
-            win_resizeability = str(settings[5])
+            
+        window_show = int(settings[1])
+        win_size = str(settings[3].strip("\n"))
+        win_resizeability = int(settings[5])
 
-            # change settings
-            self.geometry(win_size)
-            if win_resizeability == 0:
-                self.resizable(0, 0)
+        # change settings
+        #self.geometry(win_size)
+        if win_resizeability == 0:
+            self.resizable(0, 0)
+    
+        # tk options
+        default_font = tkfont.nametofont("TkDefaultFont")
+        default_font.configure(family='Montserrat')
+        self.configure(bg='#ffffff')
+        
+        self._frame = None
+        self.switch_frame(SearchPage)
+            
+    def switch_frame(self, frame_class):
+        new_frame = frame_class(self)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.pack()
+                
 
+def navButtons(self, master, nr):
+    navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
+
+    # nav search button
+    searchIcon = PhotoImage(file="./resources/icons/search.png")
+    searchIcon = searchIcon.subsample(8, 8) 
+    navSearchButton = Button(self, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
+    if nr == 1:
+        navSearchButton.config(relief=SUNKEN)
+    navSearchButton['font'] = navf
+    navSearchButton.image = searchIcon
+    navSearchButton.grid(row=10, column=10)
+    navSearchButton.config(width=150, height=50)
+    
+    # nav track button
+    trackIcon = PhotoImage(file="./resources/icons/radar.png")
+    trackIcon = trackIcon.subsample(13, 13) 
+    navTrackButton = Button(self, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
+    if nr == 2:
+        navTrackButton.config(relief=SUNKEN)
+    navTrackButton['font'] = navf
+    navTrackButton.image = trackIcon
+    navTrackButton.grid(row=10, column=20)
+    navTrackButton.config(width=150, height=50)
+    
+    # nav favorites button
+    favoIcon = PhotoImage(file="./resources/icons/favorites.png")
+    favoIcon = favoIcon.subsample(5,5) 
+    navFavoButton = Button(self, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
+    navFavoButton['font'] = navf
+    navFavoButton.image = favoIcon
+    navFavoButton.grid(row=10, column=30)
+    navFavoButton.config(width=150, height=50)
+    
+    # nav settings button
+    settingsIcon = PhotoImage(file="./resources/icons/settings.png")
+    settingsIcon = settingsIcon.subsample(60,60) 
+    navSettingsButton = Button(self, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
+    navSettingsButton['font'] = navf
+    navSettingsButton.image = settingsIcon
+    navSettingsButton.grid(row=10, column= 40)
+    navSettingsButton.config(width=150, height=50)
+        
+
+class SearchPage(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        navButtons(self, master, 1)
+        
+class TrackPage(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        navButtons(self, master, 2)
+        label = Label(text='igor dodon').pack()
+
+        
+'''
         # feedback text
         class Feedback:
             def working():
@@ -314,6 +387,7 @@ class Interface(Tk):
 
         # backup
         class Backup:
+        
             def backupthread():
                 backup(maindir)
                 Feedback.successful()
@@ -330,3 +404,4 @@ class Interface(Tk):
 
             backupButton = Button(self, text="Backup", command=bck)
             backupButton.grid(row=1,column=2,columnspan=2,padx=(10, 10),pady=(5, 0))
+'''

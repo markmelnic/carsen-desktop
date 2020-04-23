@@ -72,9 +72,9 @@ def firstURL(maindir, curdir, input):
     else:
         maxmileageurl = "&maxMileage=" + str(maxmileage)
     
-    urlInit = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&pageNumber=1"
+    urlInit = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&scopeId=C&sfmr=false"
     
-    finalurl = urlInit + makeurl + modelurl + minpriceurl + maxpriceurl + minregurl + maxregurl + maxmileageurl + minmileageurl
+    finalurl = urlInit + makeurl + modelurl + minpriceurl + maxpriceurl + minregurl + maxregurl + maxmileageurl + minmileageurl + "&pageNumber=1"
     print(finalurl)
     os.chdir(curdir)
     return finalurl
@@ -83,29 +83,25 @@ def firstURL(maindir, curdir, input):
 # ================== navigate to next page
 def nextPage(currentURL, currentPage):
     tempLink = []
-    
-    if currentPage + 1 == 1:
-        nextLink = currentURL
-        nextLink += "&pageNumber=2"
-    else:
-        i = 0
-        while i < len(currentURL):
-            i = currentURL.find("pageNumber=", i)
-            if i == -1:
-                break
-            tempLink.append(i + len("pageNumber="))
-            i += len("pageNumber=")
-            i = currentURL.find("&", i)
-            tempLink.append(i)
 
-        nextLink = ''
-        for i in range(tempLink[0]):
-            nextLink += currentURL[i]
+    i = 0
+    while i < len(currentURL):
+        i = currentURL.find("pageNumber=", i)
+        if i == -1:
+            break
+        tempLink.append(i + len("pageNumber="))
+        i += len("pageNumber=")
+        i = currentURL.find("&", i)
+        tempLink.append(i)
 
-        nextLink += str(currentPage + 2)
+    nextLink = ''
+    for i in range(tempLink[0]):
+        nextLink += currentURL[i]
 
-        for i in range(len(currentURL) - i - tempLink[0] - len(str(currentPage + 2))):
-            nextLink += currentURL[i + tempLink[0] + len(str(currentPage + 2))]
+    nextLink += str(currentPage + 2)
+
+    for i in range(len(currentURL) - i - tempLink[0] - len(str(currentPage + 2))):
+        nextLink += currentURL[i + tempLink[0] + len(str(currentPage + 2))]
 
     return nextLink
 
