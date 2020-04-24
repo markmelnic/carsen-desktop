@@ -27,7 +27,7 @@ class Interface(Tk):
         window_show = int(settings[1])
         win_size = str(settings[3].strip("\n"))
         win_resizeability = int(settings[5])
-
+        
         # change settings
         #self.geometry(win_size)
         if win_resizeability == 0:
@@ -48,8 +48,8 @@ class Interface(Tk):
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
-        self._frame.pack()
-                
+        self._frame.grid()
+
 
 def navButtons(self, master, nr):
     navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
@@ -57,7 +57,7 @@ def navButtons(self, master, nr):
     # nav search button
     searchIcon = PhotoImage(file="./resources/icons/search.png")
     searchIcon = searchIcon.subsample(8, 8) 
-    navSearchButton = Button(self, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
+    navSearchButton = ttk.Button(self, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
     if nr == 1:
         navSearchButton.config(relief=SUNKEN)
     navSearchButton['font'] = navf
@@ -68,7 +68,7 @@ def navButtons(self, master, nr):
     # nav track button
     trackIcon = PhotoImage(file="./resources/icons/radar.png")
     trackIcon = trackIcon.subsample(13, 13) 
-    navTrackButton = Button(self, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
+    navTrackButton = ttk.Button(self, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
     if nr == 2:
         navTrackButton.config(relief=SUNKEN)
     navTrackButton['font'] = navf
@@ -79,7 +79,7 @@ def navButtons(self, master, nr):
     # nav favorites button
     favoIcon = PhotoImage(file="./resources/icons/favorites.png")
     favoIcon = favoIcon.subsample(5,5) 
-    navFavoButton = Button(self, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
+    navFavoButton = ttk.Button(self, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
     navFavoButton['font'] = navf
     navFavoButton.image = favoIcon
     navFavoButton.grid(row=10, column=30)
@@ -88,7 +88,7 @@ def navButtons(self, master, nr):
     # nav settings button
     settingsIcon = PhotoImage(file="./resources/icons/settings.png")
     settingsIcon = settingsIcon.subsample(60,60) 
-    navSettingsButton = Button(self, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
+    navSettingsButton = ttk.Button(self, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
     navSettingsButton['font'] = navf
     navSettingsButton.image = settingsIcon
     navSettingsButton.grid(row=10, column= 40)
@@ -148,63 +148,107 @@ class SearchPage(Frame):
         navSettingsButton.grid(row=10, column= 40)
         navSettingsButton.config(width=150, height=50)
 
-# ========== MAIN CONTENT
+    # ========== MAIN CONTENT
         titlef = tkfont.Font(family='Montserrat' ,size=16)
         labelf = tkfont.Font(family='Montserrat' ,size=12)
         
-        mainc = Frame(self)
+        mainc = ttk.Frame(self)
         mainc.config(width = 600, height = 700)
         mainc.grid(row = 20, column = 0,sticky="new")
         
-        title = Label(mainc, text = "Index a new search")
-        title.grid(row = 0, column = 0, columnspan = 40,padx=(10,10), pady=(5,5))
+        title = ttk.Label(mainc, text = "Index a new search")
+        title.grid(row = 10, column = 10, columnspan = 40,padx=(10,10), pady=(5,5))
         title['font'] = titlef
-
+        
         '''
-        # search button
-        srcButton = Button(self, text="Search")
-        srcButton.grid(row=15,column=0,columnspan = 2,padx=(10, 10),pady=(5, 0))
-
-        srcText = Label(mainc, text="Create a new search")
-        srcText.grid(row=0,column=0,columnspan = 2,padx=(10, 10),pady=(10, 10))
+        # Vehicle type radio button
+        vehTypeTxt = ttk.Label(mainc, text="Vehicle type:",justify = RIGHT)
+        vehTypeTxt['font'] = labelf
+        vehTypeTxt.grid(row=20,column=50,padx=(10,10), pady=(5,5), sticky = 'e')
+        
+        vehs = ["sedan", "suv"]
+        images = [PhotoImage(file="./resources/vehicles/sedan.png"),PhotoImage(file="./resources/vehicles/suv.png")]
+        
+        cbs = [1,2]
+        for i in range(len(vehs)):
+            cbs[i] = Checkbutton(mainc,text = vehs[i], image = images[i],indicatoron=False,onvalue=1, offvalue=0,compound='top',bg='#fff')
+            cbs[i].image = images[i]
+            cbs[i]['font'] = titlef
+            cbs[i].grid(row=(30+i*10),column=50, padx=5,pady=5) 
         '''
-
+        
         # manufacturer
-        makeTxt = Label(mainc, text="Car manufacturer:", justify = LEFT)
+        makeTxt = ttk.Label(mainc, text="Car manufacturer:")
         makeTxt['font'] = labelf
-        makeTxt.grid(row=10,column=0,padx=(10,10), pady=(5,5), sticky = 'w')
-        makeField = Entry(mainc)
-        makeField.grid(row=10,column=10)
-
+        makeTxt.grid(row=20,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
+        makeField = ttk.Entry(mainc)
+        makeField.grid(row=20,column=20)
+        
 
         # model
-        modelTxt = Label(mainc, text="Car model:", justify = LEFT)
+        modelTxt = ttk.Label(mainc, text="Car model:")
         modelTxt['font'] = labelf
-        modelTxt.grid(row=20,column=0,padx=(10,10), pady=(5,5), sticky = 'w')
-        modelField = Entry(mainc)
-        modelField.grid(row=20,column=10)
+        modelTxt.grid(row=30,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
+        modelField = ttk.Entry(mainc)
+        modelField.grid(row=30,column=20)
 
 
         # price
-        priceTxt = Label(mainc, text="Price range (EURO):", justify = LEFT)
+        priceTxt = ttk.Label(mainc, text="Price range (EURO):")
         priceTxt['font'] = labelf
-        priceTxt.grid(row=30,column=0,padx=(10,10), pady=(5,5), sticky = 'w')
+        priceTxt.grid(row=40,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
         # from
-        fieldpriceTxtFrom = Entry(mainc)
-        fieldpriceTxtFrom.grid(row=30,column=10)
+        fieldpriceTxtFrom = ttk.Entry(mainc)
+        fieldpriceTxtFrom.grid(row=40,column=20)
         #to
-        priceTxtTo = Label(mainc, text="to")
+        priceTxtTo = ttk.Label(mainc, text="to")
         priceTxtTo['font'] = labelf
-        priceTxtTo.grid(row=30,column=20,padx=(10,10), pady=(5,5))
-        fieldpriceTxtTo = Entry(mainc)
-        fieldpriceTxtTo.grid(row=30,column=30)
+        priceTxtTo.grid(row=40,column=30,padx=(10,10), pady=(5,5))
+        fieldpriceTxtTo = ttk.Entry(mainc)
+        fieldpriceTxtTo.grid(row=40,column=40)
+        
+        
+        # mileage
+        mileageTxt = ttk.Label(mainc, text="Mileage range (KM):")
+        mileageTxt['font'] = labelf
+        mileageTxt.grid(row=50,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
+        # from
+        fieldmileageTxtFrom = ttk.Entry(mainc)
+        fieldmileageTxtFrom.grid(row=50,column=20)
+        #to
+        mileageTxtTo = ttk.Label(mainc, text="to")
+        mileageTxtTo['font'] = labelf
+        mileageTxtTo.grid(row=50,column=30,padx=(10,10), pady=(5,5))
+        fieldmileageTxtTo = ttk.Entry(mainc)
+        fieldmileageTxtTo.grid(row=50,column=40)
+        
+        
+        # mileage
+        regTxt = ttk.Label(mainc, text="Registration years:")
+        regTxt['font'] = labelf
+        regTxt.grid(row=60,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
+        # from
+        fieldregTxtFrom = ttk.Entry(mainc)
+        fieldregTxtFrom.grid(row=60,column=20)
+        #to
+        regTxtTo = ttk.Label(mainc, text="to")
+        regTxtTo['font'] = labelf
+        regTxtTo.grid(row=60,column=30,padx=(10,10), pady=(5,5))
+        fieldregTxtTo = ttk.Entry(mainc)
+        fieldregTxtTo.grid(row=60,column=40)
+        
+        
+        # search button
+        srcButton = Button(mainc, text="Search!",bg='#5e5e5e', fg='#eae8e8')
+        srcButton.grid(row=70,column=10,columnspan=40,padx=(10, 10),pady=(10, 10))
+        srcButton['font'] = titlef
 
         
 class TrackPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
         
-# ========== NAVIGATION
+    # ========== NAVIGATION
         navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
         nr = 2
         # nav search button
@@ -247,7 +291,7 @@ class TrackPage(Frame):
         navSettingsButton.grid(row=10, column= 40)
         navSettingsButton.config(width=150, height=50)
         
-# ========== MAIN CONTENT
+    # ========== MAIN CONTENT
 
         
 '''
@@ -306,89 +350,6 @@ class TrackPage(Frame):
                 threads.append(srchThread)
                 threadsThread = th.Thread(target=Search.threadder, args = (workingText, threads[0],))
                 threadsThread.start()
-
-            # search button
-            srcButton = Button(self, text="Search",command=retrieve_inputs)
-            srcButton.grid(row=15,column=0,columnspan = 2,padx=(10, 10),pady=(5, 0))
-
-            srcText = Label(text="Create a new search")
-            srcText.grid(row=0,column=0,columnspan = 2,padx=(10, 10),pady=(10, 10))
-            srcText['font'] = font.Font(family='Helvetica')
-            srcText['font'] = font.Font(size=15)
-
-
-            # manufacturer
-            makeTxt = Label(text="Car manufacturer")
-            makeTxt.grid(row=1,column=0,padx=(10, 10),pady=(10, 10))
-            makeField = Entry()
-            makeField.grid(row=1,column=1,padx=(10, 10),pady=(10, 10))
-
-
-            # model
-            modelTxt = Label(text="Car model")
-            modelTxt.grid(row=2,column=0,padx=(10, 10),pady=(10, 10))
-            modelField = Entry()
-            modelField.grid(row=2,column=1,padx=(10, 10),pady=(10, 10))
-
-
-            # price
-            priceTxt = Label(text="Price range (EURO):")
-            priceTxt.grid(row=3,column=0,padx=(10, 5),pady=(10, 10))
-            # from
-            priceTxtFrom = Label(text="From")
-            priceTxtFrom.grid(row=4,column=0,padx=(10, 5))
-            fieldpriceTxtFrom = Entry()
-            fieldpriceTxtFrom.grid(row=4,column=1,padx=(5, 5))
-            #to
-            priceTxtTo = Label(text="to")
-            priceTxtTo.grid(row=5,column=0,padx=(5, 5))
-            fieldpriceTxtTo = Entry()
-            fieldpriceTxtTo.grid(row=5,column=1,padx=(5, 5))
-
-
-            # reg
-            regTxt = Label(text="Registration years range:")
-            regTxt.grid(row=6,column=0,padx=(10, 5),pady=(10, 10))
-            # from
-            regTxtFrom = Label(text="From")
-            regTxtFrom.grid(row=7,column=0,padx=(10, 5))
-            fieldregTxtFrom = Entry()
-            fieldregTxtFrom.grid(row=7,column=1,padx=(5, 5))
-            #to
-            regTxtTo = Label(text="to")
-            regTxtTo.grid(row=8,column=0,padx=(5, 5))
-            fieldregTxtTo = Entry()
-            fieldregTxtTo.grid(row=8,column=1,padx=(5, 5))
-
-
-            # mileage
-            mileageTxt = Label(text="Mileage range (KM):")
-            mileageTxt.grid(row=9,column=0,padx=(10, 5),pady=(10, 10))
-            # from
-            mileageTxtFrom = Label(text="From")
-            mileageTxtFrom.grid(row=10,column=0,padx=(10, 5))
-            fieldmileageTxtFrom = Entry()
-            fieldmileageTxtFrom.grid(row=10,column=1,padx=(5, 5))
-            #to
-            mileageTxtTo = Label(text="to")
-            mileageTxtTo.grid(row=11,column=0,padx=(5, 5))
-            fieldmileageTxtTo = Entry()
-            fieldmileageTxtTo.grid(row=11,column=1,padx=(5, 5))
-
-
-            # power
-            powerTxt = Label(text="Power range (HP):")
-            powerTxt.grid(row=12,column=0,padx=(10, 5),pady=(10, 10))
-            # from
-            powerTxtFrom = Label(text="From")
-            powerTxtFrom.grid(row=13,column=0,padx=(10, 5))
-            fieldpowerTxtFrom = Entry()
-            fieldpowerTxtFrom.grid(row=13,column=1,padx=(5, 5))
-            #to
-            powerTxtTo = Label(text="to")
-            powerTxtTo.grid(row=14,column=0,padx=(5, 5))
-            fieldpowerTxtTo = Entry()
-            fieldpowerTxtTo.grid(row=14,column=1,padx=(5, 5))
 
         # check
         class Check:
