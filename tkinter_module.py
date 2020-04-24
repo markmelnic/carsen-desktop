@@ -33,10 +33,12 @@ class Interface(Tk):
         if win_resizeability == 0:
             self.resizable(0, 0)
     
+        '''
         # tk options
         default_font = tkfont.nametofont("TkDefaultFont")
         default_font.configure(family='Montserrat')
-        self.configure(bg='#ffffff')
+        self.configure(bg='#fff')
+        '''
         
         self._frame = None
         self.switch_frame(SearchPage)
@@ -96,13 +98,156 @@ def navButtons(self, master, nr):
 class SearchPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
-        navButtons(self, master, 1)
+        
+# ========== NAVIGATION
+
+        navmenu = Frame(self)
+        navmenu.config(height = 50, width = 600)
+        navmenu.grid(row = 0, column = 0,sticky="new")
+        
+        
+        navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
+        nr = 1
+        # nav search button
+        searchIcon = PhotoImage(file="./resources/icons/search.png")
+        searchIcon = searchIcon.subsample(8, 8) 
+        navSearchButton = Button(navmenu, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
+        if nr == 1:
+            navSearchButton.config(relief=SUNKEN)
+        navSearchButton['font'] = navf
+        navSearchButton.image = searchIcon
+        navSearchButton.grid(row=10, column=10)
+        navSearchButton.config(width=150, height=50)
+        
+        # nav track button
+        trackIcon = PhotoImage(file="./resources/icons/radar.png")
+        trackIcon = trackIcon.subsample(13, 13) 
+        navTrackButton = Button(navmenu, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
+        if nr == 2:
+            navTrackButton.config(relief=SUNKEN)
+        navTrackButton['font'] = navf
+        navTrackButton.image = trackIcon
+        navTrackButton.grid(row=10, column=20)
+        navTrackButton.config(width=150, height=50)
+        
+        # nav favorites button
+        favoIcon = PhotoImage(file="./resources/icons/favorites.png")
+        favoIcon = favoIcon.subsample(5,5) 
+        navFavoButton = Button(navmenu, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
+        navFavoButton['font'] = navf
+        navFavoButton.image = favoIcon
+        navFavoButton.grid(row=10, column=30)
+        navFavoButton.config(width=150, height=50)
+        
+        # nav settings button
+        settingsIcon = PhotoImage(file="./resources/icons/settings.png")
+        settingsIcon = settingsIcon.subsample(60,60) 
+        navSettingsButton = Button(navmenu, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
+        navSettingsButton['font'] = navf
+        navSettingsButton.image = settingsIcon
+        navSettingsButton.grid(row=10, column= 40)
+        navSettingsButton.config(width=150, height=50)
+
+# ========== MAIN CONTENT
+        titlef = tkfont.Font(family='Montserrat' ,size=16)
+        labelf = tkfont.Font(family='Montserrat' ,size=12)
+        
+        mainc = Frame(self)
+        mainc.config(width = 600, height = 700)
+        mainc.grid(row = 20, column = 0,sticky="new")
+        
+        title = Label(mainc, text = "Index a new search")
+        title.grid(row = 0, column = 0, columnspan = 40,padx=(10,10), pady=(5,5))
+        title['font'] = titlef
+
+        '''
+        # search button
+        srcButton = Button(self, text="Search")
+        srcButton.grid(row=15,column=0,columnspan = 2,padx=(10, 10),pady=(5, 0))
+
+        srcText = Label(mainc, text="Create a new search")
+        srcText.grid(row=0,column=0,columnspan = 2,padx=(10, 10),pady=(10, 10))
+        '''
+
+        # manufacturer
+        makeTxt = Label(mainc, text="Car manufacturer:", justify = LEFT)
+        makeTxt['font'] = labelf
+        makeTxt.grid(row=10,column=0,padx=(10,10), pady=(5,5), sticky = 'w')
+        makeField = Entry(mainc)
+        makeField.grid(row=10,column=10)
+
+
+        # model
+        modelTxt = Label(mainc, text="Car model:", justify = LEFT)
+        modelTxt['font'] = labelf
+        modelTxt.grid(row=20,column=0,padx=(10,10), pady=(5,5), sticky = 'w')
+        modelField = Entry(mainc)
+        modelField.grid(row=20,column=10)
+
+
+        # price
+        priceTxt = Label(mainc, text="Price range (EURO):", justify = LEFT)
+        priceTxt['font'] = labelf
+        priceTxt.grid(row=30,column=0,padx=(10,10), pady=(5,5), sticky = 'w')
+        # from
+        fieldpriceTxtFrom = Entry(mainc)
+        fieldpriceTxtFrom.grid(row=30,column=10)
+        #to
+        priceTxtTo = Label(mainc, text="to")
+        priceTxtTo['font'] = labelf
+        priceTxtTo.grid(row=30,column=20,padx=(10,10), pady=(5,5))
+        fieldpriceTxtTo = Entry(mainc)
+        fieldpriceTxtTo.grid(row=30,column=30)
+
         
 class TrackPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
-        navButtons(self, master, 2)
-        label = Label(text='igor dodon').pack()
+        
+# ========== NAVIGATION
+        navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
+        nr = 2
+        # nav search button
+        searchIcon = PhotoImage(file="./resources/icons/search.png")
+        searchIcon = searchIcon.subsample(8, 8) 
+        navSearchButton = Button(self, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
+        if nr == 1:
+            navSearchButton.config(relief=SUNKEN)
+        navSearchButton['font'] = navf
+        navSearchButton.image = searchIcon
+        navSearchButton.grid(row=10, column=10)
+        navSearchButton.config(width=150, height=50)
+        
+        # nav track button
+        trackIcon = PhotoImage(file="./resources/icons/radar.png")
+        trackIcon = trackIcon.subsample(13, 13) 
+        navTrackButton = Button(self, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
+        if nr == 2:
+            navTrackButton.config(relief=SUNKEN)
+        navTrackButton['font'] = navf
+        navTrackButton.image = trackIcon
+        navTrackButton.grid(row=10, column=20)
+        navTrackButton.config(width=150, height=50)
+        
+        # nav favorites button
+        favoIcon = PhotoImage(file="./resources/icons/favorites.png")
+        favoIcon = favoIcon.subsample(5,5) 
+        navFavoButton = Button(self, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
+        navFavoButton['font'] = navf
+        navFavoButton.image = favoIcon
+        navFavoButton.grid(row=10, column=30)
+        navFavoButton.config(width=150, height=50)
+        
+        # nav settings button
+        settingsIcon = PhotoImage(file="./resources/icons/settings.png")
+        settingsIcon = settingsIcon.subsample(60,60) 
+        navSettingsButton = Button(self, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
+        navSettingsButton['font'] = navf
+        navSettingsButton.image = settingsIcon
+        navSettingsButton.grid(row=10, column= 40)
+        navSettingsButton.config(width=150, height=50)
+        
+# ========== MAIN CONTENT
 
         
 '''
