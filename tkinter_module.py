@@ -50,14 +50,18 @@ class Interface(Tk):
         self._frame = new_frame
         self._frame.grid()
 
-
-def navButtons(self, master, nr):
+        
+def navMenu(self, master, nr):
+    navmenu = Frame(self)
+    navmenu.config(height = 50, width = 600)
+    navmenu.grid(row = 0, column = 0,sticky="new")
+    
+    
     navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
-
     # nav search button
     searchIcon = PhotoImage(file="./resources/icons/search.png")
-    searchIcon = searchIcon.subsample(8, 8) 
-    navSearchButton = ttk.Button(self, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
+    searchIcon = searchIcon.subsample(8,8) 
+    navSearchButton = Button(navmenu, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
     if nr == 1:
         navSearchButton.config(relief=SUNKEN)
     navSearchButton['font'] = navf
@@ -67,8 +71,8 @@ def navButtons(self, master, nr):
     
     # nav track button
     trackIcon = PhotoImage(file="./resources/icons/radar.png")
-    trackIcon = trackIcon.subsample(13, 13) 
-    navTrackButton = ttk.Button(self, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
+    trackIcon = trackIcon.subsample(8,8) 
+    navTrackButton = Button(navmenu, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
     if nr == 2:
         navTrackButton.config(relief=SUNKEN)
     navTrackButton['font'] = navf
@@ -78,8 +82,8 @@ def navButtons(self, master, nr):
     
     # nav favorites button
     favoIcon = PhotoImage(file="./resources/icons/favorites.png")
-    favoIcon = favoIcon.subsample(5,5) 
-    navFavoButton = ttk.Button(self, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
+    favoIcon = favoIcon.subsample(6,6) 
+    navFavoButton = Button(navmenu, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
     navFavoButton['font'] = navf
     navFavoButton.image = favoIcon
     navFavoButton.grid(row=10, column=30)
@@ -87,67 +91,20 @@ def navButtons(self, master, nr):
     
     # nav settings button
     settingsIcon = PhotoImage(file="./resources/icons/settings.png")
-    settingsIcon = settingsIcon.subsample(60,60) 
-    navSettingsButton = ttk.Button(self, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
+    settingsIcon = settingsIcon.subsample(8,8) 
+    navSettingsButton = Button(navmenu, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
     navSettingsButton['font'] = navf
     navSettingsButton.image = settingsIcon
     navSettingsButton.grid(row=10, column= 40)
     navSettingsButton.config(width=150, height=50)
         
-
+        
 class SearchPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
         
-# ========== NAVIGATION
-
-        navmenu = Frame(self)
-        navmenu.config(height = 50, width = 600)
-        navmenu.grid(row = 0, column = 0,sticky="new")
-        
-        
-        navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
         nr = 1
-        # nav search button
-        searchIcon = PhotoImage(file="./resources/icons/search.png")
-        searchIcon = searchIcon.subsample(8, 8) 
-        navSearchButton = Button(navmenu, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
-        if nr == 1:
-            navSearchButton.config(relief=SUNKEN)
-        navSearchButton['font'] = navf
-        navSearchButton.image = searchIcon
-        navSearchButton.grid(row=10, column=10)
-        navSearchButton.config(width=150, height=50)
-        
-        # nav track button
-        trackIcon = PhotoImage(file="./resources/icons/radar.png")
-        trackIcon = trackIcon.subsample(13, 13) 
-        navTrackButton = Button(navmenu, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
-        if nr == 2:
-            navTrackButton.config(relief=SUNKEN)
-        navTrackButton['font'] = navf
-        navTrackButton.image = trackIcon
-        navTrackButton.grid(row=10, column=20)
-        navTrackButton.config(width=150, height=50)
-        
-        # nav favorites button
-        favoIcon = PhotoImage(file="./resources/icons/favorites.png")
-        favoIcon = favoIcon.subsample(5,5) 
-        navFavoButton = Button(navmenu, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
-        navFavoButton['font'] = navf
-        navFavoButton.image = favoIcon
-        navFavoButton.grid(row=10, column=30)
-        navFavoButton.config(width=150, height=50)
-        
-        # nav settings button
-        settingsIcon = PhotoImage(file="./resources/icons/settings.png")
-        settingsIcon = settingsIcon.subsample(60,60) 
-        navSettingsButton = Button(navmenu, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
-        navSettingsButton['font'] = navf
-        navSettingsButton.image = settingsIcon
-        navSettingsButton.grid(row=10, column= 40)
-        navSettingsButton.config(width=150, height=50)
-
+        navMenu(self, master, nr)
     # ========== MAIN CONTENT
         titlef = tkfont.Font(family='Montserrat' ,size=16)
         labelf = tkfont.Font(family='Montserrat' ,size=12)
@@ -248,49 +205,8 @@ class TrackPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
         
-    # ========== NAVIGATION
-        navf = tkfont.Font(family='Montserrat' ,size=16 ,weight="bold")
         nr = 2
-        # nav search button
-        searchIcon = PhotoImage(file="./resources/icons/search.png")
-        searchIcon = searchIcon.subsample(8, 8) 
-        navSearchButton = Button(self, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
-        if nr == 1:
-            navSearchButton.config(relief=SUNKEN)
-        navSearchButton['font'] = navf
-        navSearchButton.image = searchIcon
-        navSearchButton.grid(row=10, column=10)
-        navSearchButton.config(width=150, height=50)
-        
-        # nav track button
-        trackIcon = PhotoImage(file="./resources/icons/radar.png")
-        trackIcon = trackIcon.subsample(13, 13) 
-        navTrackButton = Button(self, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
-        if nr == 2:
-            navTrackButton.config(relief=SUNKEN)
-        navTrackButton['font'] = navf
-        navTrackButton.image = trackIcon
-        navTrackButton.grid(row=10, column=20)
-        navTrackButton.config(width=150, height=50)
-        
-        # nav favorites button
-        favoIcon = PhotoImage(file="./resources/icons/favorites.png")
-        favoIcon = favoIcon.subsample(5,5) 
-        navFavoButton = Button(self, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
-        navFavoButton['font'] = navf
-        navFavoButton.image = favoIcon
-        navFavoButton.grid(row=10, column=30)
-        navFavoButton.config(width=150, height=50)
-        
-        # nav settings button
-        settingsIcon = PhotoImage(file="./resources/icons/settings.png")
-        settingsIcon = settingsIcon.subsample(60,60) 
-        navSettingsButton = Button(self, image = settingsIcon, text = 'Settings', compound = LEFT, bg='#fff')
-        navSettingsButton['font'] = navf
-        navSettingsButton.image = settingsIcon
-        navSettingsButton.grid(row=10, column= 40)
-        navSettingsButton.config(width=150, height=50)
-        
+        navMenu(self, master, nr)  
     # ========== MAIN CONTENT
 
         
