@@ -8,6 +8,7 @@ import csv
 import time
 import shutil
 import threading
+from datetime import datetime
 
 
 # existing searches checker
@@ -26,7 +27,9 @@ def checker(maindir):
         with os.scandir("./csv files") as entries:
             for entry in entries:
                 if entry.is_file():
-                    files.append(entry.name)
+                    if str(entry) != "<DirEntry 'changesTemp.csv'>":
+                        if str(entry) != "<DirEntry 'changesTimestamp.txt'>":
+                            files.append(entry.name)
     except:
         os.chdir(maindir)
         print("No files found")
@@ -65,7 +68,6 @@ def checker(maindir):
         changesReader = csv.reader(changesFile)
         changes = list(changesReader)
         changesFile.close()
-    # os.remove("changesTemp.csv")
 
     ind = 0
     if len(changes) == 0:
@@ -78,6 +80,12 @@ def checker(maindir):
     if not ind == 0:
         print(ind, "ads removed")
     
+    with open("changesTimestamp.txt", mode="w", newline='') as timestampFile:
+            now = datetime.now()
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            timestampFile.write(dt_string)
+            timestampFile.close()
+            
     # remove backup folder if execution was successful
     os.chdir(maindir)
     os.chdir('./backup')

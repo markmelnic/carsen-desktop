@@ -8,8 +8,8 @@ import os
 import csv
 import operator
 import webbrowser
-from PIL import ImageTk, Image
 import threading as th
+
 from tkinter import *
 import tkinter.ttk as ttk
 import tkinter.font as tkfont
@@ -101,7 +101,7 @@ def navMenu(self, master, nr):
     navSettingsButton.image = settingsIcon
     navSettingsButton.grid(row=10, column= 40)
     navSettingsButton.config(width=150, height=50)
-        
+    
         
 class SearchPage(Frame):
         
@@ -256,6 +256,7 @@ class TrackPage(Frame):
         def chckThread(thread):
                 thread.join()
                 printTable()
+                master.switch_frame(TrackPage)
             
         def printTable():
             os.chdir(maindir)
@@ -271,8 +272,7 @@ class TrackPage(Frame):
                     pr = "+" + str(changes[i][0])
                 else:
                     pr = changes[i][0]
-                changesTree.insert('', 'end', col, text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
-            os.remove("changesTemp.csv")
+                changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
             os.chdir(maindir)
             
             
@@ -302,10 +302,14 @@ class TrackPage(Frame):
         
         # browse button
         def printSelected():
-            for i in range(len(adsTrees)):
-                selectedItem = tuple(adsTrees[i].selection())
+            trees = [changesTree]
+            for tree in adsTrees:
+                trees.append(tree)
+                
+            for tree in trees:
+                selectedItem = tuple(tree.selection())
                 for item in selectedItem:
-                    item = adsTrees[i].item(item)
+                    item = tree.item(item)
                     try:
                         link = item['values'][5]
                         webbrowser.open(link)
@@ -349,7 +353,9 @@ class TrackPage(Frame):
             files = []
             for entry in entries:
                 if entry.is_file():
-                    files.append(entry.name)
+                    if str(entry) != "<DirEntry 'changesTemp.csv'>":
+                        if str(entry) != "<DirEntry 'changesTimestamp.txt'>":
+                            files.append(entry.name)
            
         tabs = []   
         adsTrees = []  
@@ -401,7 +407,13 @@ class TrackPage(Frame):
                 
     # =========== CHANGES TREE
 
-        chl = Label(mainc, text="Changes")
+        # changes title
+        os.chdir("./csv files")
+        with open("changesTimestamp.txt", mode="r") as timestampFile:
+            timetxt = timestampFile.read() 
+            timestampFile.close()
+        os.chdir(maindir)
+        chl = Label(mainc, text="Changes since " + timetxt)
         chl['font'] = titlef
         chl.grid(row=32,column=10,padx=5)
         
@@ -423,6 +435,15 @@ class TrackPage(Frame):
         changesTree.heading("#5", text="Power", anchor=CENTER)
         
         changesTree.grid(row=40,column=10)
+        
+        os.chdir("./csv files")
+        with open("changesTemp.csv", mode="r", newline='') as changesFile:
+            changesReader = csv.reader(changesFile)
+            changes = list(changesReader)
+            changesFile.close()
+        os.chdir(maindir)
+        for i in range(len(changes)):
+            changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
 
         
 '''
@@ -450,99 +471,6 @@ class TrackPage(Frame):
                 time.sleep(10)
                 successfulText.grid_remove()
 
-        # search
-        class Search:
-            def threadder(workingText, thread):
-                thread.join()
-                tree = Remover.tree
-                Remover.filesList(tree)
-                Feedback.successful()
-
-
-            def retrieve_inputs():
-                srcInput = []
-                srcInput.append(Search.makeField.get())
-                srcInput.append(Search.modelField.get())
-                srcInput.append(Search.fieldpriceTxtFrom.get())
-                srcInput.append(Search.fieldpriceTxtTo.get())
-                srcInput.append(Search.fieldregTxtFrom.get())
-                srcInput.append(Search.fieldregTxtTo.get())
-                srcInput.append(Search.fieldmileageTxtFrom.get())
-                srcInput.append(Search.fieldmileageTxtTo.get())
-                srcInput.append(Search.fieldpowerTxtFrom.get())
-                srcInput.append(Search.fieldpowerTxtTo.get())
-
-                threads = []
-                srchThread = th.Thread(target=search, args = (maindir, srcInput))
-                srchThread.start()
-
-                Feedback.working()
-
-                threads.append(srchThread)
-                threadsThread = th.Thread(target=Search.threadder, args = (workingText, threads[0],))
-                threadsThread.start()
-
-        # check
-        class Check:
-            def chckThread(workingText, thread):
-                thread.join()
-                Check.printTable()
-                Feedback.successful()
-
-            def chck():
-                chckerThread = th.Thread(target=checker, args=(maindir,))
-                chckerThread.start()
-                
-                Feedback.working()
-                
-                threads = []
-                threads.append(chckerThread)
-                threadsThread = th.Thread(target=Check.chckThread, args = (workingText, threads[0],))
-                threadsThread.start()
-                
-            def printTable():
-                os.chdir(maindir)
-                os.chdir("./csv files")
-                with open("changesTemp.csv", mode="r", newline='') as changesFile:
-                    changesReader = csv.reader(changesFile)
-                    changes = list(changesReader)
-                    changesFile.close()
-                print(changes)
-                for i in range(len(changes)):
-                    col = "column"+str(i)
-                    if int(changes[i][2]) > 0:
-                        pr = "+" + str(changes[i][2])
-                    else:
-                        pr = changes[i][2]
-                    ch_tree.insert('', 'end', col, text=changes[i][0], values=(int(changes[i][1]) + 1, pr))
-                os.remove("changesTemp.csv")
-                os.chdir(maindir)
-
-            # check button
-            chckText = Label(text="Check existing files for changes")
-            chckText.grid(row=2,column=2,columnspan=2,padx=(10, 10),pady=(10, 10))
-            chckText['font'] = font.Font(family='Helvetica')
-            chckText['font'] = font.Font(size=15)
-
-            chckButton = Button(self, text="Check", command=chck)
-            chckButton.grid(row=3,column=2,columnspan=2,padx=(10, 10),pady=(5, 0))
-            
-            global ch_tree
-            # tree
-            ch_tree = Treeview()
-            ch_tree["columns"]=("line","change")
-            ch_tree.column("#0", width=200, minwidth=10)
-            ch_tree.column("#1", width=100, minwidth=10)
-            ch_tree.column("#2", width=100, minwidth=10)
-            
-            ch_tree.heading("#0",text="File",anchor=W)
-            ch_tree.heading("#1", text="Line",anchor=W)
-            ch_tree.heading("#2", text="Change",anchor=W)
-            
-            ch_tree.grid(row=4,column=2, columnspan=2,rowspan=10)
-
-     
-        # backup
         class Backup:
         
             def backupthread():
