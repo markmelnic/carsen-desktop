@@ -75,6 +75,9 @@ def firstURL(maindir, curdir, input):
     urlInit = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&scopeId=C&sfmr=false"
     
     finalurl = urlInit + makeurl + modelurl + minpriceurl + maxpriceurl + minregurl + maxregurl + maxmileageurl + minmileageurl + "&pageNumber=1"
+    
+    # categories=Cabrio&categories=EstateCar&categories=Limousine&categories=OffRoad&categories=SmallCar&categories=SportsCar&categories=Van
+    
     print(finalurl)
     os.chdir(curdir)
     return finalurl

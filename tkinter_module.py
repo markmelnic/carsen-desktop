@@ -5,6 +5,9 @@ from checker_module import *
 from remover_module import *
 
 import os
+import csv
+import operator
+from PIL import ImageTk, Image
 import threading as th
 from tkinter import *
 import tkinter.ttk as ttk
@@ -100,8 +103,26 @@ def navMenu(self, master, nr):
         
         
 class SearchPage(Frame):
+        
     def __init__(self, master):
         Frame.__init__(self, master)
+        
+        def retrieve_inputs():
+            srcInput = []
+            srcInput.append(makeField.get())
+            srcInput.append(modelField.get())
+            srcInput.append(fieldpriceTxtFrom.get())
+            srcInput.append(fieldpriceTxtTo.get())
+            srcInput.append(fieldregTxtFrom.get())
+            srcInput.append(fieldregTxtTo.get())
+            srcInput.append(fieldmileageTxtFrom.get())
+            srcInput.append(fieldmileageTxtTo.get())
+            srcInput.append(fieldpowerTxtFrom.get())
+            srcInput.append(fieldpowerTxtTo.get())
+
+            threads = []
+            srchThread = th.Thread(target=search, args = (maindir, srcInput))
+            srchThread.start()
         
         nr = 1
         navMenu(self, master, nr)
@@ -119,16 +140,16 @@ class SearchPage(Frame):
         
         '''
         # Vehicle type radio button
-        vehTypeTxt = ttk.Label(mainc, text="Vehicle type:",justify = RIGHT)
+        vehTypeTxt = ttk.Label(mainc, text="Vehicle types:",justify = RIGHT)
         vehTypeTxt['font'] = labelf
         vehTypeTxt.grid(row=20,column=50,padx=(10,10), pady=(5,5), sticky = 'e')
         
-        vehs = ["sedan", "suv"]
+        vehs = ["Sedan", "SUV","Estate car","Coupe/Sports car","Cabriolet/Roadster","Small/City Car"]
         images = [PhotoImage(file="./resources/vehicles/sedan.png"),PhotoImage(file="./resources/vehicles/suv.png")]
         
-        cbs = [1,2]
+        cbs = [1,2,3,4,5,6]
         for i in range(len(vehs)):
-            cbs[i] = Checkbutton(mainc,text = vehs[i], image = images[i],indicatoron=False,onvalue=1, offvalue=0,compound='top',bg='#fff')
+            cbs[i] = Checkbutton(mainc,text = vehs[i], image = images[i],indicatoron=False,onvalue=1, offvalue=0,compound='right',bg='#fff')
             cbs[i].image = images[i]
             cbs[i]['font'] = titlef
             cbs[i].grid(row=(30+i*10),column=50, padx=5,pady=5) 
@@ -180,7 +201,7 @@ class SearchPage(Frame):
         fieldmileageTxtTo.grid(row=50,column=40)
         
         
-        # mileage
+        # registration
         regTxt = ttk.Label(mainc, text="Registration years:")
         regTxt['font'] = labelf
         regTxt.grid(row=60,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
@@ -195,9 +216,24 @@ class SearchPage(Frame):
         fieldregTxtTo.grid(row=60,column=40)
         
         
+        # engine power
+        powerTxt = ttk.Label(mainc, text="Engine power (HP):")
+        powerTxt['font'] = labelf
+        powerTxt.grid(row=70,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
+        # from
+        fieldpowerTxtFrom = ttk.Entry(mainc)
+        fieldpowerTxtFrom.grid(row=70,column=20)
+        #to
+        powerTxtTo = ttk.Label(mainc, text="to")
+        powerTxtTo['font'] = labelf
+        powerTxtTo.grid(row=70,column=30,padx=(10,10), pady=(5,5))
+        fieldpowerTxtTo = ttk.Entry(mainc)
+        fieldpowerTxtTo.grid(row=70,column=40)
+        
+        
         # search button
-        srcButton = Button(mainc, text="Search!",bg='#5e5e5e', fg='#eae8e8')
-        srcButton.grid(row=70,column=10,columnspan=40,padx=(10, 10),pady=(10, 10))
+        srcButton = Button(mainc, text="Search!",bg='#5e5e5e', fg='#eae8e8', command=retrieve_inputs)
+        srcButton.grid(row=80,column=10,columnspan=40,padx=(10, 10),pady=(10, 10))
         srcButton['font'] = titlef
 
         
@@ -208,6 +244,101 @@ class TrackPage(Frame):
         nr = 2
         navMenu(self, master, nr)  
     # ========== MAIN CONTENT
+
+        # styles
+        titlef = tkfont.Font(family='Montserrat' ,size=16)
+        labelf = tkfont.Font(family='Montserrat' ,size=12)
+        
+        ntbkStyle = ttk.Style()
+        ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))
+
+        # main content frame
+        mainc = ttk.Frame(self)
+        mainc.config(width = 600, height = 700)
+        mainc.grid(row = 20, column = 0,sticky="new",pady=5)
+        
+        
+        # add to favorites button
+        trAddtofavIcon = PhotoImage(file="./resources/icons/add_to_favorites.png")
+        trAddtofavIcon = trAddtofavIcon.subsample(6,6) 
+        trAddtofavButton = Button(mainc, image = trAddtofavIcon,compound = LEFT, bg='#fff')
+        trAddtofavButton.image = trAddtofavIcon
+        trAddtofavButton.grid(row=11, column=20,padx=10)
+        trAddtofavButton.config(width=50, height=50)
+
+        
+        # browse button
+        trBrowseIcon = PhotoImage(file="./resources/icons/browse.png")
+        trBrowseIcon = trBrowseIcon.subsample(6,6) 
+        trBrowseButton = Button(mainc, image = trBrowseIcon,compound = LEFT, bg='#fff')
+        trBrowseButton.image = trBrowseIcon
+        trBrowseButton.grid(row=12, column=20,padx=10)
+        trBrowseButton.config(width=50, height=50)
+        
+        
+        # remove button
+        trRmIcon = PhotoImage(file="./resources/icons/remove.png")
+        trRmIcon = trRmIcon.subsample(6,6) 
+        trRmButton = Button(mainc, image = trRmIcon,compound = LEFT, bg='#fff')
+        trRmButton.image = trRmIcon
+        trRmButton.grid(row=29, column=20,padx=10)
+        trRmButton.config(width=50, height=50)
+        
+        
+        # get all files in './csv files'
+        with os.scandir("./csv files") as entries:
+            files = []
+            for entry in entries:
+                if entry.is_file():
+                    files.append(entry.name)
+           
+        tabs = []   
+        trees = []  
+        for i in range(len(files)):    
+            tabs.append(i)
+            trees.append(i)
+        
+        # create the notebook
+        notebk = ttk.Notebook(mainc,width=540, height=650)
+        notebk.grid(row=10,column=10,rowspan=20)
+        for i in range(len(tabs)):
+            tabs[i] = ttk.Frame(notebk, width = 400, height = 400, relief = SUNKEN)
+            title = files[i].split("_")
+            title = (title[0] + " " + title[1].replace("-", " ")).upper()
+            notebk.add(tabs[i], text = title)
+            
+            # get content in csv file
+            os.chdir("./csv files")
+            with open(files[i], mode="r", newline='') as csvFile:
+                csvReader = csv.reader(csvFile)
+                data = sorted(csvReader, reverse=True, key = operator.itemgetter(6))
+                data.pop(0)
+                csvFile.close()
+            os.chdir(maindir)
+            
+            # generate treeview
+            trees[i] = ttk.Treeview(tabs[i], height=32)
+            trees[i]["columns"]=("Registration","Price","Mileage","Power","Score")
+            trees[i].column("#0", width=280, minwidth=140,anchor=W)
+            trees[i].column("#2", width=60, minwidth=60,anchor=CENTER)
+            trees[i].column("#1", width=40, minwidth=40,anchor=CENTER)
+            trees[i].column("#3", width=70, minwidth=70,anchor=CENTER)
+            trees[i].column("#4", width=45, minwidth=45,anchor=CENTER)
+            trees[i].column("#5", width=45, minwidth=45,anchor=CENTER)
+            
+            trees[i].heading("#0",text="Title", anchor=CENTER)
+            trees[i].heading("#1", text="Year", anchor=CENTER)
+            trees[i].heading("#2", text="Price", anchor=CENTER)
+            trees[i].heading("#3", text="Mileage", anchor=CENTER)
+            trees[i].heading("#4", text="Power", anchor=CENTER)
+            trees[i].heading("#5", text="Score", anchor=CENTER)
+            
+            trees[i].grid(row=2,column=4, columnspan=2,rowspan=10)
+            
+            # insert data
+            sortedData = sorted(data)
+            for d in data:
+                trees[i].insert('', 'end', d[0], text=d[1], values=(d[2],d[3],d[4],d[5],d[6]))
 
         
 '''
