@@ -4,19 +4,18 @@ import time
 
 
 # existing searches checker
-def remover(maindir, items_to_remove):
+def remover(maindir, file_to_remove):
     print("\n\n\n/====================================\\")
     print("Remover initiated")
     os.chdir(maindir)
     os.chdir("./csv files")
 
     try:
-        for file in items_to_remove:
-            print(file, "is being removed")
-            fileName = file
-            print(fileName)
-            os.remove(fileName)
-            print("File removed successfully")
+        print(file_to_remove, "is being removed")
+        fileName = file_to_remove
+        print(fileName)
+        os.remove(fileName)
+        print("File removed successfully")
     except:
         print("Error, probably no file provided")
 

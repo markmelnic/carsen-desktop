@@ -7,6 +7,7 @@ from remover_module import *
 import os
 import csv
 import operator
+import webbrowser
 from PIL import ImageTk, Image
 import threading as th
 from tkinter import *
@@ -243,10 +244,42 @@ class TrackPage(Frame):
         
         nr = 2
         navMenu(self, master, nr)  
+        
+        def chck():
+            chckerThread = th.Thread(target=checker, args=(maindir,))
+            chckerThread.start()
+            threads = []
+            threads.append(chckerThread)
+            threadsThread = th.Thread(target=chckThread, args = (threads[0],))
+            threadsThread.start()
+            
+        def chckThread(thread):
+                thread.join()
+                printTable()
+            
+        def printTable():
+            os.chdir(maindir)
+            os.chdir("./csv files")
+            with open("changesTemp.csv", mode="r", newline='') as changesFile:
+                changesReader = csv.reader(changesFile)
+                changes = list(changesReader)
+                changesFile.close()
+            print(changes)
+            for i in range(len(changes)):
+                col = "column"+str(i)
+                if int(changes[i][0]) > 0:
+                    pr = "+" + str(changes[i][0])
+                else:
+                    pr = changes[i][0]
+                changesTree.insert('', 'end', col, text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
+            os.remove("changesTemp.csv")
+            os.chdir(maindir)
+            
+            
     # ========== MAIN CONTENT
 
         # styles
-        titlef = tkfont.Font(family='Montserrat' ,size=16)
+        titlef = tkfont.Font(family='Montserrat' ,size=16, weight = "bold")
         labelf = tkfont.Font(family='Montserrat' ,size=12)
         
         ntbkStyle = ttk.Style()
@@ -258,33 +291,59 @@ class TrackPage(Frame):
         mainc.grid(row = 20, column = 0,sticky="new",pady=5)
         
         
-        # add to favorites button
-        trAddtofavIcon = PhotoImage(file="./resources/icons/add_to_favorites.png")
-        trAddtofavIcon = trAddtofavIcon.subsample(6,6) 
-        trAddtofavButton = Button(mainc, image = trAddtofavIcon,compound = LEFT, bg='#fff')
-        trAddtofavButton.image = trAddtofavIcon
-        trAddtofavButton.grid(row=11, column=20,padx=10)
-        trAddtofavButton.config(width=50, height=50)
-
+        #verify icon
+        trVerifyIcon = PhotoImage(file="./resources/icons/verify.png")
+        trVerifyIcon = trVerifyIcon.subsample(6,6) 
+        trVerifyButton = Button(mainc, image = trVerifyIcon,compound = LEFT, bg='#fff', command = chck)
+        trVerifyButton.image = trVerifyIcon
+        trVerifyButton.grid(row=11, column=20,padx=10)
+        trVerifyButton.config(width=50, height=50)
+        
         
         # browse button
+        def printSelected():
+            for i in range(len(adsTrees)):
+                selectedItem = tuple(adsTrees[i].selection())
+                for item in selectedItem:
+                    item = adsTrees[i].item(item)
+                    try:
+                        link = item['values'][5]
+                        webbrowser.open(link)
+                    except:
+                        None
+            master.switch_frame(TrackPage)
+                
         trBrowseIcon = PhotoImage(file="./resources/icons/browse.png")
         trBrowseIcon = trBrowseIcon.subsample(6,6) 
-        trBrowseButton = Button(mainc, image = trBrowseIcon,compound = LEFT, bg='#fff')
+        trBrowseButton = Button(mainc, image = trBrowseIcon,compound = LEFT, bg='#fff',command = printSelected)
         trBrowseButton.image = trBrowseIcon
         trBrowseButton.grid(row=12, column=20,padx=10)
         trBrowseButton.config(width=50, height=50)
         
         
-        # remove button
+        # add to favorites button
+        trAddtofavIcon = PhotoImage(file="./resources/icons/add_to_favorites.png")
+        trAddtofavIcon = trAddtofavIcon.subsample(6,6) 
+        trAddtofavButton = Button(mainc, image = trAddtofavIcon,compound = LEFT, bg='#fff')
+        trAddtofavButton.image = trAddtofavIcon
+        trAddtofavButton.grid(row=13, column=20,padx=10)
+        trAddtofavButton.config(width=50, height=50)
+
+
+        # remove function
+        def removeFile():
+            file_to_remove = files[notebk.index("current")]
+            remover(maindir, file_to_remove)
+            master.switch_frame(TrackPage)
+        # remove button 
         trRmIcon = PhotoImage(file="./resources/icons/remove.png")
         trRmIcon = trRmIcon.subsample(6,6) 
-        trRmButton = Button(mainc, image = trRmIcon,compound = LEFT, bg='#fff')
+        trRmButton = Button(mainc, image = trRmIcon,compound = LEFT, bg='#fff', command=removeFile)
         trRmButton.image = trRmIcon
         trRmButton.grid(row=29, column=20,padx=10)
         trRmButton.config(width=50, height=50)
         
-        
+    # ========== NOTEBOOK
         # get all files in './csv files'
         with os.scandir("./csv files") as entries:
             files = []
@@ -293,13 +352,13 @@ class TrackPage(Frame):
                     files.append(entry.name)
            
         tabs = []   
-        trees = []  
+        adsTrees = []  
         for i in range(len(files)):    
             tabs.append(i)
-            trees.append(i)
+            adsTrees.append(i)
         
         # create the notebook
-        notebk = ttk.Notebook(mainc,width=540, height=650)
+        notebk = ttk.Notebook(mainc,width=540, height=425)
         notebk.grid(row=10,column=10,rowspan=20)
         for i in range(len(tabs)):
             tabs[i] = ttk.Frame(notebk, width = 400, height = 400, relief = SUNKEN)
@@ -317,28 +376,53 @@ class TrackPage(Frame):
             os.chdir(maindir)
             
             # generate treeview
-            trees[i] = ttk.Treeview(tabs[i], height=32)
-            trees[i]["columns"]=("Registration","Price","Mileage","Power","Score")
-            trees[i].column("#0", width=280, minwidth=140,anchor=W)
-            trees[i].column("#2", width=60, minwidth=60,anchor=CENTER)
-            trees[i].column("#1", width=40, minwidth=40,anchor=CENTER)
-            trees[i].column("#3", width=70, minwidth=70,anchor=CENTER)
-            trees[i].column("#4", width=45, minwidth=45,anchor=CENTER)
-            trees[i].column("#5", width=45, minwidth=45,anchor=CENTER)
+            adsTrees[i] = ttk.Treeview(tabs[i], height=20)
+            adsTrees[i]["columns"]=("Registration","Price","Mileage","Power","Score")
+            adsTrees[i].column("#0", width=280, minwidth=140,anchor=W)
+            adsTrees[i].column("#2", width=60, minwidth=60,anchor=CENTER)
+            adsTrees[i].column("#1", width=40, minwidth=40,anchor=CENTER)
+            adsTrees[i].column("#3", width=70, minwidth=70,anchor=CENTER)
+            adsTrees[i].column("#4", width=45, minwidth=45,anchor=CENTER)
+            adsTrees[i].column("#5", width=45, minwidth=45,anchor=CENTER)
             
-            trees[i].heading("#0",text="Title", anchor=CENTER)
-            trees[i].heading("#1", text="Year", anchor=CENTER)
-            trees[i].heading("#2", text="Price", anchor=CENTER)
-            trees[i].heading("#3", text="Mileage", anchor=CENTER)
-            trees[i].heading("#4", text="Power", anchor=CENTER)
-            trees[i].heading("#5", text="Score", anchor=CENTER)
+            adsTrees[i].heading("#0",text="Title", anchor=CENTER)
+            adsTrees[i].heading("#1", text="Year", anchor=CENTER)
+            adsTrees[i].heading("#2", text="Price", anchor=CENTER)
+            adsTrees[i].heading("#3", text="Mileage", anchor=CENTER)
+            adsTrees[i].heading("#4", text="Power", anchor=CENTER)
+            adsTrees[i].heading("#5", text="Score", anchor=CENTER)
             
-            trees[i].grid(row=2,column=4, columnspan=2,rowspan=10)
+            adsTrees[i].grid(row=0,column=0, columnspan=2,rowspan=10)
             
             # insert data
             sortedData = sorted(data)
             for d in data:
-                trees[i].insert('', 'end', d[0], text=d[1], values=(d[2],d[3],d[4],d[5],d[6]))
+                adsTrees[i].insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[6],d[0]))
+                
+    # =========== CHANGES TREE
+
+        chl = Label(mainc, text="Changes")
+        chl['font'] = titlef
+        chl.grid(row=32,column=10,padx=5)
+        
+        # generate treeview
+        changesTree = ttk.Treeview(mainc, height=5)
+        changesTree["columns"]=("Title","Registration","Price","Mileage","Power")
+        changesTree.column("#0", width=80, minwidth=70,anchor=W)
+        changesTree.column("#1", width=210, minwidth=60,anchor=CENTER)
+        changesTree.column("#2", width=65, minwidth=40,anchor=CENTER)
+        changesTree.column("#3", width=55, minwidth=70,anchor=CENTER)
+        changesTree.column("#4", width=70, minwidth=45,anchor=CENTER)
+        changesTree.column("#5", width=60, minwidth=45,anchor=CENTER)
+        
+        changesTree.heading("#0", text="Value", anchor=CENTER)
+        changesTree.heading("#1",text="Title", anchor=CENTER)
+        changesTree.heading("#2", text="Year", anchor=CENTER)
+        changesTree.heading("#3", text="Price", anchor=CENTER)
+        changesTree.heading("#4", text="Mileage", anchor=CENTER)
+        changesTree.heading("#5", text="Power", anchor=CENTER)
+        
+        changesTree.grid(row=40,column=10)
 
         
 '''
@@ -457,87 +541,7 @@ class TrackPage(Frame):
             
             ch_tree.grid(row=4,column=2, columnspan=2,rowspan=10)
 
-        # remove
-        class Remover:
-            def removeThread(items_to_remove):
-                remover(maindir, items_to_remove)
-                Feedback.successful()
-                
-            def rm():
-                items_to_remove = tuple(Remover.tree.selection())
-                print(items_to_remove, " - items to remove")
-                
-                chckerThread = th.Thread(target=Remover.removeThread, args = (items_to_remove,))
-                chckerThread.start()
-                for item in items_to_remove:
-                    print("2")
-                    Remover.tree.delete(item)
-
-            def filesList(tree):
-                try:
-                    os.chdir(maindir)
-                    files = []
-                    with os.scandir("./csv files") as entries:
-                        for entry in entries:
-                            if entry.is_file():
-                                files.append(entry.name)
-                    for item in items_in_tree:
-                        Remover.tree.delete(item)
-                except:
-                    None
-                os.chdir(maindir)
-                files = []
-                with os.scandir("./csv files") as entries:
-                    for entry in entries:
-                        if entry.is_file():
-                            files.append(entry.name)
-
-                for i in range(len(files)):
-                    try:
-                        filename = str(files[i])
-                        params = filename.split('_')
-                        params = [p.replace('-', ' - ') for p in params]
-                        params = [p.replace('.csv', '') for p in params]
-                        params[1] = params[1].replace(' - ', ' ')
-                        tree.insert('', 'end', files[i], text=params[0], values=(params[1],params[2],params[3],params[4],params[5]))
-                    except:
-                        None
-                return tree
-
-            removeDesc = Label(text="The dash (-) in columns price - power represents the search parameters\nby wich the ads have been indexed. They follow the format: from - to\n Exaple for registration: from 2012 - to 2018")
-            removeDesc.grid(row=1,column=4, columnspan=2)
-            removeDesc['font'] = font.Font(family='Helvetica')
-            removeDesc['font'] = font.Font(size=13)
-            
-            tree = Treeview()
-            tree["columns"]=("model","price","reg","mileage","power")
-            tree.column("#0", width=100, minwidth=10)
-            tree.column("#1", width=100, minwidth=10)
-            tree.column("#2", width=100, minwidth=10)
-            tree.column("#3", width=100, minwidth=10)
-            tree.column("#4", width=100, minwidth=10)
-            tree.column("#5", width=100, minwidth=10)
-            
-            tree.heading("#0",text="Make",anchor=W)
-            tree.heading("#1", text="Model",anchor=W)
-            tree.heading("#2", text="Price",anchor=W)
-            tree.heading("#3", text="Registration",anchor=W)
-            tree.heading("#4", text="Mileage",anchor=W)
-            tree.heading("#5", text="Power",anchor=W)
-            
-            tree.grid(row=2,column=4, columnspan=2,rowspan=10)
-
-            # remove button
-            removeText = Label(text="Stop tracking a search")
-            removeText.grid(row=0,column=4,padx=(10, 10))
-            removeText['font'] = font.Font(family='Helvetica')
-            removeText['font'] = font.Font(size=15)
-
-            removeButton = Button(self, text="Remove", command=rm)
-            removeButton.grid(row=0,column=5,padx=(10, 10))
-
-            tree = filesList(tree)
-
+     
         # backup
         class Backup:
         

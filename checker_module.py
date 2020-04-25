@@ -73,13 +73,7 @@ def checker(maindir):
     else:
         print("Changes found:")
         for i in range(len(changes)):
-            try:
-                if (int(changes[i][0]) == 0) and (int(changes[i][1]) == 0) and (int(changes[i][2]) == 0):
-                    ind += 1
-                else:
-                    print("In file -", changes[i][0], "- at line ", changes[i][1] + 1, " by ", changes[i][2])
-            except:
-                print("In file -", changes[i][0], "- at line ", str(int(changes[i][1]) + 1), " by ", changes[i][2])
+            print("value -", changes[i][0], "- link ", changes[i][1])
 
     if not ind == 0:
         print(ind, "ads removed")
@@ -137,23 +131,17 @@ def filesThread(threadNumber, file, changesWriter):
                         changedPrice = -changedPrice
                         # skip if price hasn't changed, else append the change
                         if not changedPrice == 0:
-                            changesWriter.writerow([file , i + 1, changedPrice])
+                            changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5]])
                 except:
-                    try:
-                        for temp in range(2):
-                            time.sleep(2)
-                            newPrice = getCarPriceChecker(link)
-                            if not firstPrice == newPrice:
-                                changedPrice = firstPrice - newPrice
-                                changedPrice = -changedPrice
-                                # skip if price hasn't changed, else append the change
-                                if not changedPrice == 0:
-                                    changesWriter.writerow([file , i + 1, changedPrice])
-                    except:
-                        print("*ad removed*")
-                        data.pop(i + 1)
-                        links.pop(i + 1)
-                        changesWriter.writerow([0 , 0, 0])
+                    for temp in range(2):
+                        time.sleep(2)
+                        newPrice = getCarPriceChecker(link)
+                        if not firstPrice == newPrice:
+                            changedPrice = firstPrice - newPrice
+                            changedPrice = -changedPrice
+                            # skip if price hasn't changed, else append the change
+                            if not changedPrice == 0:
+                                changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5]])
 
             # write data back to file
             csvWriter.writerows(data)
