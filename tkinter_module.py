@@ -65,7 +65,7 @@ def navMenu(self, master, nr):
     # nav search button
     searchIcon = PhotoImage(file="./resources/icons/search.png")
     searchIcon = searchIcon.subsample(8,8) 
-    navSearchButton = Button(navmenu, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(SearchPage))
+    navSearchButton = Button(navmenu, image = searchIcon, text = 'Search', compound = LEFT, bg='#fff', command=lambda: master.switch_frame(SearchPage))
     if nr == 1:
         navSearchButton.config(relief=SUNKEN)
     navSearchButton['font'] = navf
@@ -76,7 +76,7 @@ def navMenu(self, master, nr):
     # nav track button
     trackIcon = PhotoImage(file="./resources/icons/radar.png")
     trackIcon = trackIcon.subsample(8,8) 
-    navTrackButton = Button(navmenu, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff',command=lambda: master.switch_frame(TrackPage))
+    navTrackButton = Button(navmenu, image = trackIcon, text = 'Track', compound = LEFT, bg='#fff', command=lambda: master.switch_frame(TrackPage))
     if nr == 2:
         navTrackButton.config(relief=SUNKEN)
     navTrackButton['font'] = navf
@@ -87,7 +87,7 @@ def navMenu(self, master, nr):
     # nav favorites button
     favoIcon = PhotoImage(file="./resources/icons/favorites.png")
     favoIcon = favoIcon.subsample(6,6) 
-    navFavoButton = Button(navmenu, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff')
+    navFavoButton = Button(navmenu, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff', command=lambda: master.switch_frame(FavoritesPage))
     navFavoButton['font'] = navf
     navFavoButton.image = favoIcon
     navFavoButton.grid(row=10, column=30)
@@ -128,7 +128,7 @@ class SearchPage(Frame):
         nr = 1
         navMenu(self, master, nr)
     # ========== MAIN CONTENT
-        titlef = tkfont.Font(family='Montserrat' ,size=16)
+        titlef = tkfont.Font(family='Montserrat' ,size=16, weight='bold')
         labelf = tkfont.Font(family='Montserrat' ,size=12)
         
         mainc = ttk.Frame(self)
@@ -275,21 +275,19 @@ class TrackPage(Frame):
                 changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
             os.chdir(maindir)
             
-            
-    # ========== MAIN CONTENT
+        # main content frame
+        mainc = ttk.Frame(self)
+        mainc.config(width = 600, height = 700)
+        mainc.grid(row = 20, column = 0,sticky="new",pady=5)
+        
+    # ========== SIDE BUTTONS
 
         # styles
         titlef = tkfont.Font(family='Montserrat' ,size=16, weight = "bold")
         labelf = tkfont.Font(family='Montserrat' ,size=12)
         
         ntbkStyle = ttk.Style()
-        ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))
-
-        # main content frame
-        mainc = ttk.Frame(self)
-        mainc.config(width = 600, height = 700)
-        mainc.grid(row = 20, column = 0,sticky="new",pady=5)
-        
+        ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))        
         
         #verify icon
         trVerifyIcon = PhotoImage(file="./resources/icons/verify.png")
@@ -301,7 +299,7 @@ class TrackPage(Frame):
         
         
         # browse button
-        def printSelected():
+        def browseSelected():
             trees = [changesTree]
             for tree in adsTrees:
                 trees.append(tree)
@@ -319,28 +317,51 @@ class TrackPage(Frame):
                 
         trBrowseIcon = PhotoImage(file="./resources/icons/browse.png")
         trBrowseIcon = trBrowseIcon.subsample(6,6) 
-        trBrowseButton = Button(mainc, image = trBrowseIcon,compound = LEFT, bg='#fff',command = printSelected)
+        trBrowseButton = Button(mainc, image = trBrowseIcon,compound = LEFT, bg='#fff',command = browseSelected)
         trBrowseButton.image = trBrowseIcon
         trBrowseButton.grid(row=12, column=20,padx=10)
         trBrowseButton.config(width=50, height=50)
         
         
         # add to favorites button
+        def addtoFavs():
+            trees = [changesTree]
+            for tree in adsTrees:
+                trees.append(tree)
+                
+            items = []
+            for tree in trees:
+                selectedItem = tuple(tree.selection())
+                for item in selectedItem:
+                    item = tree.item(item)
+                    try:
+                        items.append(item)
+                    except:
+                        None
+                  
+            os.chdir("./csv files")      
+            with open("favorites.csv", mode='a', newline='') as favsFile:
+                csvWriter = csv.writer(favsFile)
+                for item in items:
+                    csvWriter.writerow([item['values'][5], item['text'], item['values'][0], item['values'][1], item['values'][2], item['values'][3], item['values'][4]])
+                favsFile.close()
+            os.chdir(maindir)
+            
         trAddtofavIcon = PhotoImage(file="./resources/icons/add_to_favorites.png")
         trAddtofavIcon = trAddtofavIcon.subsample(6,6) 
-        trAddtofavButton = Button(mainc, image = trAddtofavIcon,compound = LEFT, bg='#fff')
+        trAddtofavButton = Button(mainc, image = trAddtofavIcon,compound = LEFT, bg='#fff',command=addtoFavs)
         trAddtofavButton.image = trAddtofavIcon
         trAddtofavButton.grid(row=13, column=20,padx=10)
         trAddtofavButton.config(width=50, height=50)
 
 
-        # remove function
+        # remove file function
         def removeFile():
             file_to_remove = files[notebk.index("current")]
             remover(maindir, file_to_remove)
             master.switch_frame(TrackPage)
-        # remove button 
-        trRmIcon = PhotoImage(file="./resources/icons/remove.png")
+        # remove file button 
+        trRmIcon = PhotoImage(file="./resources/icons/trash.png")
         trRmIcon = trRmIcon.subsample(6,6) 
         trRmButton = Button(mainc, image = trRmIcon,compound = LEFT, bg='#fff', command=removeFile)
         trRmButton.image = trRmIcon
@@ -355,7 +376,8 @@ class TrackPage(Frame):
                 if entry.is_file():
                     if str(entry) != "<DirEntry 'changesTemp.csv'>":
                         if str(entry) != "<DirEntry 'changesTimestamp.txt'>":
-                            files.append(entry.name)
+                            if str(entry) != "<DirEntry 'favorites.csv'>":
+                                files.append(entry.name)
            
         tabs = []   
         adsTrees = []  
@@ -445,7 +467,157 @@ class TrackPage(Frame):
         for i in range(len(changes)):
             changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
 
+
+class FavoritesPage(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master)
         
+        nr = 3
+        navMenu(self, master, nr)  
+        
+    # ========== MAIN CONTENT
+        
+        # styles
+        titlef = tkfont.Font(family='Montserrat' ,size=16, weight = "bold")
+        labelf = tkfont.Font(family='Montserrat' ,size=12)
+        
+        ntbkStyle = ttk.Style()
+        ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))
+
+        # main content frame
+        mainc = ttk.Frame(self)
+        mainc.config(width = 600, height = 700)
+        mainc.grid(row = 20, column = 0,sticky="new",pady=5)
+        
+        #verify icon
+                
+        def chck():
+            chckerThread = th.Thread(target=checker, args=(maindir,))
+            chckerThread.start()
+            threads = []
+            threads.append(chckerThread)
+            threadsThread = th.Thread(target=chckThread, args = (threads[0],))
+            threadsThread.start()
+            
+        def chckThread(thread):
+                thread.join()
+                printTable()
+                master.switch_frame(FavoritesPage)
+            
+        def printTable():
+            os.chdir(maindir)
+            os.chdir("./csv files")
+            with open("changesTemp.csv", mode="r", newline='') as changesFile:
+                changesReader = csv.reader(changesFile)
+                changes = list(changesReader)
+                changesFile.close()
+            print(changes)
+            for i in range(len(changes)):
+                col = "column"+str(i)
+                if int(changes[i][0]) > 0:
+                    pr = "+" + str(changes[i][0])
+                else:
+                    pr = changes[i][0]
+                changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
+            os.chdir(maindir)
+            
+            
+        favVerifyIcon = PhotoImage(file="./resources/icons/verify.png")
+        favVerifyIcon = favVerifyIcon.subsample(6,6) 
+        favVerifyButton = Button(mainc, image = favVerifyIcon,compound = LEFT, bg='#fff')
+        favVerifyButton.image = favVerifyIcon
+        favVerifyButton.grid(row=11, column=20,padx=10)
+        favVerifyButton.config(width=50, height=50)
+        
+        # browse button
+        def browseSelected():                
+            selectedItem = tuple(favoritesTree.selection())
+            for item in selectedItem:
+                item = favoritesTree.item(item)
+                try:
+                    link = item['values'][5]
+                    webbrowser.open(link)
+                except:
+                    None
+            master.switch_frame(FavoritesPage)
+                
+        favBrowseIcon = PhotoImage(file="./resources/icons/browse.png")
+        favBrowseIcon = favBrowseIcon.subsample(6,6) 
+        favBrowseButton = Button(mainc, image = favBrowseIcon,compound = LEFT, bg='#fff',command = browseSelected)
+        favBrowseButton.image = favBrowseIcon
+        favBrowseButton.grid(row=12, column=20,padx=10)
+        favBrowseButton.config(width=50, height=50)
+        
+        # remove listing function
+        def removeListing():
+            selectedItem = list(favoritesTree.selection())
+            
+            links_to_remove = []
+            for item in selectedItem:
+                item = favoritesTree.item(item)
+                links_to_remove.append(str(item['values'][5]))
+            
+            os.chdir("./csv files")
+            with open("favorites.csv", mode="r", newline='') as favsFile:
+                csvReader = csv.reader(favsFile)
+                data = list(csvReader)
+                favsFile.close()
+            os.chdir(maindir)
+                   
+            data_new = [] 
+            for i in range(len(data)):
+                if not str(data[i][0]) in links_to_remove:
+                    data_new.append(data[i])
+                        
+            os.chdir("./csv files")      
+            with open("favorites.csv", mode='w', newline='') as favsFile:
+                csvWriter = csv.writer(favsFile)
+                for d in data_new:
+                    csvWriter.writerow([d[0], d[1], d[2], d[3], d[4], d[5], d[6]])
+                favsFile.close()
+            os.chdir(maindir)
+            master.switch_frame(FavoritesPage)
+        
+        # remove listing button 
+        favRmIcon = PhotoImage(file="./resources/icons/remove.png")
+        favRmIcon = favRmIcon.subsample(6,6) 
+        favRmButton = Button(mainc, image = favRmIcon,compound = LEFT, bg='#fff', command = removeListing)
+        favRmButton.image = favRmIcon
+        favRmButton.grid(row=20, column=20,padx=10)
+        favRmButton.config(width=50, height=50)
+        
+    # =========== FAVORITES TREE
+    
+        # get content in csv file
+        os.chdir("./csv files")
+        with open("favorites.csv", mode="r", newline='') as csvFile:
+            csvReader = csv.reader(csvFile)
+            data = list(csvReader)
+            csvFile.close()
+        os.chdir(maindir)
+        
+        # generate treeview
+        favoritesTree = ttk.Treeview(mainc, height=20)
+        favoritesTree["columns"]=("Registration","Price","Mileage","Power")
+        favoritesTree.column("#0", width=280, minwidth=140,anchor=W)
+        favoritesTree.column("#2", width=60, minwidth=60,anchor=CENTER)
+        favoritesTree.column("#1", width=40, minwidth=40,anchor=CENTER)
+        favoritesTree.column("#3", width=70, minwidth=70,anchor=CENTER)
+        favoritesTree.column("#4", width=45, minwidth=45,anchor=CENTER)
+        
+        favoritesTree.heading("#0",text="Title", anchor=CENTER)
+        favoritesTree.heading("#1", text="Year", anchor=CENTER)
+        favoritesTree.heading("#2", text="Price", anchor=CENTER)
+        favoritesTree.heading("#3", text="Mileage", anchor=CENTER)
+        favoritesTree.heading("#4", text="Power", anchor=CENTER)
+        
+        favoritesTree.grid(row=10,column=10, columnspan=10,rowspan=20)
+        
+        # insert data
+        for d in data:
+            favoritesTree.insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[6],d[0]))       
+            
+         
 '''
         # feedback text
         class Feedback:

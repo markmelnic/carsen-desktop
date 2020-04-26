@@ -88,6 +88,7 @@ def search(maindir, srcInput):
 
     if len(carLink) == 0:
         print("No ads to process")
+        os.chdir(maindir)
         print("\====================================/\n\n")
         return
     elif len(carLink) == 1:
