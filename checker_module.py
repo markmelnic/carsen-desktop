@@ -29,7 +29,8 @@ def checker(maindir):
                 if entry.is_file():
                     if str(entry) != "<DirEntry 'changesTemp.csv'>":
                         if str(entry) != "<DirEntry 'changesTimestamp.txt'>":
-                            files.append(entry.name)
+                            if str(entry) != "<DirEntry 'favorites.csv'>":
+                                files.append(entry.name)
     except:
         os.chdir(maindir)
         print("No files found")
@@ -139,7 +140,7 @@ def filesThread(threadNumber, file, changesWriter):
                         changedPrice = -changedPrice
                         # skip if price hasn't changed, else append the change
                         if not changedPrice == 0:
-                            changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5]])
+                            changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5], data[i+1][6]])
                 except:
                     for temp in range(2):
                         time.sleep(2)

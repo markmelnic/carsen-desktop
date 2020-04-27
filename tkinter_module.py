@@ -88,6 +88,8 @@ def navMenu(self, master, nr):
     favoIcon = PhotoImage(file="./resources/icons/favorites.png")
     favoIcon = favoIcon.subsample(6,6) 
     navFavoButton = Button(navmenu, image = favoIcon, text = 'Favorites', compound = LEFT, bg='#fff', command=lambda: master.switch_frame(FavoritesPage))
+    if nr == 3:
+        navFavoButton.config(relief=SUNKEN)
     navFavoButton['font'] = navf
     navFavoButton.image = favoIcon
     navFavoButton.grid(row=10, column=30)
@@ -108,6 +110,10 @@ class SearchPage(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
         
+        def srcThread(thread):
+            thread.join()
+            master.switch_frame(TrackPage)
+        
         def retrieve_inputs():
             srcInput = []
             srcInput.append(makeField.get())
@@ -124,6 +130,12 @@ class SearchPage(Frame):
             threads = []
             srchThread = th.Thread(target=search, args = (maindir, srcInput))
             srchThread.start()
+            threads = []
+            threads.append(srchThread)
+            threadsThread = th.Thread(target=srcThread, args = (threads[0],))
+            threadsThread.start()
+            
+            master.switch_frame(TrackPage)
         
         nr = 1
         navMenu(self, master, nr)
@@ -254,9 +266,9 @@ class TrackPage(Frame):
             threadsThread.start()
             
         def chckThread(thread):
-                thread.join()
-                printTable()
-                master.switch_frame(TrackPage)
+            thread.join()
+            printTable()
+            master.switch_frame(TrackPage)
             
         def printTable():
             os.chdir(maindir)
@@ -281,10 +293,9 @@ class TrackPage(Frame):
         mainc.grid(row = 20, column = 0,sticky="new",pady=5)
         
     # ========== SIDE BUTTONS
-
         # styles
         titlef = tkfont.Font(family='Montserrat' ,size=16, weight = "bold")
-        labelf = tkfont.Font(family='Montserrat' ,size=12)
+        labelf = tkfont.Font(family='Montserrat' ,size=12, weight = "bold")
         
         ntbkStyle = ttk.Style()
         ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))        
@@ -334,18 +345,32 @@ class TrackPage(Frame):
                 selectedItem = tuple(tree.selection())
                 for item in selectedItem:
                     item = tree.item(item)
-                    try:
+                    if tree == changesTree:
+                        temp = item
+                        temp['text'] = item['values'][0]
+                        temp['values'][0] = item['values'][1]
+                        temp['values'][1] = item['values'][2]
+                        temp['values'][2] = item['values'][3]
+                        temp['values'][3] = item['values'][4]
+                        temp['values'][4] = 0
+                        temp['values'][5] = item['values'][5]
+                        item = temp
                         items.append(item)
-                    except:
-                        None
+                    else:
+                        try:
+                            items.append(item)
+                        except:
+                            None
                   
             os.chdir("./csv files")      
             with open("favorites.csv", mode='a', newline='') as favsFile:
                 csvWriter = csv.writer(favsFile)
                 for item in items:
-                    csvWriter.writerow([item['values'][5], item['text'], item['values'][0], item['values'][1], item['values'][2], item['values'][3], item['values'][4]])
+                    csvWriter.writerow([item['values'][5], item['text'], item['values'][0], item['values'][1], item['values'][2], item['values'][3]])
                 favsFile.close()
             os.chdir(maindir)
+            
+            master.switch_frame(FavoritesPage)
             
         trAddtofavIcon = PhotoImage(file="./resources/icons/add_to_favorites.png")
         trAddtofavIcon = trAddtofavIcon.subsample(6,6) 
@@ -387,7 +412,7 @@ class TrackPage(Frame):
         
         # create the notebook
         notebk = ttk.Notebook(mainc,width=540, height=425)
-        notebk.grid(row=10,column=10,rowspan=20)
+        notebk.grid(row=10,column=10,rowspan=20,padx=5)
         for i in range(len(tabs)):
             tabs[i] = ttk.Frame(notebk, width = 400, height = 400, relief = SUNKEN)
             title = files[i].split("_")
@@ -398,13 +423,59 @@ class TrackPage(Frame):
             os.chdir("./csv files")
             with open(files[i], mode="r", newline='') as csvFile:
                 csvReader = csv.reader(csvFile)
-                data = sorted(csvReader, reverse=True, key = operator.itemgetter(6))
-                data.pop(0)
+                try:
+                    data = sorted(csvReader, reverse=True, key = operator.itemgetter(6))
+                    data.pop(0)
+                except:
+                    print("Scores not found")
+                    data = list(csvReader)
                 csvFile.close()
             os.chdir(maindir)
             
+            # nr of ads label
+            ads_nrTxt = str(len(data)) + " ads | "
+            parameters = files[i].split("_")
+            print(parameters)
+            '''
+            # price parameters
+            parPrice = parameters[2].split('-')
+            if parPrice[0] == '' and parPrice[1] == '':
+                continue
+            else:
+                if parPrice[0] == '':
+                    parPrice = "Price: any - " + parPrice[1]
+                else:
+                    parPrice = 'Price: ' + parPrice[0] + " - any"
+            ads_nrTxt = ads_nrTxt + parPrice
+            
+            # mileage parameters
+            parMileage = parameters[4].split('-')
+            if parMileage[0] == '' and parMileage[1] == '':
+                continue
+            else:
+                if parMileage[0] == '':
+                    parMileage = "Mileage: any - " + parMileage[1]
+                else:
+                    parMileage = 'Mileage: ' + parMileage[0] + " - any"
+            ads_nrTxt = ads_nrTxt + parMileage
+            
+            # registration parameters
+            parReg = parameters[3].split('-')
+            if parReg[0] == '' and parReg[1] == '':
+                continue
+            else:
+                if parReg[0] == '':
+                    parReg = "Mileage: any - " + parReg[1]
+                else:
+                    parReg = 'Mileage: ' + parReg[0] + " - any"
+            ads_nrTxt = ads_nrTxt + parReg
+            '''
+            ads_nr = Label(tabs[i], text = ads_nrTxt)
+            ads_nr.grid(row=10,column=0, padx=5)
+            ads_nr['font'] = labelf
+            
             # generate treeview
-            adsTrees[i] = ttk.Treeview(tabs[i], height=20)
+            adsTrees[i] = ttk.Treeview(tabs[i], height=19)
             adsTrees[i]["columns"]=("Registration","Price","Mileage","Power","Score")
             adsTrees[i].column("#0", width=280, minwidth=140,anchor=W)
             adsTrees[i].column("#2", width=60, minwidth=60,anchor=CENTER)
@@ -420,10 +491,9 @@ class TrackPage(Frame):
             adsTrees[i].heading("#4", text="Power", anchor=CENTER)
             adsTrees[i].heading("#5", text="Score", anchor=CENTER)
             
-            adsTrees[i].grid(row=0,column=0, columnspan=2,rowspan=10)
+            adsTrees[i].grid(row=20,column=0, columnspan=2,rowspan=10)
             
             # insert data
-            sortedData = sorted(data)
             for d in data:
                 adsTrees[i].insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[6],d[0]))
                 
@@ -456,7 +526,7 @@ class TrackPage(Frame):
         changesTree.heading("#4", text="Mileage", anchor=CENTER)
         changesTree.heading("#5", text="Power", anchor=CENTER)
         
-        changesTree.grid(row=40,column=10)
+        changesTree.grid(row=40,column=10,padx=5)
         
         os.chdir("./csv files")
         with open("changesTemp.csv", mode="r", newline='') as changesFile:
@@ -489,8 +559,7 @@ class FavoritesPage(Frame):
         mainc.config(width = 600, height = 700)
         mainc.grid(row = 20, column = 0,sticky="new",pady=5)
         
-        #verify icon
-                
+        #verify icon      
         def chck():
             chckerThread = th.Thread(target=checker, args=(maindir,))
             chckerThread.start()
@@ -520,8 +589,7 @@ class FavoritesPage(Frame):
                     pr = changes[i][0]
                 changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
             os.chdir(maindir)
-            
-            
+               
         favVerifyIcon = PhotoImage(file="./resources/icons/verify.png")
         favVerifyIcon = favVerifyIcon.subsample(6,6) 
         favVerifyButton = Button(mainc, image = favVerifyIcon,compound = LEFT, bg='#fff')
@@ -535,7 +603,7 @@ class FavoritesPage(Frame):
             for item in selectedItem:
                 item = favoritesTree.item(item)
                 try:
-                    link = item['values'][5]
+                    link = item['values'][4]
                     webbrowser.open(link)
                 except:
                     None
@@ -548,14 +616,14 @@ class FavoritesPage(Frame):
         favBrowseButton.grid(row=12, column=20,padx=10)
         favBrowseButton.config(width=50, height=50)
         
-        # remove listing function
+        # remove listing button
         def removeListing():
             selectedItem = list(favoritesTree.selection())
             
             links_to_remove = []
             for item in selectedItem:
                 item = favoritesTree.item(item)
-                links_to_remove.append(str(item['values'][5]))
+                links_to_remove.append(str(item['values'][4]))
             
             os.chdir("./csv files")
             with open("favorites.csv", mode="r", newline='') as favsFile:
@@ -573,12 +641,11 @@ class FavoritesPage(Frame):
             with open("favorites.csv", mode='w', newline='') as favsFile:
                 csvWriter = csv.writer(favsFile)
                 for d in data_new:
-                    csvWriter.writerow([d[0], d[1], d[2], d[3], d[4], d[5], d[6]])
+                    csvWriter.writerow([d[0], d[1], d[2], d[3], d[4], d[5]])
                 favsFile.close()
             os.chdir(maindir)
             master.switch_frame(FavoritesPage)
         
-        # remove listing button 
         favRmIcon = PhotoImage(file="./resources/icons/remove.png")
         favRmIcon = favRmIcon.subsample(6,6) 
         favRmButton = Button(mainc, image = favRmIcon,compound = LEFT, bg='#fff', command = removeListing)
@@ -590,10 +657,15 @@ class FavoritesPage(Frame):
     
         # get content in csv file
         os.chdir("./csv files")
-        with open("favorites.csv", mode="r", newline='') as csvFile:
-            csvReader = csv.reader(csvFile)
-            data = list(csvReader)
-            csvFile.close()
+        try:
+            with open("favorites.csv", mode="r", newline='') as favsFile:
+                csvReader = csv.reader(favsFile)
+                data = list(csvReader)
+                favsFile.close()
+        except:
+            with open("favorites.csv", mode="w", newline='') as favsFile:
+                print("Favorites file not dound, initiating")
+                favsFile.close()
         os.chdir(maindir)
         
         # generate treeview
@@ -611,11 +683,14 @@ class FavoritesPage(Frame):
         favoritesTree.heading("#3", text="Mileage", anchor=CENTER)
         favoritesTree.heading("#4", text="Power", anchor=CENTER)
         
-        favoritesTree.grid(row=10,column=10, columnspan=10,rowspan=20)
+        favoritesTree.grid(row=10,column=10, columnspan=10,rowspan=20, padx=5)
         
         # insert data
-        for d in data:
-            favoritesTree.insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[6],d[0]))       
+        try:
+            for d in data:
+                favoritesTree.insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[0]))     
+        except:
+            print("Favorites file is empty")  
             
          
 '''

@@ -128,6 +128,8 @@ def search(maindir, srcInput):
         print("All threads are finished")
         csvFile.close()
 
+    os.chdir(maindir)
+    os.chdir('./csv files')
     print("Giving scores to vehicles")
     score(fileName)
     #except:
