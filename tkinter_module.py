@@ -134,9 +134,7 @@ class SearchPage(Frame):
             threads.append(srchThread)
             threadsThread = th.Thread(target=srcThread, args = (threads[0],))
             threadsThread.start()
-            
-            master.switch_frame(TrackPage)
-        
+                    
         nr = 1
         navMenu(self, master, nr)
     # ========== MAIN CONTENT
@@ -277,7 +275,6 @@ class TrackPage(Frame):
                 changesReader = csv.reader(changesFile)
                 changes = list(changesReader)
                 changesFile.close()
-            print(changes)
             for i in range(len(changes)):
                 col = "column"+str(i)
                 if int(changes[i][0]) > 0:
@@ -396,13 +393,13 @@ class TrackPage(Frame):
     # ========== NOTEBOOK
         # get all files in './csv files'
         with os.scandir("./csv files") as entries:
+            files_to_ignore = ["<DirEntry 'changesTemp.csv'>", "<DirEntry 'changesTimestamp.txt'>", "<DirEntry 'favorites.csv'>", "<DirEntry 'favchangesTimestamp.txt'>", "<DirEntry 'favchangesTemp.csv'>"]
             files = []
             for entry in entries:
                 if entry.is_file():
-                    if str(entry) != "<DirEntry 'changesTemp.csv'>":
-                        if str(entry) != "<DirEntry 'changesTimestamp.txt'>":
-                            if str(entry) != "<DirEntry 'favorites.csv'>":
-                                files.append(entry.name)
+                    if not str(entry) in files_to_ignore:
+                            print(entry)
+                            files.append(entry.name)
            
         tabs = []   
         adsTrees = []  
@@ -435,19 +432,20 @@ class TrackPage(Frame):
             # nr of ads label
             ads_nrTxt = str(len(data)) + " ads | "
             parameters = files[i].split("_")
-            print(parameters)
-            '''
+            
             # price parameters
             parPrice = parameters[2].split('-')
             if parPrice[0] == '' and parPrice[1] == '':
                 continue
             else:
                 if parPrice[0] == '':
-                    parPrice = "Price: any - " + parPrice[1]
+                    parPrice = "Price: > " + parPrice[1]
+                elif parPrice[1] == '':
+                    parPrice = 'Price: < ' + parPrice[0]
                 else:
-                    parPrice = 'Price: ' + parPrice[0] + " - any"
+                    parPrice = 'Price: ' + parPrice[0] + ' - ' + parPrice[1]
             ads_nrTxt = ads_nrTxt + parPrice
-            
+            '''
             # mileage parameters
             parMileage = parameters[4].split('-')
             if parMileage[0] == '' and parMileage[1] == '':
@@ -502,10 +500,10 @@ class TrackPage(Frame):
         # changes title
         os.chdir("./csv files")
         with open("changesTimestamp.txt", mode="r") as timestampFile:
-            timetxt = timestampFile.read() 
+            timetxt = timestampFile.readlines() 
             timestampFile.close()
         os.chdir(maindir)
-        chl = Label(mainc, text="Changes since " + timetxt)
+        chl = Label(mainc, text="Changes at " + timetxt[0])
         chl['font'] = titlef
         chl.grid(row=32,column=10,padx=5)
         
@@ -546,22 +544,9 @@ class FavoritesPage(Frame):
         navMenu(self, master, nr)  
         
     # ========== MAIN CONTENT
-        
-        # styles
-        titlef = tkfont.Font(family='Montserrat' ,size=16, weight = "bold")
-        labelf = tkfont.Font(family='Montserrat' ,size=12)
-        
-        ntbkStyle = ttk.Style()
-        ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))
-
-        # main content frame
-        mainc = ttk.Frame(self)
-        mainc.config(width = 600, height = 700)
-        mainc.grid(row = 20, column = 0,sticky="new",pady=5)
-        
-        #verify icon      
+    
         def chck():
-            chckerThread = th.Thread(target=checker, args=(maindir,))
+            chckerThread = th.Thread(target=favoritesChecker, args=(maindir,))
             chckerThread.start()
             threads = []
             threads.append(chckerThread)
@@ -569,9 +554,9 @@ class FavoritesPage(Frame):
             threadsThread.start()
             
         def chckThread(thread):
-                thread.join()
-                printTable()
-                master.switch_frame(FavoritesPage)
+            thread.join()
+            printTable()
+            master.switch_frame(FavoritesPage)
             
         def printTable():
             os.chdir(maindir)
@@ -589,10 +574,24 @@ class FavoritesPage(Frame):
                     pr = changes[i][0]
                 changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
             os.chdir(maindir)
-               
+    
+        
+        # styles
+        titlef = tkfont.Font(family='Montserrat' ,size=16, weight = "bold")
+        labelf = tkfont.Font(family='Montserrat' ,size=12)
+        
+        ntbkStyle = ttk.Style()
+        ntbkStyle.configure('TNotebook.Tab', font=('Montserrat','11','bold'), padding=(10, 3, 10, 2))
+
+        # main content frame
+        mainc = ttk.Frame(self)
+        mainc.config(width = 600, height = 700)
+        mainc.grid(row = 20, column = 0,sticky="new",pady=5)
+        
+        #verify icon         
         favVerifyIcon = PhotoImage(file="./resources/icons/verify.png")
         favVerifyIcon = favVerifyIcon.subsample(6,6) 
-        favVerifyButton = Button(mainc, image = favVerifyIcon,compound = LEFT, bg='#fff')
+        favVerifyButton = Button(mainc, image = favVerifyIcon,compound = LEFT, bg='#fff', command=chck)
         favVerifyButton.image = favVerifyIcon
         favVerifyButton.grid(row=11, column=20,padx=10)
         favVerifyButton.config(width=50, height=50)
@@ -669,13 +668,13 @@ class FavoritesPage(Frame):
         os.chdir(maindir)
         
         # generate treeview
-        favoritesTree = ttk.Treeview(mainc, height=20)
+        favoritesTree = ttk.Treeview(mainc, height=19)
         favoritesTree["columns"]=("Registration","Price","Mileage","Power")
-        favoritesTree.column("#0", width=280, minwidth=140,anchor=W)
-        favoritesTree.column("#2", width=60, minwidth=60,anchor=CENTER)
-        favoritesTree.column("#1", width=40, minwidth=40,anchor=CENTER)
-        favoritesTree.column("#3", width=70, minwidth=70,anchor=CENTER)
-        favoritesTree.column("#4", width=45, minwidth=45,anchor=CENTER)
+        favoritesTree.column("#0", width=260, minwidth=140,anchor=W)
+        favoritesTree.column("#2", width=80, minwidth=60,anchor=CENTER)
+        favoritesTree.column("#1", width=60, minwidth=40,anchor=CENTER)
+        favoritesTree.column("#3", width=80, minwidth=70,anchor=CENTER)
+        favoritesTree.column("#4", width=60, minwidth=45,anchor=CENTER)
         
         favoritesTree.heading("#0",text="Title", anchor=CENTER)
         favoritesTree.heading("#1", text="Year", anchor=CENTER)
@@ -691,6 +690,47 @@ class FavoritesPage(Frame):
                 favoritesTree.insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[0]))     
         except:
             print("Favorites file is empty")  
+            
+    # =========== CHANGES TREE
+    
+        # changes title
+        os.chdir("./csv files")
+        with open("favchangesTimestamp.txt", mode="r") as timestampFile:
+            timetxt = timestampFile.readlines() 
+            timestampFile.close()
+        os.chdir(maindir)
+        chl = Label(mainc, text="Changes at " + timetxt[0])
+        chl['font'] = titlef
+        chl.grid(row=32,column=10,padx=5)
+        
+        # generate treeview
+        changesTree = ttk.Treeview(mainc, height=5)
+        changesTree["columns"]=("Title","Registration","Price","Mileage","Power")
+        changesTree.column("#0", width=80, minwidth=70,anchor=W)
+        changesTree.column("#1", width=210, minwidth=60,anchor=CENTER)
+        changesTree.column("#2", width=65, minwidth=40,anchor=CENTER)
+        changesTree.column("#3", width=55, minwidth=70,anchor=CENTER)
+        changesTree.column("#4", width=70, minwidth=45,anchor=CENTER)
+        changesTree.column("#5", width=60, minwidth=45,anchor=CENTER)
+        
+        changesTree.heading("#0", text="Value", anchor=CENTER)
+        changesTree.heading("#1",text="Title", anchor=CENTER)
+        changesTree.heading("#2", text="Year", anchor=CENTER)
+        changesTree.heading("#3", text="Price", anchor=CENTER)
+        changesTree.heading("#4", text="Mileage", anchor=CENTER)
+        changesTree.heading("#5", text="Power", anchor=CENTER)
+        
+        changesTree.grid(row=40,column=10,padx=5)
+        
+        os.chdir("./csv files")
+        with open("favchangesTemp.csv", mode="r", newline='') as changesFile:
+            changesReader = csv.reader(changesFile)
+            changes = list(changesReader)
+            changesFile.close()
+        os.chdir(maindir)
+        for i in range(len(changes)):
+            changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
+
             
          
 '''

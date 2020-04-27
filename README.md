@@ -1,13 +1,5 @@
-# Mobile.de Bot
+# CARSEN
 A python bot for scraping and tracking mobile.de. Get all data for a specific car make and model directly into a spreadsheet, where you can analyze it. Run the checker to see whether the price has changed since the first search.
-
-## Some technical aspects
-Built in python 3.8. Essential packages used:
- * bs4
- * selenium
- * threading
-
-Not all come standart with python, so if you are using the 1st installation method make sure to have them installed. Or just don't bother and follow installation method number 2.
 
 ## Installation
 #### First method

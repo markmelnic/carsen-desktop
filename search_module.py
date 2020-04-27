@@ -210,9 +210,11 @@ def score(fileName):
     minPrice = min(allPrices)
     maxPrice = max(allPrices)
 
+    multiplier = 3.333
+    
     priceScore = []
     for price in allPrices:
-        priceScore.append(1 - ((price - minPrice) / (maxPrice - minPrice)))
+        priceScore.append((1 - ((price - minPrice) / (0.000000001 + maxPrice - minPrice))) * multiplier)
 
     # reg score
     minReg = min(allReg)
@@ -220,7 +222,8 @@ def score(fileName):
     
     regScore = []
     for reg in allReg:
-        regScore.append(1 - (reg - minReg) / (maxReg - minReg))
+        regScore.append(((reg - minReg) / (0.000000001 + maxReg - minReg)) * multiplier)
+    print(regScore)
 
     # mileage score
     minMiles = min(allMiles)
@@ -229,7 +232,7 @@ def score(fileName):
     milScore = []
     milTempScore = []
     for mil in allMiles:
-        milScore.append(1 - (mil - minMiles) / (maxMiles - minMiles))
+        milScore.append((1 - (mil - minMiles) / (0.000000001 + maxMiles - minMiles)) * multiplier)
 
     '''
     tmax = max(milTempScore)
