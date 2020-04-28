@@ -6,7 +6,6 @@ import datetime
 
 
 def backup(maindir):
-    #print("\n\n\n/====================================\\")
     print("\nBackup initiated")
     os.chdir(maindir)
 
@@ -32,7 +31,6 @@ def backup(maindir):
             shutil.rmtree(date)
             os.chdir(maindir)
             print("Nothing to backup\n")
-            #print("\====================================/\n\n")
             return
         else:
             os.chdir(maindir)
@@ -51,4 +49,3 @@ def backup(maindir):
     os.chdir(maindir)
     print("Backed up successfully\n")
     return date
-    #print("\====================================/\n\n")

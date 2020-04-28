@@ -6,6 +6,7 @@ from remover_module import *
 
 import os
 import csv
+import json
 import operator
 import webbrowser
 import threading as th
@@ -20,22 +21,22 @@ maindir = os.getcwd()
 class Interface(Tk):
     def __init__(self):
         super().__init__()
-        self.title("Mobile.de Bot")
+        self.title("CARSEN - A car tracking software")
         self.iconbitmap('./resources/icon.ico')
 
         # read settings
-        with open('./resources/settings.txt', mode='r') as st:
-            settings = st.readlines()
+        with open('./resources/settings.json', mode='r') as st:
+            settings = st.read()
+            settings = (json.loads(settings))
+            settings = settings['settings'][0]
             st.close()
-            
-        window_show = int(settings[1])
-        win_size = str(settings[3].strip("\n"))
-        win_resizeability = int(settings[5])
-        
+
+        print(settings)
+        print(settings["window_geometry"])
         # change settings
-        #self.geometry(win_size)
-        if win_resizeability == 0:
-            self.resizable(0, 0)
+        self.geometry(settings["window_geometry"])
+        win_res = settings["window_resizeability"].split(',')
+        self.resizable(win_res[0], win_res[1])
     
         '''
         # tk options
@@ -379,9 +380,14 @@ class TrackPage(Frame):
 
         # remove file function
         def removeFile():
-            file_to_remove = files[notebk.index("current")]
-            remover(maindir, file_to_remove)
-            master.switch_frame(TrackPage)
+            try:
+                file_to_remove = files[notebk.index("current")]
+                print(file_to_remove, " to remov")
+                remover(maindir, file_to_remove)
+                master.switch_frame(TrackPage)
+            except:
+                print("No file(tab) to remove")
+                
         # remove file button 
         trRmIcon = PhotoImage(file="./resources/icons/trash.png")
         trRmIcon = trRmIcon.subsample(6,6) 
@@ -499,11 +505,18 @@ class TrackPage(Frame):
 
         # changes title
         os.chdir("./csv files")
-        with open("changesTimestamp.txt", mode="r") as timestampFile:
-            timetxt = timestampFile.readlines() 
-            timestampFile.close()
+        try:
+            with open("changesTimestamp.txt", mode="r") as timestampFile:
+                timetxt = timestampFile.readlines() 
+                if timetxt[0] == '':
+                    timetxt = ['']
+                timestampFile.close()
+        except:
+            with open("changesTimestamp.txt", mode="w") as timestampFile:
+                timetxt = ['']
+                timestampFile.close()
         os.chdir(maindir)
-        chl = Label(mainc, text="Changes at " + timetxt[0])
+        chl = Label(mainc, text="Changes " + timetxt[0])
         chl['font'] = titlef
         chl.grid(row=32,column=10,padx=5)
         
@@ -527,10 +540,16 @@ class TrackPage(Frame):
         changesTree.grid(row=40,column=10,padx=5)
         
         os.chdir("./csv files")
-        with open("changesTemp.csv", mode="r", newline='') as changesFile:
-            changesReader = csv.reader(changesFile)
-            changes = list(changesReader)
-            changesFile.close()
+        try:
+            with open("changesTemp.csv", mode="r", newline='') as changesFile:
+                changesReader = csv.reader(changesFile)
+                changes = list(changesReader)
+                changesFile.close()
+        except:
+            with open("changesTemp.csv", mode="w", newline='') as changesFile:
+                print("initiating temporary changes file")
+                changes = []
+                changesFile.close()
         os.chdir(maindir)
         for i in range(len(changes)):
             changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))
@@ -695,11 +714,18 @@ class FavoritesPage(Frame):
     
         # changes title
         os.chdir("./csv files")
-        with open("favchangesTimestamp.txt", mode="r") as timestampFile:
-            timetxt = timestampFile.readlines() 
-            timestampFile.close()
+        try:
+            with open("changesTimestamp.txt", mode="r") as timestampFile:
+                timetxt = timestampFile.readlines() 
+                if timetxt[0] == '':
+                    timetxt = ['']
+                timestampFile.close()
+        except:
+            with open("changesTimestamp.txt", mode="w") as timestampFile:
+                timetxt = ['']
+                timestampFile.close()
         os.chdir(maindir)
-        chl = Label(mainc, text="Changes at " + timetxt[0])
+        chl = Label(mainc, text="Changes " + timetxt[0])
         chl['font'] = titlef
         chl.grid(row=32,column=10,padx=5)
         
@@ -723,10 +749,17 @@ class FavoritesPage(Frame):
         changesTree.grid(row=40,column=10,padx=5)
         
         os.chdir("./csv files")
-        with open("favchangesTemp.csv", mode="r", newline='') as changesFile:
-            changesReader = csv.reader(changesFile)
-            changes = list(changesReader)
-            changesFile.close()
+        try:
+            with open("favchangesTemp.csv", mode="r", newline='') as changesFile:
+                changesReader = csv.reader(changesFile)
+                changes = list(changesReader)
+                changesFile.close()
+        except:
+            with open("favchangesTemp.csv", mode="w", newline='') as changesFile:
+                print("initiating temporary changes file")
+                changes = []
+                changesFile.close()
+                
         os.chdir(maindir)
         for i in range(len(changes)):
             changesTree.insert('', 'end', text=changes[i][0], values=(changes[i][2], changes[i][3], changes[i][4], changes[i][5], changes[i][6], changes[i][1]))

@@ -1,5 +1,5 @@
 
-from mobile_de_module import getCarPriceChecker
+from mobile_de import getCarPriceChecker
 from search_module import score
 from backup_module import *
 
@@ -186,45 +186,49 @@ def favoritesChecker(maindir):
                 print("Duplicate not included")
 
         # process every link
-        with open("favorites.csv", mode="w", newline='') as csvFile:
-            csvWriter = csv.writer(csvFile)
+        try:
+            with open("favorites.csv", mode="w", newline='') as csvFile:
+                csvWriter = csv.writer(csvFile)
 
-            # check every link
-            i = -1
-            for link in links:
-                i += 1
-                if i == 0:
-                    print("favorites.csv", "-", i + 1, "ad checked")
-                else:
-                    print("favorites.csv", "-", i + 1, "ads checked")
+                # check every link
+                i = -1
+                for link in links:
+                    i += 1
+                    if i == 0:
+                        print("favorites.csv", "-", i + 1, "ad checked")
+                    else:
+                        print("favorites.csv", "-", i + 1, "ads checked")
 
-                # get new price and compare to existing one
-                try:
-                    newPrice = getCarPriceChecker(link)
-                    firstPrice = int(data[i + 1][3])
-                    if not firstPrice == newPrice:
-                        data[i+1][3] = newPrice
-                        changedPrice = firstPrice - newPrice
-                        changedPrice = -changedPrice
-                        # skip if price hasn't changed, else append the change
-                        if not changedPrice == 0:
-                            changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5], data[i+1][6]])
-                except:
-                    for temp in range(2):
-                        time.sleep(2)
+                    # get new price and compare to existing one
+                    try:
                         newPrice = getCarPriceChecker(link)
+                        firstPrice = int(data[i + 1][3])
                         if not firstPrice == newPrice:
+                            data[i+1][3] = newPrice
                             changedPrice = firstPrice - newPrice
                             changedPrice = -changedPrice
                             # skip if price hasn't changed, else append the change
                             if not changedPrice == 0:
-                                changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5]])
-
+                                changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5], data[i+1][6]])
+                    except:
+                        for temp in range(2):
+                            time.sleep(2)
+                            newPrice = getCarPriceChecker(link)
+                            if not firstPrice == newPrice:
+                                changedPrice = firstPrice - newPrice
+                                changedPrice = -changedPrice
+                                # skip if price hasn't changed, else append the change
+                                if not changedPrice == 0:
+                                    changesWriter.writerow([changedPrice, data[i+1][0], data[i+1][1], data[i+1][2], data[i+1][3], data[i+1][4], data[i+1][5]])
+        
             # write data back to file
             csvWriter.writerows(data)
             csvFile.close()
             score("favorites.csv")
-        print("favorites.csv", " checked\n")
+            print("favorites.csv", " checked\n")
+        
+        except:
+            print("Nothing to check")
             
     os.chdir(maindir)
     changesFile.close()

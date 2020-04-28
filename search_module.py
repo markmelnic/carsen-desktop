@@ -1,5 +1,5 @@
 
-from mobile_de_module import *
+from mobile_de import *
 
 import os
 import io
