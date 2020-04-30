@@ -32,7 +32,6 @@ class Interface(Tk):
             st.close()
 
         print(settings)
-        print(settings["window_geometry"])
         # change settings
         self.geometry(settings["window_geometry"])
         win_res = settings["window_resizeability"].split(',')
@@ -357,7 +356,9 @@ class TrackPage(Frame):
                     else:
                         try:
                             items.append(item)
-                        except:
+                        except Exception as e:
+                            print(e)
+                            print("no items found")
                             None
                   
             os.chdir("./csv files")      
@@ -429,51 +430,57 @@ class TrackPage(Frame):
                 try:
                     data = sorted(csvReader, reverse=True, key = operator.itemgetter(6))
                     data.pop(0)
-                except:
+                except Exception as e:
+                    print(e)
                     print("Scores not found")
                     data = list(csvReader)
                 csvFile.close()
             os.chdir(maindir)
             
             # nr of ads label
-            ads_nrTxt = str(len(data)) + " ads | "
+            ads_nrTxt = str(len(data)) + " ads"
             parameters = files[i].split("_")
             
             # price parameters
             parPrice = parameters[2].split('-')
-            if parPrice[0] == '' and parPrice[1] == '':
-                continue
-            else:
+            if parPrice[0] != '' or parPrice[1] != '':
                 if parPrice[0] == '':
-                    parPrice = "Price: > " + parPrice[1]
+                    parPrice = " | Price: > " + parPrice[1]
                 elif parPrice[1] == '':
-                    parPrice = 'Price: < ' + parPrice[0]
+                    parPrice = ' | Price: < ' + parPrice[0]
+                elif parPrice[0] == parPrice[1]:
+                    parPrice = ' | Price: ' + parPrice[0]
                 else:
-                    parPrice = 'Price: ' + parPrice[0] + ' - ' + parPrice[1]
-            ads_nrTxt = ads_nrTxt + parPrice
-            '''
+                    parPrice = ' | Price: ' + parPrice[0] + ' - ' + parPrice[1]
+                ads_nrTxt = ads_nrTxt + parPrice
+            
             # mileage parameters
             parMileage = parameters[4].split('-')
-            if parMileage[0] == '' and parMileage[1] == '':
-                continue
-            else:
+            if parMileage[0] != '' or parMileage[1] != '':
                 if parMileage[0] == '':
-                    parMileage = "Mileage: any - " + parMileage[1]
+                    parMileage = " | Mileage: > " + parMileage[1]
+                elif parMileage[1] == '':
+                    parMileage = ' | Mileage: < ' + parMileage[0]
+                elif parMileage[0] == parMileage[1]:
+                    parMileage = ' | Mileage: ' + parMileage[0]
                 else:
-                    parMileage = 'Mileage: ' + parMileage[0] + " - any"
-            ads_nrTxt = ads_nrTxt + parMileage
+                    parMileage = ' | Mileage: ' + parMileage[0] + ' - ' + parMileage[1]
+                ads_nrTxt = ads_nrTxt + parMileage
             
             # registration parameters
             parReg = parameters[3].split('-')
-            if parReg[0] == '' and parReg[1] == '':
-                continue
-            else:
+            if parReg[0] != '' or parReg[1] != '':
                 if parReg[0] == '':
-                    parReg = "Mileage: any - " + parReg[1]
+                    parReg = " | Reg: > " + parReg[1]
+                elif parReg[1] == '':
+                    parReg = ' | Reg: < ' + parReg[0]
+                elif parReg[0] == parReg[1]:
+                    parReg = ' | Reg: ' + parReg[0]
                 else:
-                    parReg = 'Mileage: ' + parReg[0] + " - any"
-            ads_nrTxt = ads_nrTxt + parReg
-            '''
+                    parReg = ' | Reg: ' + parReg[0] + ' - ' + parReg[1]
+                ads_nrTxt = ads_nrTxt + parReg
+            
+            
             ads_nr = Label(tabs[i], text = ads_nrTxt)
             ads_nr.grid(row=10,column=0, padx=5)
             ads_nr['font'] = labelf
@@ -496,7 +503,6 @@ class TrackPage(Frame):
             adsTrees[i].heading("#5", text="Score", anchor=CENTER)
             
             adsTrees[i].grid(row=20,column=0, columnspan=2,rowspan=10)
-            
             # insert data
             for d in data:
                 adsTrees[i].insert('', 'end', text=d[1], values=(d[2],d[3],d[4],d[5],d[6],d[0]))
@@ -563,7 +569,6 @@ class FavoritesPage(Frame):
         navMenu(self, master, nr)  
         
     # ========== MAIN CONTENT
-    
         def chck():
             chckerThread = th.Thread(target=favoritesChecker, args=(maindir,))
             chckerThread.start()

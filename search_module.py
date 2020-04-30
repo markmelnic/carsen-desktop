@@ -223,7 +223,6 @@ def score(fileName):
     regScore = []
     for reg in allReg:
         regScore.append(((reg - minReg) / (0.000000001 + maxReg - minReg)) * multiplier)
-    print(regScore)
 
     # mileage score
     minMiles = min(allMiles)

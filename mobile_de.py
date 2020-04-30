@@ -245,16 +245,21 @@ def getCarPriceChecker(link):
     # price
     try:
         carPrice = soup.find(class_ = "h3 rbt-prime-price").get_text()
-    except:
-        carPrice = '0'
+    except Exception as e:
+        print(e)
+        return 0
 
     # ================== format data
     # car price first
-    carPrice = carPrice.replace('.', '')
-    if 'Brutto' in carPrice:
-        carPrice = carPrice[ : -11]
-    else:
-        carPrice = carPrice[ : -2]
-    carPrice = int(carPrice)
+    try:
+        carPrice = carPrice.replace('.', '')
+        if 'Brutto' in carPrice:
+            carPrice = carPrice[ : -11]
+        else:
+            carPrice = carPrice[ : -2]
+        carPrice = int(carPrice)
+    except Exception as e:
+        print(e)
+        return 0
 
     return carPrice
