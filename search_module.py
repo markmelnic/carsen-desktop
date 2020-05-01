@@ -1,5 +1,6 @@
 
 from mobile_de import *
+from popups_module import *
 
 import os
 import io
@@ -88,6 +89,7 @@ def search(maindir, srcInput):
 
     if len(carLink) == 0:
         print("No ads to process")
+        Warnings.noadsfound()
         os.chdir(maindir)
         print("\====================================/\n\n")
         return
@@ -214,7 +216,10 @@ def score(fileName):
     
     priceScore = []
     for price in allPrices:
-        priceScore.append((1 - ((price - minPrice) / (0.000000001 + maxPrice - minPrice))) * multiplier)
+        try:
+            priceScore.append((1 - ((price - minPrice) / (maxPrice - minPrice))) * multiplier)
+        except:
+            priceScore.append(1)
 
     # reg score
     minReg = min(allReg)
@@ -222,7 +227,10 @@ def score(fileName):
     
     regScore = []
     for reg in allReg:
-        regScore.append(((reg - minReg) / (0.000000001 + maxReg - minReg)) * multiplier)
+        try:
+            regScore.append(((reg - minReg) / (maxReg - minReg)) * multiplier)
+        except Exception as e:
+            regScore.append(0)
 
     # mileage score
     minMiles = min(allMiles)
@@ -231,17 +239,10 @@ def score(fileName):
     milScore = []
     milTempScore = []
     for mil in allMiles:
-        milScore.append((1 - (mil - minMiles) / (0.000000001 + maxMiles - minMiles)) * multiplier)
-
-    '''
-    tmax = max(milTempScore)
-    tmin = min(milTempScore)
-    for sc in milTempScore:
-        if sc < 0:
-            milScore.append(1 - sc)
-        else:
-            milScore.append(1 - ((sc - tmin) / (tmax - tmin)))
-    '''
+        try:
+            milScore.append((1 - (mil - minMiles) / (maxMiles - minMiles)) * multiplier)
+        except:
+            milScore.append(1)
 
     # final score
     fScore = []

@@ -18,12 +18,12 @@ import tkinter.font as tkfont
 global maindir
 maindir = os.getcwd()
 
+
 class Interface(Tk):
     def __init__(self):
         super().__init__()
         self.title("CARSEN - A car tracking software")
         self.iconbitmap('./resources/icon.ico')
-
         # read settings
         with open('./resources/settings.json', mode='r') as st:
             settings = st.read()
@@ -170,9 +170,28 @@ class SearchPage(Frame):
         makeTxt = ttk.Label(mainc, text="Car manufacturer:")
         makeTxt['font'] = labelf
         makeTxt.grid(row=20,column=10,padx=(10,10), pady=(5,5), sticky = 'w')
-        makeField = ttk.Entry(mainc)
+        
+        makeField = ttk.Combobox(mainc, width = 17) 
         makeField.grid(row=20,column=20)
         
+        os.chdir(maindir)
+        os.chdir("./resources")
+        with open("makes.json", 'r', encoding="utf-8", newline='') as mjson:
+            data = mjson.read()
+            makes_dict = (json.loads(data))
+            makes_dict = makes_dict['makes']
+            mjson.close()
+            os.chdir(maindir)
+            
+        makes = []
+        for i in range(len(makes_dict)):
+            if i == 0:
+                makes.append("Any")
+            else:
+                makes.append(makes_dict[i]['n'])
+        # adding combobox drop down list 
+        makeField['values'] = tuple(makes)
+        makeField.current(0)
 
         # model
         modelTxt = ttk.Label(mainc, text="Car model:")
@@ -302,7 +321,7 @@ class TrackPage(Frame):
         trVerifyIcon = trVerifyIcon.subsample(6,6) 
         trVerifyButton = Button(mainc, image = trVerifyIcon,compound = LEFT, bg='#fff', command = chck)
         trVerifyButton.image = trVerifyIcon
-        trVerifyButton.grid(row=11, column=20,padx=10)
+        trVerifyButton.grid(row=10, column=20,padx=10)
         trVerifyButton.config(width=50, height=50)
         
         
@@ -313,6 +332,7 @@ class TrackPage(Frame):
                 trees.append(tree)
                 
             for tree in trees:
+                print(tree)
                 selectedItem = tuple(tree.selection())
                 for item in selectedItem:
                     item = tree.item(item)
@@ -327,7 +347,7 @@ class TrackPage(Frame):
         trBrowseIcon = trBrowseIcon.subsample(6,6) 
         trBrowseButton = Button(mainc, image = trBrowseIcon,compound = LEFT, bg='#fff',command = browseSelected)
         trBrowseButton.image = trBrowseIcon
-        trBrowseButton.grid(row=12, column=20,padx=10)
+        trBrowseButton.grid(row=11, column=20,padx=10)
         trBrowseButton.config(width=50, height=50)
         
         
@@ -375,7 +395,7 @@ class TrackPage(Frame):
         trAddtofavIcon = trAddtofavIcon.subsample(6,6) 
         trAddtofavButton = Button(mainc, image = trAddtofavIcon,compound = LEFT, bg='#fff',command=addtoFavs)
         trAddtofavButton.image = trAddtofavIcon
-        trAddtofavButton.grid(row=13, column=20,padx=10)
+        trAddtofavButton.grid(row=12, column=20,padx=10)
         trAddtofavButton.config(width=50, height=50)
 
 
@@ -415,12 +435,17 @@ class TrackPage(Frame):
             adsTrees.append(i)
         
         # create the notebook
-        notebk = ttk.Notebook(mainc,width=540, height=425)
+        notebk = ttk.Notebook(mainc,width=540, height=450)
         notebk.grid(row=10,column=10,rowspan=20,padx=5)
         for i in range(len(tabs)):
             tabs[i] = ttk.Frame(notebk, width = 400, height = 400, relief = SUNKEN)
             title = files[i].split("_")
-            title = (title[0] + " " + title[1].replace("-", " ")).upper()
+            if title[0] == '':
+                title = ("any make, " + title[1].replace("-", " ")).upper()
+            elif title[1] == '':
+                title = (title[0] + ", any model").upper()
+            else:
+                title = (title[0] + " " + title[1].replace("-", " ")).upper()
             notebk.add(tabs[i], text = title)
             
             # get content in csv file
@@ -486,7 +511,7 @@ class TrackPage(Frame):
             ads_nr['font'] = labelf
             
             # generate treeview
-            adsTrees[i] = ttk.Treeview(tabs[i], height=19)
+            adsTrees[i] = ttk.Treeview(tabs[i], height=20)
             adsTrees[i]["columns"]=("Registration","Price","Mileage","Power","Score")
             adsTrees[i].column("#0", width=280, minwidth=140,anchor=W)
             adsTrees[i].column("#2", width=60, minwidth=60,anchor=CENTER)
@@ -617,7 +642,7 @@ class FavoritesPage(Frame):
         favVerifyIcon = favVerifyIcon.subsample(6,6) 
         favVerifyButton = Button(mainc, image = favVerifyIcon,compound = LEFT, bg='#fff', command=chck)
         favVerifyButton.image = favVerifyIcon
-        favVerifyButton.grid(row=11, column=20,padx=10)
+        favVerifyButton.grid(row=10, column=20,padx=10)
         favVerifyButton.config(width=50, height=50)
         
         # browse button
@@ -636,7 +661,7 @@ class FavoritesPage(Frame):
         favBrowseIcon = favBrowseIcon.subsample(6,6) 
         favBrowseButton = Button(mainc, image = favBrowseIcon,compound = LEFT, bg='#fff',command = browseSelected)
         favBrowseButton.image = favBrowseIcon
-        favBrowseButton.grid(row=12, column=20,padx=10)
+        favBrowseButton.grid(row=11, column=20,padx=10)
         favBrowseButton.config(width=50, height=50)
         
         # remove listing button
@@ -673,7 +698,7 @@ class FavoritesPage(Frame):
         favRmIcon = favRmIcon.subsample(6,6) 
         favRmButton = Button(mainc, image = favRmIcon,compound = LEFT, bg='#fff', command = removeListing)
         favRmButton.image = favRmIcon
-        favRmButton.grid(row=20, column=20,padx=10)
+        favRmButton.grid(row=29, column=20,padx=10)
         favRmButton.config(width=50, height=50)
         
     # =========== FAVORITES TREE
@@ -692,7 +717,7 @@ class FavoritesPage(Frame):
         os.chdir(maindir)
         
         # generate treeview
-        favoritesTree = ttk.Treeview(mainc, height=19)
+        favoritesTree = ttk.Treeview(mainc, height=23)
         favoritesTree["columns"]=("Registration","Price","Mileage","Power")
         favoritesTree.column("#0", width=260, minwidth=140,anchor=W)
         favoritesTree.column("#2", width=80, minwidth=60,anchor=CENTER)

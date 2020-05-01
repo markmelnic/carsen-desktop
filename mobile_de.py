@@ -133,7 +133,7 @@ def getNr(currentURL):
         return converted_pagesnr, checker
     except:
         # checker
-        print("\nAds checker failer")
+        print("\nAds checker failed")
         # pages number
         pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
         if len(pagesnr) == 0:
