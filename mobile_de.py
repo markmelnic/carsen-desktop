@@ -3,13 +3,22 @@ import os
 import json
 import time
 import requests
+from random import choice
 from bs4 import BeautifulSoup
+
+
+# ================== get random proxy ====================
+def proxy_generator():
+    response = requests.get("https://sslproxies.org/")
+    soup = BeautifulSoup(response.content, 'html5lib')
+    proxy = {'https': choice(list(map(lambda x:x[0]+':'+x[1], list(zip(map(lambda x:x.text, 
+    soup.findAll('td')[::8]), map(lambda x:x.text, soup.findAll('td')[1::8]))))))}
+    return proxy
 
 
 # ================== generate search url ===================
 def firstURL(maindir, curdir, input):
-    make = input[0]
-    make = make.lower()
+    make = input[0].lower()
     model = input[1]
     minprice = input[2]
     maxprice = input[3]
@@ -33,6 +42,9 @@ def firstURL(maindir, curdir, input):
             make = makes_dict[i]['i']
             print(make)
             break
+        
+    if make == "any":
+        make = ''
     
     # make
     if make != '' or 0:
@@ -115,7 +127,6 @@ def getNr(currentURL):
     page = requests.get(currentURL, headers = headers)
     soup = BeautifulSoup(page.content, 'html.parser')
 
-    time.sleep(2)
     try:
         # checker
         checker = soup.find(class_ = "h2 u-text-orange rbt-result-list-headline").get_text()

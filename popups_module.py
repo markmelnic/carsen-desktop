@@ -3,4 +3,4 @@ from tkinter import messagebox
 
 class Warnings():
     def noadsfound():
-        messagebox.showwarning('Warning', 'No ads found!')
+        messagebox.showwarning('Warning', 'No ads found matching your search parameters!')

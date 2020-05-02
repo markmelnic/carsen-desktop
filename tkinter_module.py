@@ -18,42 +18,6 @@ import tkinter.font as tkfont
 global maindir
 maindir = os.getcwd()
 
-
-class Interface(Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("CARSEN - A car tracking software")
-        self.iconbitmap('./resources/icon.ico')
-        # read settings
-        with open('./resources/settings.json', mode='r') as st:
-            settings = st.read()
-            settings = (json.loads(settings))
-            settings = settings['settings'][0]
-            st.close()
-
-        print(settings)
-        # change settings
-        self.geometry(settings["window_geometry"])
-        win_res = settings["window_resizeability"].split(',')
-        self.resizable(win_res[0], win_res[1])
-    
-        '''
-        # tk options
-        default_font = tkfont.nametofont("TkDefaultFont")
-        default_font.configure(family='Montserrat')
-        self.configure(bg='#fff')
-        '''
-        
-        self._frame = None
-        self.switch_frame(SearchPage)
-            
-    def switch_frame(self, frame_class):
-        new_frame = frame_class(self)
-        if self._frame is not None:
-            self._frame.destroy()
-        self._frame = new_frame
-        self._frame.grid()
-
         
 def navMenu(self, master, nr):
     navmenu = Frame(self)
@@ -103,7 +67,43 @@ def navMenu(self, master, nr):
     navSettingsButton.image = settingsIcon
     navSettingsButton.grid(row=10, column= 40)
     navSettingsButton.config(width=150, height=50)
+
+
+class Interface(Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("CARSEN - A car tracking software")
+        self.iconbitmap('./resources/icon.ico')
+        # read settings
+        with open('./resources/settings.json', mode='r') as st:
+            settings = st.read()
+            settings = (json.loads(settings))
+            settings = settings['settings'][0]
+            st.close()
+
+        print(settings)
+        # change settings
+        self.geometry(settings["window_geometry"])
+        win_res = settings["window_resizeability"].split(',')
+        self.resizable(win_res[0], win_res[1])
     
+        '''
+        # tk options
+        default_font = tkfont.nametofont("TkDefaultFont")
+        default_font.configure(family='Montserrat')
+        self.configure(bg='#fff')
+        '''
+        
+        self._frame = None
+        self.switch_frame(SearchPage)
+            
+    def switch_frame(self, frame_class):
+        new_frame = frame_class(self)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.grid()
+
         
 class SearchPage(Frame):
         
@@ -441,9 +441,11 @@ class TrackPage(Frame):
             tabs[i] = ttk.Frame(notebk, width = 400, height = 400, relief = SUNKEN)
             title = files[i].split("_")
             if title[0] == '':
-                title = ("any make, " + title[1].replace("-", " ")).upper()
+                title = ("any make, any model").upper()
             elif title[1] == '':
                 title = (title[0] + ", any model").upper()
+            elif title[0] == '' and title[1] == '':
+                title = ("any make, " + title[1].replace("-", " ")).upper()
             else:
                 title = (title[0] + " " + title[1].replace("-", " ")).upper()
             notebk.add(tabs[i], text = title)

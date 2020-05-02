@@ -47,6 +47,8 @@ def search(maindir, srcInput):
 
     # create file name
     carMake = firstinput[0]
+    if carMake.lower() == 'any':
+        carMake = ''
     carModel = firstinput[1]
     carMake = carMake.replace(" ", "-")
     carModel = carModel.replace(" ", "-")
