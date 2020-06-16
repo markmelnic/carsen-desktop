@@ -4,7 +4,8 @@ A python bot for scraping and tracking mobile.de. Get all data for a specific ca
 ## Installation
 #### First method
 1. clone all github files into a folder  
-2. Run the program from main.py
+2. Run the application from main.py
+*NOTE - There are some resource files which I am not allowed to share due to collaboration with "Mobile.de"
 
 #### Second method
 1. Get the installer here,
@@ -12,7 +13,7 @@ version Alpha 0.5.4
 https://www.dropbox.com/s/zfcn4vbiewbaky8/Mobile.de%20Bot%20v.Alpha.0.5.4.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
-## Running the program (console, before version Alpha 0.5)
+## Running the application (console, before version Alpha 0.5)
 In the terminal you will be presented with this little menu
 
 ![Imgur](https://i.imgur.com/PzQZO8Rm.png)
@@ -41,9 +42,16 @@ Press F3 to run and insert the number corresponding to the file you'd like to re
 #### Backup
 Pretty self explanatory, backs up all .csv files to a directory with your current timestamp in the backup folder. The checking function does it by default in case something goes wrong, but you still may want to use it from stability concerns.
 
-## Running the program (gui, after version Alpha 0.5)
+## Running the application (gui, between versions EXP Alpha 0.5 and Alpha 0.6)
 GUI implementation, so no more need to work with the terminal. I would include a screenshot but since the GUI is constantly changing (and it's ugly as hell), well, you get the idea. The functionality remains the same as described above. Actually, changed my mind, it's ugly but at least it works. Here you go
 
 ![Imgur](https://i.imgur.com/yOauWZI.png)
+
+## Running the application (gui, after version Alpha 0.6)
+Significant improvements to the GUI. Added multiple pages for each task the bot performs which means: searching, tracking, as well as a "Favorites" feature.
+
+![Imgur](https://i.imgur.com/Ll8Juo3.png)
+![Imgur](https://i.imgur.com/oqjOrtH.png)
+![Imgur](https://i.imgur.com/E1Deyja.png)
 
 ## Thank you for taking a look at my work! Throw an eye on my website https://markmelnic.com/ to find some of my other projects, or for no reason really :D Cheers!

@@ -60,7 +60,7 @@ def search(maindir, srcInput):
     # get links
     with open(linksFileName, mode="w") as linksFile:
         threads = []
-        for currentPage in range(1, converted_pagesnr + 1):
+        for currentPage in range(20):
             threadNumber = "Thread " + str(currentPage)
             thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
             threads.append(thread)
@@ -121,9 +121,6 @@ def search(maindir, srcInput):
             if len(threads) == 24:
                 for thread in threads:
                     thread.join()
-                    if len(threads) < 23:
-                        threads.pop(thread)
-                        break
                 threads = []
 
         # wait for all threads to finish execution

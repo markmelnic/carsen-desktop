@@ -332,7 +332,6 @@ class TrackPage(Frame):
                 trees.append(tree)
                 
             for tree in trees:
-                print(tree)
                 selectedItem = tuple(tree.selection())
                 for item in selectedItem:
                     item = tree.item(item)
@@ -425,7 +424,6 @@ class TrackPage(Frame):
             for entry in entries:
                 if entry.is_file():
                     if not str(entry) in files_to_ignore:
-                            print(entry)
                             files.append(entry.name)
            
         tabs = []   
@@ -714,7 +712,7 @@ class FavoritesPage(Frame):
                 favsFile.close()
         except:
             with open("favorites.csv", mode="w", newline='') as favsFile:
-                print("Favorites file not dound, initiating")
+                print("Favorites file not found, initiating file")
                 favsFile.close()
         os.chdir(maindir)
         
