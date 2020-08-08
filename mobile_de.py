@@ -6,6 +6,7 @@ import requests
 from random import choice
 from bs4 import BeautifulSoup
 
+HEADERS = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
 
 # ================== get random proxy ====================
 def proxy_generator():
@@ -123,8 +124,7 @@ def nextPage(currentURL, currentPage):
 
 # ================== get number of pages ==================
 def getNr(currentURL):
-    headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
-    page = requests.get(currentURL, headers = headers)
+    page = requests.get(currentURL, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     try:
@@ -157,8 +157,7 @@ def getNr(currentURL):
 
 # ================== get car links ==================
 def getCarLinks(currentURL):
-    headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
-    page = requests.get(currentURL, headers = headers)
+    page = requests.get(currentURL, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
     # _classPrivateSeller - cBox-body cBox-body--resultitem fsboAd rbt-reg rbt-no-top
     # _classDealer - cBox-body--resultitem dealerAd rbt-reg rbt-no-top
@@ -174,8 +173,7 @@ def getCarLinks(currentURL):
 
 # ================== get car data ==================
 def getCarData(carLinkCurrentPage):
-    headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
-    page = requests.get(carLinkCurrentPage, headers = headers)
+    page = requests.get(carLinkCurrentPage, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # title

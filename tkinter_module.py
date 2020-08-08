@@ -679,7 +679,7 @@ class FavoritesPage(Frame):
                 data = list(csvReader)
                 favsFile.close()
             os.chdir(maindir)
-                   
+    
             data_new = [] 
             for i in range(len(data)):
                 if not str(data[i][0]) in links_to_remove:

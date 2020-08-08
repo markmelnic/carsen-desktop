@@ -81,24 +81,24 @@ def search(maindir, srcInput):
         linksFile.close()
 
     # get links to variable
-    carLink = []
+    car_links = []
     with open(linksFileName, mode="r") as linksFile:
         #for line in linksFile:
         #    carLink.append(line)
-        carLink = linksFile.readlines()
+        car_links = linksFile.readlines()
         linksFile.close()
     os.remove(linksFileName)
 
-    if len(carLink) == 0:
+    if len(car_links) == 0:
         print("No ads to process")
         Warnings.noadsfound()
         os.chdir(maindir)
         print("\====================================/\n\n")
         return
-    elif len(carLink) == 1:
-        print(len(carLink), "ad to process\n--------------------")
+    elif len(car_links) == 1:
+        print(len(car_links), "ad to process\n--------------------")
     else:
-        print(len(carLink), "ads to process\n--------------------")
+        print(len(car_links), "ads to process\n--------------------")
 
     os.chdir(maindir)
     os.chdir('./csv files')
@@ -111,9 +111,9 @@ def search(maindir, srcInput):
         csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score"])
         # start threading for getting data
         threads = []
-        for i in range(len(carLink)):
+        for link in car_links:
             threadNumber = "Thread " + str(i)
-            thread = threading.Thread(target = getData, args = (threadNumber, carLink[i], csvWriter))
+            thread = threading.Thread(target = getData, args = (threadNumber, link, csvWriter))
             threads.append(thread)
             thread.start()
 
@@ -171,87 +171,88 @@ def inputFunct():
 
 
 # get temporary car links
-def getCarLinksTemp(threadNumber, currentURL, linksFile):
+def getCarLinksTemp(thread_number, current_url, links_file):
     time_started = time.time()
-    print(threadNumber, "started at", time_started)
-    carLinks = getCarLinks(currentURL)
+    print(thread_number, "started at", time_started)
+    carLinks = getCarLinks(current_url)
     for item in carLinks:
-        linksFile.write("%s\n" % item)
-    print(threadNumber, "executed in", time.time() - time_started)
+        links_file.write("%s\n" % item)
+    print(thread_number, "executed in", time.time() - time_started)
 
 
 # get data from links
-def getData(threadNumber, carLink, csvWriter):
+def getData(thread_number, car_link, csv_writer):
     time_started = time.time()
-    print(threadNumber, "started at", time_started)
-    data = getCarData(carLink)
-    csvWriter.writerow([carLink , data[0], data[1], data[2], data[3], data[4]])
-    print(threadNumber, "executed in", time.time() - time_started)
+    print(thread_number, "started at", time_started)
+    data = getCarData(car_link)
+    csv_writer.writerow([car_link , data[0], data[1], data[2], data[3], data[4]])
+    print(thread_number, "executed in", time.time() - time_started)
 
 
 # give scores
-def score(fileName):
+def score(file_name):
     # read file contents
-    with open(fileName, mode="r", newline='') as csvFile:
+    with open(file_name, mode="r", newline='') as csvFile:
         csvReader = csv.reader(csvFile)
         data = list(csvReader)
         data.pop(0)
         csvFile.close()
 
     # getting data
-    allReg = []
-    allPrices = []
-    allMiles = []
+    regs_list = []
+    prices_list = []
+    miles_list = []
     for dat in data:
-        allReg.append(int(dat[2]))
-        allPrices.append(int(dat[3]))
-        allMiles.append(int(dat[4]))
+        regs_list.append(int(dat[2]))
+        prices_list.append(int(dat[3]))
+        miles_list.append(int(dat[4]))
 
     # calculating price score
-    minPrice = min(allPrices)
-    maxPrice = max(allPrices)
+    min_price = min(prices_list)
+    max_price = max(prices_list)
 
-    multiplier = 3.333
+    #multiplier = 3.333
+    multiplier = 1
     
-    priceScore = []
-    for price in allPrices:
+    price_scores = []
+    for price in prices_list:
         try:
-            priceScore.append((1 - ((price - minPrice) / (maxPrice - minPrice))) * multiplier)
+            price_scores.append((1 - ((price - min_price) / (max_price - min_price))) * multiplier)
         except:
-            priceScore.append(1)
+            price_scores.append(1)
 
     # reg score
-    minReg = min(allReg)
-    maxReg = max(allReg)
+    min_reg = min(regs_list)
+    max_price = max(regs_list)
     
-    regScore = []
-    for reg in allReg:
+    reg_scores = []
+    for reg in regs_list:
         try:
-            regScore.append(((reg - minReg) / (maxReg - minReg)) * multiplier)
+            reg_scores.append(((reg - min_reg) / (max_price - min_reg)) * multiplier)
         except Exception as e:
-            regScore.append(0)
+            reg_scores.append(0)
 
     # mileage score
-    minMiles = min(allMiles)
-    maxMiles = max(allMiles)
+    min_miles = min(miles_list)
+    max_miles = max(miles_list)
 
-    milScore = []
+    miles_scores = []
     milTempScore = []
-    for mil in allMiles:
+    for mil in miles_list:
         try:
-            milScore.append((1 - (mil - minMiles) / (maxMiles - minMiles)) * multiplier)
+            miles_scores.append((1 - (mil - min_miles) / (max_miles - min_miles)) * multiplier)
         except:
-            milScore.append(1)
+            miles_scores.append(1)
 
     # final score
-    fScore = []
-    for pricesc, mileagesc, regsc in zip(priceScore, milScore, regScore):
-        fScore.append(pricesc + mileagesc + regsc)
+    final_score = []
+    for pricesc, mileagesc, regsc in zip(price_scores, miles_scores, reg_scores):
+        final_score.append(pricesc + mileagesc + regsc)
 
     
-    with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
+    with open(file_name, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow(["Ad Link", "Title", "Reg. Year", "Price (EUR)", "Mileage (km)", "Power (HP)", "Score"])
-        for dat, score in zip(data, fScore):
+        for dat, score in zip(data, final_score):
             csvWriter.writerow([dat[0], dat[1], dat[2], dat[3], dat[4], dat[5], score])
         csvFile.close()
