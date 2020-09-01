@@ -15,7 +15,7 @@ def proxy_generator():
 
 
 # ================== generate search url ===================
-def first_search_url(maindir, inp):
+def first_search_url(maindir, curdir, inp : list) -> str:
     # what each input is
     # 0 - make
     # 1 - model
@@ -26,15 +26,18 @@ def first_search_url(maindir, inp):
     # 6 - minmileage
     # 7 - maxmileage
 
-    with os.chdir(maindir):
-        with open("./resources/makes.json", 'r', encoding="utf-8", newline='') as mjson:
-            makes_dict = json.load(mjson)
-            makes_dict = makes_dict['makes']
+    os.chdir(maindir)
+    with open("./resources/makes.json", 'r', encoding="utf-8", newline='') as mjson:
+        makes_dict = json.load(mjson)
+        makes_dict = makes_dict['makes']
 
-    for make in makes_dict:
-        if make['n'].lower() == inp[0].lower():
-            make = make['i']
-            break
+    if inp[0].lower() == 'any':
+        make = ''
+    else:
+        for make in makes_dict:
+            if make['n'].lower() == inp[0].lower():
+                make = make['i']
+                break
 
     url_params = ''
 
@@ -84,36 +87,22 @@ def first_search_url(maindir, inp):
 
     url = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&scopeId=C&sfmr=false"
 
+    os.chdir(curdir)
     return url + url_params + "&pageNumber=1"
 
+
 # ================== navigate to next page
-def nextPage(currentURL, currentPage):
-    tempLink = []
-
-    i = 0
-    while i < len(currentURL):
-        i = currentURL.find("pageNumber=", i)
-        if i == -1:
-            break
-        tempLink.append(i + len("pageNumber="))
-        i += len("pageNumber=")
-        i = currentURL.find("&", i)
-        tempLink.append(i)
-
-    nextLink = ''
-    for i in range(tempLink[0]):
-        nextLink += currentURL[i]
-
-    nextLink += str(currentPage + 2)
-
-    for i in range(len(currentURL) - i - tempLink[0] - len(str(currentPage + 2))):
-        nextLink += currentURL[i + tempLink[0] + len(str(currentPage + 2))]
-
-    return nextLink
+def next_page(current_url, current_page):
+    if current_page < 10:
+        print(current_url[:-1] + str(current_page + 2))
+        return current_url[:-1] + str(current_page + 2)
+    elif current_page >= 10:
+        print(current_url[:-2] + str(current_page + 2))
+        return current_url[:-2] + str(current_page + 2)
 
 
 # ================== get number of pages ==================
-def getNr(currentURL):
+def get_pages_count(currentURL):
     page = requests.get(currentURL, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
 
