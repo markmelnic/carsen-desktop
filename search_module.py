@@ -112,7 +112,7 @@ def search(maindir, srcInput):
         # start threading for getting data
         threads = []
         for link in car_links:
-            threadNumber = "Thread " + str(i)
+            threadNumber = "Thread " + str(car_links.index(link))
             thread = threading.Thread(target = getData, args = (threadNumber, link, csvWriter))
             threads.append(thread)
             thread.start()
