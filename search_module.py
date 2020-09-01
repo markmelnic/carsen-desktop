@@ -3,13 +3,12 @@ from mobile_de import *
 from popups_module import *
 
 import os
-import io
 import csv
 import time
 import threading
 
 # initiate search
-def search(maindir, srcInput):
+def search(maindir, search_input):
     print("\n\n\n/====================================\\")
     print("\nSearcher initiated")
     os.chdir(maindir)
@@ -17,26 +16,25 @@ def search(maindir, srcInput):
     csvdir = os.getcwd()
     
     # ================== initialization ==================
-    # inputs
-    firstinput = srcInput
 
-    currentURL = first_search_url(maindir, firstinput)
-    getNumber = getNr(currentURL)
+    current_url = first_search_url(maindir, csvdir, search_input)
+    get_pages_nr = get_pages_count(current_url)
     try:
-        converted_pagesnr = getNumber[0]
-        adsCheck = getNumber[1]
+        converted_pagesnr = get_pages_nr[0]
+        ads_checker = get_pages_nr[1]
     except:
-        converted_pagesnr = getNumber
-        adsCheck = 21
+        converted_pagesnr = get_pages_nr
+        ads_checker = 21
 
-    if (converted_pagesnr == 1) and (adsCheck > 20):
+
+    if converted_pagesnr == 1 and ads_checker > 20:
         print("Possible error, trying again...")
         # retry
-        currentURL = first_search_url(maindir, firstinput)
-        getNumber = getNr(currentURL)
+        current_url = first_search_url(maindir, csvdir, search_input)
+        get_pages_nr = get_pages_count(current_url)
         try:
-            converted_pagesnr = getNumber[0]
-            adsCheck = getNumber[1]
+            converted_pagesnr = get_pages_nr[0]
+            ads_checker = get_pages_nr[1]
         except:
             None
 
@@ -46,10 +44,10 @@ def search(maindir, srcInput):
         print("\n", converted_pagesnr, "pages to process")
 
     # create file name
-    carMake = firstinput[0]
+    carMake = search_input[0]
     if carMake.lower() == 'any':
         carMake = ''
-    carModel = firstinput[1]
+    carModel = search_input[1]
     carMake = carMake.replace(" ", "-")
     carModel = carModel.replace(" ", "-")
     if carModel == "":
@@ -60,9 +58,9 @@ def search(maindir, srcInput):
     # get links
     with open(linksFileName, mode="w") as linksFile:
         threads = []
-        for currentPage in range(20):
-            threadNumber = "Thread " + str(currentPage)
-            thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, currentURL, linksFile))
+        for page in range(20):
+            threadNumber = "Thread " + str(page)
+            thread = threading.Thread(target = getCarLinksTemp, args = (threadNumber, current_url, linksFile))
             threads.append(thread)
             thread.start()
 
@@ -72,7 +70,7 @@ def search(maindir, srcInput):
                     thread.join()
                 threads = []
             
-            currentURL = nextPage(currentURL, currentPage)
+            current_url = next_page(current_url, page)
 
         # wait for all threads to finish execution
         for thread in threads:
@@ -104,7 +102,7 @@ def search(maindir, srcInput):
     os.chdir('./csv files')
 
     # output file name
-    fileName = carMake + "_" + carModel + "_" + firstinput[2] + "-" + firstinput[3] + "_" + firstinput[4] + "-" + firstinput[5] + "_" + firstinput[6] + "-" + firstinput[7] + "_" + firstinput[8] + "-" + firstinput[9] + ".csv"
+    fileName = carMake + "_" + carModel + "_" + search_input[2] + "-" + search_input[3] + "_" + search_input[4] + "-" + search_input[5] + "_" + search_input[6] + "-" + search_input[7] + "_" + search_input[8] + "-" + search_input[9] + ".csv"
 
     with open(fileName, 'w', encoding="utf-8", newline='') as csvFile:
         csvWriter = csv.writer(csvFile)
