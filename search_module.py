@@ -20,7 +20,7 @@ def search(maindir, srcInput):
     # inputs
     firstinput = srcInput
 
-    currentURL = firstURL(maindir, csvdir, firstinput)
+    currentURL = first_search_url(maindir, firstinput)
     getNumber = getNr(currentURL)
     try:
         converted_pagesnr = getNumber[0]
@@ -32,7 +32,7 @@ def search(maindir, srcInput):
     if (converted_pagesnr == 1) and (adsCheck > 20):
         print("Possible error, trying again...")
         # retry
-        currentURL = firstURL(maindir, csvdir, firstinput)
+        currentURL = first_search_url(maindir, firstinput)
         getNumber = getNr(currentURL)
         try:
             converted_pagesnr = getNumber[0]

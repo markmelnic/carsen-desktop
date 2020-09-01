@@ -1,8 +1,5 @@
 
-import os
-import json
-import time
-import requests
+import os, json, time, requests
 from random import choice
 from bs4 import BeautifulSoup
 
@@ -18,83 +15,76 @@ def proxy_generator():
 
 
 # ================== generate search url ===================
-def firstURL(maindir, curdir, input):
-    make = input[0].lower()
-    model = input[1]
-    minprice = input[2]
-    maxprice = input[3]
-    minreg = input[4]
-    maxreg = input[5]
-    minmileage = input[6]
-    maxmileage = input[7]
-    
-    os.chdir(maindir)
-    os.chdir("./resources")
-    with open("makes.json", 'r', encoding="utf-8", newline='') as mjson:
-        data = mjson.read()
-        makes_dict = (json.loads(data))
-        makes_dict = makes_dict['makes']
-        mjson.close()
-    
-    for i in range(len(makes_dict)):
-        dictindex = makes_dict[i]['n']
-        if dictindex.lower() == make:
-            findindex = i
-            make = makes_dict[i]['i']
-            print(make)
-            break
-        
-    if make == "any":
-        make = ''
-    
-    # make
-    if make != '' or 0:
-        makeurl = "&makeModelVariant1.makeId=" + str(make)
-    else:
-        makeurl = ''
-    # model
-    if model != '' or 0:
-        modelurl = "&makeModelVariant1.modelDescription=" + str(model)
-    else:
-        modelurl = ''
-    # price
-    if minprice == '' or 0:
-        minpriceurl = ''
-    else:
-        minpriceurl = "&minPrice=" + str(minprice)
-    if maxprice == '' or 0:
-        maxpriceurl = ''
-    else:
-        maxpriceurl = "&maxPrice=" + str(maxprice)
-    # reg
-    if minreg == '' or 0:
-        minregurl = ''
-    else:
-        minregurl = "&minFirstRegistrationDate=" + str(minreg)
-    if maxreg == '' or 0:
-        maxregurl = ''
-    else:
-        maxregurl = "&maxFirstRegistrationDate=" + str(maxreg)
-    # mileage
-    if minmileage == '' or 0:
-        minmileageurl = ''
-    else:
-        minmileageurl = "&minMileage=" + str(minmileage)
-    if maxmileage == '' or 0:
-        maxmileageurl = ''
-    else:
-        maxmileageurl = "&maxMileage=" + str(maxmileage)
-    
-    urlInit = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&scopeId=C&sfmr=false"
-    
-    finalurl = urlInit + makeurl + modelurl + minpriceurl + maxpriceurl + minregurl + maxregurl + maxmileageurl + minmileageurl + "&pageNumber=1"
-    
-    # categories=Cabrio&categories=EstateCar&categories=Limousine&categories=OffRoad&categories=SmallCar&categories=SportsCar&categories=Van
-    
-    print(finalurl)
-    os.chdir(curdir)
-    return finalurl
+def first_search_url(maindir, inp):
+    # what each input is
+    # 0 - make
+    # 1 - model
+    # 2 - minprice
+    # 3 - maxprice
+    # 4 - minreg
+    # 5 - maxreg
+    # 6 - minmileage
+    # 7 - maxmileage
 
+    with os.chdir(maindir):
+        with open("./resources/makes.json", 'r', encoding="utf-8", newline='') as mjson:
+            makes_dict = json.load(mjson)
+            makes_dict = makes_dict['makes']
+
+    for make in makes_dict:
+        if make['n'].lower() == inp[0].lower():
+            make = make['i']
+            break
+
+    url_params = ''
+
+    # make
+    if make == '' or make == 0 or make == "any":
+        url_params += ''
+    else:
+        url_params += "&makeModelVariant1.makeId=" + str(make)
+
+    # model
+    if inp[1] == '' or inp[1] == 0:
+        url_params += ''
+    else:
+        url_params += "&makeModelVariant1.modelDescription=" + str(inp[1])
+
+    # price
+    if inp[2] == '' or inp[2] == 0:
+        url_params += ''
+    else:
+        url_params += "&minPrice=" + str(inp[2])
+    if inp[3] == '' or inp[3] == 0:
+        url_params += ''
+    else:
+        url_params += "&maxPrice=" + str(inp[3])
+
+    # reg
+    if inp[4] == '' or inp[4] == 0:
+        url_params += ''
+    else:
+        url_params += "&minFirstRegistrationDate=" + str(inp[4])
+    if inp[5] == '' or inp[5] == 0:
+        url_params += ''
+    else:
+        url_params += "&maxFirstRegistrationDate=" + str(inp[5])
+
+    # mileage
+    if inp[6] == '' or inp[6] == 0:
+        url_params += ''
+    else:
+        url_params += "&minMileage=" + str(inp[6])
+    if inp[7] == '' or inp[7] == 0:
+        url_params += ''
+    else:
+        url_params += "&maxMileage=" + str(inp[7])
+
+    # categories=Cabrio&categories=EstateCar&categories=Limousine&categories=OffRoad&categories=SmallCar&categories=SportsCar&categories=Van
+
+    url = "https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&scopeId=C&sfmr=false"
+
+    return url + url_params + "&pageNumber=1"
 
 # ================== navigate to next page
 def nextPage(currentURL, currentPage):
