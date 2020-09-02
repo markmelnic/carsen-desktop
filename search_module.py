@@ -172,7 +172,7 @@ def inputFunct():
 def getCarLinksTemp(thread_number, current_url, links_file):
     time_started = time.time()
     print(thread_number, "started at", time_started)
-    carLinks = getCarLinks(current_url)
+    carLinks = get_car_links(current_url)
     for item in carLinks:
         links_file.write("%s\n" % item)
     print(thread_number, "executed in", time.time() - time_started)

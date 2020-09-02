@@ -132,19 +132,12 @@ def failed_get_pages_count(current_url, soup):
     return converted_pagesnr
 
 # ================== get car links ==================
-def getCarLinks(currentURL):
-    page = requests.get(currentURL, headers = HEADERS)
+def get_car_links(current_url):
+    page = requests.get(current_url, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
     # _classPrivateSeller - cBox-body cBox-body--resultitem fsboAd rbt-reg rbt-no-top
     # _classDealer - cBox-body--resultitem dealerAd rbt-reg rbt-no-top
-    carLinks = []
-    for link in soup.find_all('a', {'class': 'link--muted no--text--decoration result-item'}):
-        try:
-            carLinks.append(link['href'])
-        except: 
-            None
-
-    return carLinks
+    return [link['href'] for link in soup.find_all('a', {'class': 'link--muted no--text--decoration result-item'})]
 
 
 # ================== get car data ==================
