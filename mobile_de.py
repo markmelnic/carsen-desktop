@@ -141,8 +141,8 @@ def get_car_links(current_url):
 
 
 # ================== get car data ==================
-def get_car_data(carLinkCurrentPage):
-    page = requests.get(carLinkCurrentPage, headers = HEADERS)
+def get_car_data(car_link):
+    page = requests.get(car_link, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # title
@@ -210,28 +210,14 @@ def get_car_data(carLinkCurrentPage):
 
 # get car price for checker
 def getCarPriceChecker(link):
-    headers = {"User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
-    page = requests.get(link, headers = headers)
-    soup = BeautifulSoup(page.content, 'html.parser')
+    response = requests.get(link, headers = HEADERS)
+    soup = BeautifulSoup(response.content, 'html.parser')
 
     # price
-    try:
-        carPrice = soup.find(class_ = "h3 rbt-prime-price").get_text()
-    except Exception as e:
-        print(e)
-        return 0
+    car_price = soup.find(class_ = "h3 rbt-prime-price").get_text().replace('.', '')
 
     # ================== format data
-    # car price first
-    try:
-        carPrice = carPrice.replace('.', '')
-        if 'Brutto' in carPrice:
-            carPrice = carPrice[ : -11]
-        else:
-            carPrice = carPrice[ : -2]
-        carPrice = int(carPrice)
-    except Exception as e:
-        print(e)
-        return 0
-
-    return carPrice
+    if 'Brutto' in car_price:
+        return int(car_price[ : -11])
+    else:
+        return int(car_price[ : -2])
