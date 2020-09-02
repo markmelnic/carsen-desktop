@@ -102,17 +102,14 @@ def next_page(current_url, current_page):
 
 
 # ================== get number of pages ==================
-def get_pages_count(currentURL):
-    page = requests.get(currentURL, headers = HEADERS)
-    soup = BeautifulSoup(page.content, 'html.parser')
+def get_pages_count(current_url):
+    response = requests.get(current_url, headers = HEADERS)
+    soup = BeautifulSoup(response.content, 'html.parser')
 
     try:
         # checker
         checker = soup.find(class_ = "h2 u-text-orange rbt-result-list-headline").get_text()
-        checker = checker.split(" ")[0]
-        checker = checker.replace('.', '')
-        checker = checker.replace(' ', '')
-        checker = int(checker)
+        checker = int(checker.split(" ")[0].replace(' ', '').replace('.', ''))
         # pages number
         pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
         if len(pagesnr) == 0:
@@ -122,17 +119,17 @@ def get_pages_count(currentURL):
 
         return converted_pagesnr, checker
     except:
-        # checker
-        print("\nAds checker failed")
-        # pages number
-        pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
-        if len(pagesnr) == 0:
-            converted_pagesnr = 1
-        else:
-            converted_pagesnr = int(pagesnr[(len(pagesnr) - 1)].get_text())
+        failed_get_pages_count(current_url, soup)
 
-        return converted_pagesnr
+def failed_get_pages_count(current_url, soup):
+    # pages number
+    pagesnr = soup.find_all(class_ = "btn btn--muted btn--s")
+    if len(pagesnr) == 0:
+        converted_pagesnr = 1
+    else:
+        converted_pagesnr = int(pagesnr[(len(pagesnr) - 1)].get_text())
 
+    return converted_pagesnr
 
 # ================== get car links ==================
 def getCarLinks(currentURL):
