@@ -141,77 +141,71 @@ def get_car_links(current_url):
 
 
 # ================== get car data ==================
-def getCarData(carLinkCurrentPage):
+def get_car_data(carLinkCurrentPage):
     page = requests.get(carLinkCurrentPage, headers = HEADERS)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     # title
     try:
-        carTitle = soup.find(id = "rbt-ad-title").get_text()
+        car_title = soup.find(id = "rbt-ad-title").get_text()
     except:
-        carTitle = "No Title"
+        car_title = "N/A"
 
     # price
     try:
-        carPrice = soup.find(class_ = "h3 rbt-prime-price").get_text()
+        car_price = soup.find(class_ = "h3 rbt-prime-price").get_text()
     except:
-        carPrice = '0'
+        car_price = "N/A"
 
     # registration
     try:
-        carReg = soup.find(id = "rbt-firstRegistration-v").get_text()
+        car_reg = soup.find(id = "rbt-firstRegistration-v").get_text()
     except:
         try:
-            carReg = soup.find(id = "rbt-category-v").get_text()
+            car_reg = soup.find(id = "rbt-category-v").get_text()
         except:
-            carReg = 0
+            car_reg = "N/A"
     # mileage
     try:
-        carMiles = soup.find(id = "rbt-mileage-v").get_text()
+        car_mileage = soup.find(id = "rbt-mileage-v").get_text()
     except:
-        carMiles = 1414
+        car_mileage = "N/A"
     # power
     try:
-        carPower = soup.find(id = "rbt-power-v").get_text()
+        car_power = soup.find(id = "rbt-power-v").get_text()
     except:
-        carPower = 0
+        car_power = "N/A"
 
     # ================== format necessary data
     # car price first
-    carPrice = carPrice.replace('.', '')
-    if 'Brutto' in carPrice:
-        carPrice = carPrice[ : -11]
+    car_price = car_price.replace('.', '')
+    if 'Brutto' in car_price:
+        car_price = int(car_price[ : -11])
     else:
-        carPrice = carPrice[ : -2]
-    carPrice = int(carPrice)
+        car_price = int(car_price[ : -2])
 
     # registration
-    if 'Neufahrzeug' in carReg:
-        carReg = 2020
-    elif 'Vorführfahrzeug' in carReg:
-        carReg = 4
-        #carReg = 'Demo Car'
-    elif 'Jahreswagen' in carReg:
-        carReg = 3
-        #carReg = 'Employee Car'
-        #Jahreswagen - employee car
-    else:
-        carReg = carReg[3 : ]
-        carReg = int(carReg)
+    try:
+        if 'Neufahrzeug' in car_reg:
+            car_reg = 2020
+        #elif 'Vorführfahrzeug' in car_reg:
+        #    car_reg = 4
+        #    #carReg = 'Demo Car'
+        #elif 'Jahreswagen' in car_reg:
+        #    car_reg = 3
+        #    #carReg = 'Employee Car'
+        #    #Jahreswagen - employee car
+        else:
+            car_reg = int(car_reg[3 : ])
+    except:
+        car_reg = 'N/A'
 
-    # mileage
-    if carMiles != 1414:
-        carMiles = carMiles[ : -3]
-        carMiles = carMiles.replace('.', '')
-        carMiles = int(carMiles)
 
     # power
-    if carPower != 0:
-        carPower = carPower.split("(")[1]
-        carPower = carPower[ : -4]
-        carMiles = int(carMiles)
+    if car_power != 0:
+        car_power = int(car_power.split("(")[1][ : -4])
 
-    return carTitle, carReg, carPrice, carMiles, carPower
+    return car_title, car_reg, car_price, car_mileage, car_power
 
 
 # get car price for checker

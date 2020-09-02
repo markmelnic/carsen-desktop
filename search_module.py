@@ -182,7 +182,7 @@ def getCarLinksTemp(thread_number, current_url, links_file):
 def getData(thread_number, car_link, csv_writer):
     time_started = time.time()
     print(thread_number, "started at", time_started)
-    data = getCarData(car_link)
+    data = get_car_data(car_link)
     csv_writer.writerow([car_link , data[0], data[1], data[2], data[3], data[4]])
     print(thread_number, "executed in", time.time() - time_started)
 
