@@ -13,8 +13,6 @@ version Alpha 0.5.4
 https://www.dropbox.com/s/zfcn4vbiewbaky8/Mobile.de%20Bot%20v.Alpha.0.5.4.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
-![Imgur](https://i.imgur.com/yOauWZI.png)
-
 ## Running the application (gui, after version Alpha 0.6)
 Significant improvements to the GUI. Added multiple pages for each task the bot performs which means: searching, tracking, as well as a "Favorites" feature.
 
