@@ -13,38 +13,6 @@ version Alpha 0.5.4
 https://www.dropbox.com/s/zfcn4vbiewbaky8/Mobile.de%20Bot%20v.Alpha.0.5.4.exe?dl=0
 2. Install the app and run "Mobile.de Bot.exe" 
 
-## Running the application (console, before version Alpha 0.5)
-In the terminal you will be presented with this little menu
-
-![Imgur](https://i.imgur.com/PzQZO8Rm.png)
-
-#### Search
-Start by pressing F1 and introducing a new search. The bot will start execution after all input field have been completed or skipped.
-Now that your search has been indexed and executed, find the output file in the "csv files" directory.
-
-Alpha 0.8 update: Now every ad is being assigned a "how good of a deal this is" score. Most accurate with cars of the same or ± 1 registration year. In Excel (presumably) sort all cells by the score tab from highest to lowest, and find the best deals at the top. I have tested this feature mostly with Lexus vehicles with registration years from 2016 to 2020 and it works like a charm.
-
-For now, a car's mileage has the biggest impact on the score, followed shortly by it's price and eventually, registration year. I would take into consideration horsepower and other parameters, but due to inconsistency in how precise sellers describe their cars, there is too much room for crashing the app so this is what we get.
-
-#### Check
-To see if there are any changes to indexed searches, press F2. Once the checker has been executed, the changes can be found in the .csv files themselves, or will be presented in the terminal window as following
-
-![Imgur](https://i.imgur.com/ieHLcp8m.png)
-
-If any of the indexed ads have disappeared from the site you will see a "X ads removed" line at the end of the changes list.
-
-#### Remove
-Recommended to be used instead of just deleting the corresponding .csv file.
-Press F3 to run and insert the number corresponding to the file you'd like to remove. This will also diable checking this file for price updates.
-
-![Imgur](https://i.imgur.com/jEVXJqSm.png)
-
-#### Backup
-Pretty self explanatory, backs up all .csv files to a directory with your current timestamp in the backup folder. The checking function does it by default in case something goes wrong, but you still may want to use it from stability concerns.
-
-## Running the application (gui, between versions EXP Alpha 0.5 and Alpha 0.6)
-GUI implementation, so no more need to work with the terminal. I would include a screenshot but since the GUI is constantly changing (and it's ugly as hell), well, you get the idea. The functionality remains the same as described above. Actually, changed my mind, it's ugly but at least it works. Here you go
-
 ![Imgur](https://i.imgur.com/yOauWZI.png)
 
 ## Running the application (gui, after version Alpha 0.6)
